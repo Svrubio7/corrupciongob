@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from .models import (
     PoliticalParty, Institution, CorruptionType, Region, 
     Tag, CorruptionCase, CaseImage
@@ -11,7 +10,6 @@ class PoliticalPartyAdmin(admin.ModelAdmin):
     list_display = ['name', 'short_name', 'color_display', 'created_at']
     search_fields = ['name', 'short_name']
     list_filter = ['created_at']
-    
     def color_display(self, obj):
         return format_html(
             '<div style="background-color: {}; width: 20px; height: 20px; border-radius: 3px;"></div>',
@@ -60,7 +58,6 @@ class CorruptionCaseAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ['created_at', 'updated_at']
     inlines = [CaseImageInline]
-    
     fieldsets = (
         ('Basic Information', {
             'fields': ('title', 'slug', 'short_description', 'full_description')
@@ -79,11 +76,9 @@ class CorruptionCaseAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
     def amount_display(self, obj):
         return obj.get_amount_display()
     amount_display.short_description = 'Amount'
-    
     def get_queryset(self, request):
         return super().get_queryset(request).select_related(
             'political_party', 'institution', 'corruption_type', 'region'

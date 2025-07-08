@@ -118,14 +118,20 @@ class CorruptionCase(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        ordering = ['-date', '-created_at']
+        ordering = ['-amount', '-date', '-created_at']  # Order by amount by default
     
     def __str__(self):
         return self.title
     
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug or self.slug != slugify(self.title):
             self.slug = slugify(self.title)
+            # Ensure uniqueness
+            original_slug = self.slug
+            for x in range(1, 1000):
+                if not CorruptionCase.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+                    break
+                self.slug = f"{original_slug}-{x}"
         super().save(*args, **kwargs)
     
     def get_amount_display(self):
