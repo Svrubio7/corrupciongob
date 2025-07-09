@@ -54,13 +54,13 @@
       <div class="container mx-auto px-4">
         <div class="flex justify-between items-center mb-8">
           <h2 class="text-3xl font-bold text-gray-900">Casos Destacados</h2>
-          <router-link to="/search" class="text-primary-600 hover:text-primary-700 font-medium">
+          <router-link to="/app" class="text-primary-600 hover:text-primary-700 font-medium">
             Ver todos →
           </router-link>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div v-for="featuredCase in featuredCases" :key="featuredCase.id" class="case-card">
+          <div v-for="featuredCase in featuredCases.slice(0, 3)" :key="featuredCase.id" class="case-card">
             <div class="aspect-w-16 aspect-h-9 bg-gray-200">
               <img 
                 v-if="featuredCase.main_image" 
@@ -81,14 +81,14 @@
               <p class="text-gray-600 text-sm mb-4">{{ featuredCase.short_description }}</p>
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2">
-                  <span v-if="featuredCase.political_party" 
+                  <span v-if="featuredCase.political_party"
                         class="px-2 py-1 text-xs rounded-full"
-                        :style="{ backgroundColor: featuredCase.political_party.color + '20', color: featuredCase.political_party.color }">
+                        :style="{ backgroundColor: (featuredCase.political_party?.color || '#ccc') + '20', color: featuredCase.political_party?.color || '#333' }">
                     {{ featuredCase.political_party.short_name }}
                   </span>
                 </div>
                 <router-link 
-                  :to="{ name: 'case-detail', params: { id: featuredCase.id }}" 
+                  :to="{ name: 'case-detail', params: { slug: featuredCase.slug } }"
                   class="text-primary-600 hover:text-primary-700 text-sm font-medium">
                   Ver detalles →
                 </router-link>

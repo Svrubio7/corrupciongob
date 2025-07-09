@@ -63,6 +63,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CorruptionCase.objects.select_related(
         'political_party', 'institution', 'corruption_type', 'region'
     ).prefetch_related('tags', 'images')
+    lookup_field = 'slug'
     
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {

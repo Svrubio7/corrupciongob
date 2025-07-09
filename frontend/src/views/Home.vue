@@ -9,10 +9,10 @@
         <img :src="heroImg" alt="Hero" class="w-full h-[350px] md:h-[450px] object-cover" />
         <div class="absolute inset-0 bg-black/40"></div>
         <div class="absolute inset-0 flex flex-col justify-end p-8 z-10">
-          <router-link to="/category" class="mb-4 inline-block bg-primary-600 text-white px-4 py-2 rounded font-semibold shadow hover:bg-primary-700 transition">Casos Destacados</router-link>
+          <router-link to="/category" class="mb-4 inline-block bg-primary-600 text-white px-4 py-2 rounded font-semibold shadow hover:bg-primary-700 transition"></router-link>
           <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 drop-shadow">Auditoría del Dinero Público</h1>
           <p class="text-lg md:text-2xl text-white/90 max-w-2xl mb-6 drop-shadow">
-            Transparencia y rendición de cuentas. Descubre y explora casos de corrupción en las instituciones públicas españolas.
+            Transparencia y rendición de cuentas. Descubre y explora como utilizan los políticos tus impuestos.
           </p>
           <div>
             <router-link to="/app" class="bg-white text-primary-700 font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-primary-50 transition">Explorar Casos</router-link>
