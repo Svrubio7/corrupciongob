@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('corruption_cases.urls')),
-    re_path(r'^.*$', TemplateView.as_view(template_name="index.html")),
+    re_path(r'^(?!static/|media/|admin/|api/).*$', TemplateView.as_view(template_name="index.html")),
 ]
 
 # Serve static/media in development (optional, but helpful)
