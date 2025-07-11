@@ -54,6 +54,7 @@
 
 <script>
 import axios from 'axios'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default {
   name: "Detail",
   data() {
@@ -65,7 +66,7 @@ export default {
   async created() {
     const slug = this.$route.params.slug
     try {
-      const res = await axios.get(`/api/cases/${slug}/`)
+      const res = await axios.get(`${API_BASE_URL}cases/${slug}/`)
       this.caseData = res.data
       this.sourcesList = res.data.sources
         ? res.data.sources.split('\n').filter(Boolean)

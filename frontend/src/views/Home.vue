@@ -57,6 +57,8 @@
 import CaseCard from '@/components/CaseCard.vue'
 import heroImg from '@/assets/banknotes-7850299_1920.jpg'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default {
   name: 'Home',
   components: { CaseCard },
@@ -93,7 +95,7 @@ export default {
   methods: {
     async fetchCases() {
       // Fetch all cases (paginated)
-      const res = await fetch(`http://127.0.0.1:8000/api/cases/?ordering=-date&page=${this.page}&page_size=${this.pageSize}`)
+      const res = await fetch(`${API_BASE_URL}cases/?ordering=-date&page=${this.page}&page_size=${this.pageSize}`)
       const data = await res.json()
       if (data.results) {
         this.allCases = [...this.allCases, ...data.results]
