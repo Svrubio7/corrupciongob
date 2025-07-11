@@ -14,11 +14,11 @@
           <p class="text-lg md:text-2xl text-white/90 max-w-2xl mb-6 drop-shadow">
             Transparencia y rendición de cuentas. Descubre y explora como utilizan los políticos tus impuestos.
           </p>
-          <div>
+        <div>
             <router-link to="/app" class="bg-white text-primary-700 font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-primary-50 transition">Explorar Casos</router-link>
           </div>
-        </div>
-      </div>
+                        </div>
+                        </div>
     </section>
 
     <!-- Reciéntemente Añadido -->
@@ -26,7 +26,7 @@
       <h2 class="text-2xl md:text-3xl font-bold pb-4">Reciéntemente Añadido</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <CaseCard v-for="caseItem in recentCases" :key="caseItem.id" :caseData="caseItem" />
-      </div>
+                    </div>
     </section>
 
     <!-- Popular -->
@@ -34,7 +34,7 @@
       <h2 class="text-2xl md:text-3xl font-bold pb-4">Popular</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <CaseCard v-for="caseItem in popularCases" :key="caseItem.id" :caseData="caseItem" large />
-      </div>
+          </div>
     </section>
 
     <!-- Todos los Casos + Search -->
@@ -42,13 +42,13 @@
       <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <h2 class="text-2xl md:text-3xl font-bold">Todos los Casos</h2>
         <input v-model="searchQuery" type="text" placeholder="Buscar casos..." class="w-full md:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" />
-      </div>
+                    </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <CaseCard v-for="caseItem in filteredCases" :key="caseItem.id" :caseData="caseItem" />
-      </div>
+                  </div>
       <div v-if="hasMore" class="flex justify-center mt-8">
         <button @click="loadMore" class="px-6 py-2 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition">Cargar más</button>
-      </div>
+            </div>
     </section>
   </div>
 </template>
