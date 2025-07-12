@@ -2,7 +2,7 @@
 FROM python:3.11-slim
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y nginx nodejs npm && rm -rf /var/lib/apt/lists/*
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -17,6 +17,12 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Copy project files
 COPY . .
+
+# Build frontend
+WORKDIR /app/frontend
+RUN npm install
+RUN npm run build
+WORKDIR /app
 
 # Collect static files (if needed)
 RUN python manage.py collectstatic --noinput
