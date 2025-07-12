@@ -142,6 +142,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://www.auditandoimpuestos.es",
+    "https://auditandoimpuestos.es",
+]
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
