@@ -1,6 +1,10 @@
 <script>
+import paglogo from '../public/paglogo.png'
 export default {
-  name: "App"
+  name: "App",
+  data() {
+    return { paglogo }
+  }
 }
 </script>
 
@@ -9,13 +13,21 @@ export default {
     <!-- Navbar -->
     <nav class="bg-white shadow-sm border-b border-gray-200">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <router-link to="/" class="text-2xl font-bold text-palette-black">
-        Auditando<span class="text-palette-taupe">Impuestos</span>
+        <!-- Desktop: Show text, Mobile: Show logo -->
+        <router-link to="/" class="flex items-center">
+          <img
+            v-if="$screen('sm')"
+            :src="paglogo"
+            alt="Auditando Impuestos Logo"
+            class="h-8 w-auto block md:hidden"
+          />
+          <span class="text-2xl font-bold text-palette-black hidden md:block">
+            Auditando<span class="text-palette-taupe">Impuestos</span>
+          </span>
         </router-link>
         <div class="flex space-x-6">
           <router-link to="/" class="hover:text-palette-taupe font-medium">Inicio</router-link>
           <router-link to="/app" class="hover:text-palette-taupe font-medium">Casos</router-link>
-          <router-link to="/about" class="hover:text-palette-taupe font-medium">Acerca de</router-link>
         </div>
       </div>
     </nav>
@@ -26,7 +38,7 @@ export default {
     <!-- Footer -->
     <footer class="bg-palette-beige text-palette-black py-6 mt-12 border-t border-gray-200">
       <div class="container mx-auto px-4 text-center text-sm">
-        © {{ new Date().getFullYear() }} CorrupciónGob. Hecho con transparencia.
+        © {{ new Date().getFullYear() }} Auditando Impuestos. Hecho con transparencia.
       </div>
     </footer>
   </div>

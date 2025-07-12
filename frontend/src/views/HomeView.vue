@@ -8,19 +8,16 @@
       <div class="container mx-auto px-4 flex-1 flex flex-col justify-center">
         <div class="text-center">
           <h1 class="text-5xl font-bold mb-8">
-            Auditoría del Dinero Público
+            Transparencia en el Uso del Dinero Público
           </h1>
           <p class="text-xl mb-6 max-w-3xl mx-auto">
-            Transparencia y rendición de cuentas. Investigamos y documentamos casos de corrupción 
-            en las instituciones públicas españolas para promover la integridad y la democracia.
+            Información clara sobre cómo las instituciones públicas españolas gestionan y emplean los fondos públicos. Promovemos la transparencia y la responsabilidad en el gasto público.
           </p>
           <div class="flex justify-center space-x-4 mt-6">
             <router-link to="/app" class="btn-secondary">
               Explorar Casos
             </router-link>
-            <button class="btn-secondary">
-              Buscar
-            </button>
+            
           </div>
         </div>
         <!-- Statistics Section Overlay -->
