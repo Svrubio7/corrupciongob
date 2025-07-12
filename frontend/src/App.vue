@@ -7,8 +7,8 @@ export default {
 <template>
   <div class="min-h-screen flex flex-col bg-palette-light text-palette-black">
     <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b border-gray-200 relative">
-      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+    <nav class="bg-white shadow-sm border-b border-gray-200 relative h-20 md:h-auto">
+      <div class="container mx-auto px-4 py-0 flex justify-between items-center h-full">
         <!-- Desktop: Left text, right menu; Mobile: Centered logo only -->
         <div class="flex-1 flex items-center">
           <!-- Desktop: Show text -->
@@ -17,11 +17,11 @@ export default {
           </router-link>
         </div>
         <!-- Mobile: Centered logo absolutely -->
-        <div class="md:hidden absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div class="md:hidden absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center h-full">
           <img
             src="/paglogo.png"
             alt="Auditando Impuestos Logo"
-            class="h-8 w-auto"
+            class="h-10 w-auto max-h-12"
           />
         </div>
         <!-- Desktop: Right menu -->
