@@ -1,8 +1,10 @@
-# Use official Python image as base
 FROM python:3.11-slim
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y nginx nodejs npm && rm -rf /var/lib/apt/lists/*
+# Install system dependencies and Node.js 20.x
+RUN apt-get update && apt-get install -y curl gnupg2 nginx && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
