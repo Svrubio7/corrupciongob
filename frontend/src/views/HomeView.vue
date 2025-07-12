@@ -2,15 +2,15 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Hero Section -->
     <section
-        class="bg-gradient-to-r from-primary-600 to-primary-800 text-white min-h-[95vh] flex flex-col justify-center bg-cover bg-center mt-8 md:mt-0 mb-8 md:mb-0"
+        class="bg-gradient-to-r from-primary-600 to-primary-800 text-white min-h-[95vh] flex flex-col justify-center bg-cover bg-center md:mt-0 md:mb-0"
         :style="backgroundStyle"
       >
       <div class="container mx-auto px-4 flex-1 flex flex-col justify-center">
         <div class="text-center">
-          <h1 class="text-5xl font-bold mb-8">
+          <h1 class="text-3xl md:text-5xl font-bold mb-6 md:mb-8">
             Transparencia en el Uso del Dinero Público
           </h1>
-          <p class="text-xl mb-6 max-w-3xl mx-auto">
+          <p class="text-base md:text-xl mb-6 md:mb-6 max-w-3xl mx-auto">
             Información clara sobre cómo las instituciones públicas españolas gestionan y emplean los fondos públicos. Promovemos la transparencia y la responsabilidad en el gasto público.
           </p>
           <div class="flex justify-center space-x-4 mt-6">

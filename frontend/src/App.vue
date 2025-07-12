@@ -7,7 +7,7 @@ export default {
 <template>
   <div class="min-h-screen flex flex-col bg-palette-light text-palette-black">
     <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
+    <nav class="bg-white shadow-sm border-b border-gray-200 relative">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <!-- Desktop: Left text, right menu; Mobile: Centered logo only -->
         <div class="flex-1 flex items-center">
@@ -16,8 +16,8 @@ export default {
             Auditando<span class="text-palette-taupe">Impuestos</span>
           </router-link>
         </div>
-        <!-- Mobile: Centered logo -->
-        <div class="flex-1 flex justify-center md:hidden">
+        <!-- Mobile: Centered logo absolutely -->
+        <div class="md:hidden absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <img
             src="/paglogo.png"
             alt="Auditando Impuestos Logo"
