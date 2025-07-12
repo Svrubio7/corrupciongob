@@ -101,29 +101,21 @@
       <div class="container mx-auto px-4">
         <div class="max-w-2xl mx-auto bg-white/70 rounded-xl shadow-lg p-10 md:p-12 flex flex-col items-center">
           <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">¿Quién soy?</h2>
-          <p class="text-gray-700 text-base md:text-lg font-serif italic mb-10 text-center whitespace-pre-line">
-Hola,
-
-Me llamo Sergio, tengo 21 años y soy estudiante de programación e inteligencia artificial.
-
-Antes de nada, quiero dejar claro que esto no va en contra de ningún partido concreto, sino de los políticos en general. Por eso animo a todo el mundo a enviarme cualquier publicación o información sobre cómo se está gastando nuestro dinero de manera cuestionable.
-
-Me entristece mucho la polarización que vivimos en España y esa tendencia a justificar todo lo que hace “nuestro” partido. Por eso he creado este proyecto: para intentar educar y concienciar a todos sobre cómo se utiliza realmente el dinero público, sin importar colores.
-
-Me inspiré en el trabajo de Pablo Cambronero (@PabloCamPiq en X) y decidí que yo también quería aportar mi granito de arena.
-
-Mantener este proyecto me cuesta tiempo y también algo de dinero, que como estudiante supone un esfuerzo importante para mí. Por eso, si quieres apoyarme, te agradecería muchísimo cualquier donación a través del botón de abajo. Además, como gran parte de lo que publico se basa en el trabajo de Pablo, compartiré con él todo lo que reciba.
-
-Muchísimas gracias a todos por estar aquí y, por favor, no dudéis en enviarme cualquier información sobre el mal uso del dinero público por parte de TODOS los partidos. Estoy en X (@0xmiskinho).
-
-Un saludo sincero,
-
-Sergio
-          </p>
+          <div class="text-gray-700 text-base md:text-lg font-serif italic text-center space-y-4 mb-10">
+            <p>Hola,</p>
+            <p>Me llamo Sergio, tengo 21 años y soy estudiante de programación e inteligencia artificial.</p>
+            <p>Antes de nada, quiero dejar claro que esto no va en contra de ningún partido concreto, sino de los políticos en general. Por eso animo a todo el mundo a enviarme cualquier publicación o información sobre cómo se está gastando nuestro dinero de manera cuestionable.</p>
+            <p>Me entristece mucho la polarización que vivimos en España y esa tendencia a justificar todo lo que hace “nuestro” partido. Por eso he creado este proyecto: para intentar educar y concienciar a todos sobre cómo se utiliza realmente el dinero público, sin importar colores.</p>
+            <p>Me inspiré en el trabajo de Pablo Cambronero (@PabloCamPiq en X) y decidí que yo también quería aportar mi granito de arena.</p>
+            <p>Mantener este proyecto me cuesta tiempo y también algo de dinero, que como estudiante supone un esfuerzo importante para mí. Por eso, si quieres apoyarme, te agradecería muchísimo cualquier donación a través del botón de abajo. Además, como gran parte de lo que publico se basa en el trabajo de Pablo, compartiré con él todo lo que reciba.</p>
+            <p>Muchísimas gracias a todos por estar aquí y, por favor, no dudéis en enviarme cualquier información sobre el mal uso del dinero público por parte de TODOS los partidos. Estoy en X (@0xmiskinho).</p>
+            <p>Un saludo sincero,</p>
+            <p>Sergio</p>
+          </div>
           <div class="flex justify-center">
             <form action="https://www.paypal.com/donate" method="post" target="_top">
               <input type="hidden" name="hosted_button_id" value="SDCASEHGVRLGJ" />
-              <input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_donate_SM.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Botón Donar con PayPal" />
+              <input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_donate_SM.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Botón Donar con PayPal" class="h-14 w-auto scale-125" />
               <img alt="" border="0" src="https://www.paypal.com/es_ES/i/scr/pixel.gif" width="1" height="1" />
             </form>
           </div>
