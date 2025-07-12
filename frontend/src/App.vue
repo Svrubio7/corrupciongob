@@ -1,10 +1,6 @@
 <script>
-import paglogo from '../public/paglogo.png'
 export default {
-  name: "App",
-  data() {
-    return { paglogo }
-  }
+  name: "App"
 }
 </script>
 
@@ -13,19 +9,23 @@ export default {
     <!-- Navbar -->
     <nav class="bg-white shadow-sm border-b border-gray-200">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <!-- Desktop: Show text, Mobile: Show logo -->
-        <router-link to="/" class="flex items-center">
-          <img
-            v-if="$screen('sm')"
-            :src="paglogo"
-            alt="Auditando Impuestos Logo"
-            class="h-8 w-auto block md:hidden"
-          />
-          <span class="text-2xl font-bold text-palette-black hidden md:block">
+        <!-- Desktop: Left text, right menu; Mobile: Centered logo only -->
+        <div class="flex-1 flex items-center">
+          <!-- Desktop: Show text -->
+          <router-link to="/" class="text-2xl font-bold text-palette-black hidden md:block">
             Auditando<span class="text-palette-taupe">Impuestos</span>
-          </span>
-        </router-link>
-        <div class="flex space-x-6">
+          </router-link>
+        </div>
+        <!-- Mobile: Centered logo -->
+        <div class="flex-1 flex justify-center md:hidden">
+          <img
+            src="/paglogo.png"
+            alt="Auditando Impuestos Logo"
+            class="h-8 w-auto"
+          />
+        </div>
+        <!-- Desktop: Right menu -->
+        <div class="flex-1 flex justify-end space-x-6 hidden md:flex">
           <router-link to="/" class="hover:text-palette-taupe font-medium">Inicio</router-link>
           <router-link to="/app" class="hover:text-palette-taupe font-medium">Casos</router-link>
         </div>

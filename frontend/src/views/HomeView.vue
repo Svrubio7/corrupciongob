@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Hero Section -->
     <section
-        class="bg-gradient-to-r from-primary-600 to-primary-800 text-white min-h-[95vh] flex flex-col justify-center bg-cover bg-center"
+        class="bg-gradient-to-r from-primary-600 to-primary-800 text-white min-h-[95vh] flex flex-col justify-center bg-cover bg-center mt-8 md:mt-0 mb-8 md:mb-0"
         :style="backgroundStyle"
       >
       <div class="container mx-auto px-4 flex-1 flex flex-col justify-center">
