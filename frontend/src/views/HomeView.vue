@@ -107,7 +107,7 @@
             <p>Antes de nada, quiero dejar claro que esto no va en contra de ningún partido concreto, sino de los políticos en general. Por eso animo a todo el mundo a enviarme cualquier publicación o información sobre cómo se está gastando nuestro dinero de manera cuestionable.</p>
             <p>Me entristece mucho la polarización que vivimos en España y esa tendencia a justificar todo lo que hace “nuestro” partido. Por eso he creado este proyecto: para intentar educar y concienciar a todos sobre cómo se utiliza realmente el dinero público, sin importar colores.</p>
             <p>Me inspiré en el trabajo de Pablo Cambronero (@PabloCamPiq en X) y decidí que yo también quería aportar mi granito de arena.</p>
-            <p>Mantener este proyecto me cuesta tiempo y también algo de dinero, que como estudiante supone un esfuerzo importante para mí. Por eso, si quieres apoyarme, te agradecería muchísimo cualquier donación a través del botón de abajo. Además, como gran parte de lo que publico se basa en el trabajo de Pablo, compartiré con él todo lo que reciba.</p>
+            <p>Mantener este proyecto me cuesta tiempo y también algo de dinero, que como estudiante supone un esfuerzo importante para mí. Por eso, si quieres apoyarme, te agradecería muchísimo cualquier donación a través del botón de abajo. </p>
             <p>Muchísimas gracias a todos por estar aquí y, por favor, no dudéis en enviarme cualquier información sobre el mal uso del dinero público por parte de TODOS los partidos. Estoy en X (@0xmiskinho).</p>
             <p>Un saludo sincero,</p>
             <p>Sergio</p>
