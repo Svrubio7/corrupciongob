@@ -22,21 +22,21 @@
         </div>
         <!-- Statistics Section Overlay -->
         <div class="mt-20 flex justify-center">
-          <div class="w-full max-w-5xl bg-white/70 rounded-xl shadow-lg p-8">
+          <div class="w-full max-w-6xl bg-white/70 rounded-xl shadow-lg p-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div class="text-center">
+              <div class="flex flex-col items-center text-center">
                 <div class="text-4xl font-bold text-black mb-2">{{ stats.totalCases }}</div>
                 <div class="text-gray-600">Casos Documentados</div>
               </div>
-              <div class="text-center">
+              <div class="flex flex-col items-center text-center">
                 <div class="text-4xl font-bold text-black mb-2">€{{ formatAmount(stats.totalAmount) }}</div>
                 <div class="text-gray-600">Dinero Público Involucrado</div>
               </div>
-              <div class="text-center">
+              <div class="flex flex-col items-center text-center">
                 <div class="text-4xl font-bold text-black mb-2">{{ stats.featuredCount }}</div>
                 <div class="text-gray-600">Casos Destacados</div>
               </div>
-              <div class="text-center">
+              <div class="flex flex-col items-center text-center">
                 <div class="text-4xl font-bold text-black mb-2">{{ stats.partiesCount }}</div>
                 <div class="text-gray-600">Partidos Políticos</div>
               </div>
