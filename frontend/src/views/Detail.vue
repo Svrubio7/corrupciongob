@@ -24,10 +24,10 @@
       <span v-if="caseData.region">
         &nbsp;| <span class="font-semibold">Región:</span> {{ caseData.region.name }}
       </span>
-                </div>
-    <div class="mb-6 text-lg text-palette-taupe">
-      {{ caseData.full_description }}
-                </div>
+      <div class="mb-6 text-lg text-palette-black">
+        <p v-for="(p, i) in fullDescriptionParagraphs" :key="i" class="mb-4" v-text="p"></p>
+      </div>
+    </div>
     <div v-if="caseData.images && caseData.images.length" class="mb-6">
       <h2 class="text-xl font-semibold mb-2">Imágenes adicionales</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -61,6 +61,13 @@ export default {
     return {
       caseData: null,
       sourcesList: [],
+    }
+  },
+  computed: {
+    fullDescriptionParagraphs() {
+      return this.caseData && this.caseData.full_description
+        ? this.caseData.full_description.split(/(?:\r\n|\r|\n){2,}/g)
+        : [];
     }
   },
   async created() {
