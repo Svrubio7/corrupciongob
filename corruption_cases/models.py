@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
+import os
 
 class PoliticalParty(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -82,7 +84,12 @@ class CorruptionCase(models.Model):
         validators=[MinValueValidator(0)],
         help_text="Amount in euros"
     )
-    main_image = models.ImageField(upload_to='cases/', blank=True, null=True)
+    main_image = models.ImageField(
+        upload_to='cases/', 
+        blank=True, 
+        null=True,
+        help_text="Maximum file size: 10MB"
+    )
     
     # Relationships
     political_party = models.ForeignKey(
@@ -137,10 +144,23 @@ class CorruptionCase(models.Model):
     def get_amount_display(self):
         """Format amount as currency"""
         return f"€{self.amount:,.2f}"
+    
+    def clean(self):
+        """Validate file size"""
+        super().clean()
+        if self.main_image:
+            # Check file size (10MB limit)
+            if self.main_image.size > 10 * 1024 * 1024:  # 10MB in bytes
+                raise ValidationError({
+                    'main_image': 'File size must be under 10MB. Please compress the image or choose a smaller file.'
+                })
 
 class CaseImage(models.Model):
     case = models.ForeignKey(CorruptionCase, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='cases/detail/')
+    image = models.ImageField(
+        upload_to='cases/detail/',
+        help_text="Maximum file size: 10MB"
+    )
     caption = models.CharField(max_length=200, blank=True)
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -150,3 +170,13 @@ class CaseImage(models.Model):
     
     def __str__(self):
         return f"{self.case.title} - {self.caption or 'Image'}"
+    
+    def clean(self):
+        """Validate file size"""
+        super().clean()
+        if self.image:
+            # Check file size (10MB limit)
+            if self.image.size > 10 * 1024 * 1024:  # 10MB in bytes
+                raise ValidationError({
+                    'image': 'File size must be under 10MB. Please compress the image or choose a smaller file.'
+                })
