@@ -20,6 +20,7 @@ from .serializers import (
 class PoliticalPartyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = PoliticalParty.objects.all()
     serializer_class = PoliticalPartySerializer
+    pagination_class = None
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'short_name']
     ordering_fields = ['name', 'created_at']
@@ -28,6 +29,7 @@ class PoliticalPartyViewSet(viewsets.ReadOnlyModelViewSet):
 class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Institution.objects.all()
     serializer_class = InstitutionSerializer
+    pagination_class = None
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['institution_type', 'region']
     search_fields = ['name', 'region']
@@ -37,6 +39,7 @@ class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
 class CorruptionTypeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CorruptionType.objects.all()
     serializer_class = CorruptionTypeSerializer
+    pagination_class = None
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'description']
     ordering_fields = ['name', 'created_at']
@@ -45,6 +48,7 @@ class CorruptionTypeViewSet(viewsets.ReadOnlyModelViewSet):
 class RegionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
+    pagination_class = None
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['autonomous_community']
     search_fields = ['name', 'autonomous_community']
@@ -54,6 +58,7 @@ class RegionViewSet(viewsets.ReadOnlyModelViewSet):
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    pagination_class = None
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name', 'created_at']
@@ -64,6 +69,9 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         'political_party', 'institution', 'corruption_type', 'region'
     ).prefetch_related('tags', 'images')
     lookup_field = 'slug'
+    
+    # Disable pagination for this viewset
+    pagination_class = None
     
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
@@ -151,6 +159,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
 class CaseImageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CaseImage.objects.all()
     serializer_class = CaseImageSerializer
+    pagination_class = None
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['case']
     ordering_fields = ['order', 'created_at']

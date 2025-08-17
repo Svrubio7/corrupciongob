@@ -10,6 +10,7 @@ class PoliticalPartyAdmin(admin.ModelAdmin):
     list_display = ['name', 'short_name', 'color_display', 'created_at']
     search_fields = ['name', 'short_name']
     list_filter = ['created_at']
+    list_per_page = None
     def color_display(self, obj):
         return format_html(
             '<div style="background-color: {}; width: 20px; height: 20px; border-radius: 3px;"></div>',
@@ -22,27 +23,32 @@ class InstitutionAdmin(admin.ModelAdmin):
     list_display = ['name', 'institution_type', 'region', 'created_at']
     list_filter = ['institution_type', 'region', 'created_at']
     search_fields = ['name', 'region']
+    list_per_page = None
 
 @admin.register(CorruptionType)
 class CorruptionTypeAdmin(admin.ModelAdmin):
     list_display = ['name', 'description', 'created_at']
     search_fields = ['name', 'description']
+    list_per_page = None
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
     list_display = ['name', 'autonomous_community', 'created_at']
-    list_filter = ['autonomous_community', 'created_at']
+    list_filter = ['autonomous_community', 'region', 'created_at']
     search_fields = ['name', 'autonomous_community']
+    list_per_page = None
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ['name', 'created_at']
     search_fields = ['name']
+    list_per_page = None
 
 class CaseImageInline(admin.TabularInline):
     model = CaseImage
     extra = 1
     fields = ['image', 'caption', 'order']
+    list_per_page = None
 
 @admin.register(CorruptionCase)
 class CorruptionCaseAdmin(admin.ModelAdmin):
@@ -58,6 +64,7 @@ class CorruptionCaseAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ['created_at', 'updated_at']
     inlines = [CaseImageInline]
+    list_per_page = None
     fieldsets = (
         ('Basic Information', {
             'fields': ('title', 'slug', 'short_description', 'full_description')
