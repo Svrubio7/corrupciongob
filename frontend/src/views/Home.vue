@@ -43,10 +43,12 @@
         <h2 class="text-2xl md:text-3xl font-bold">Todos los Casos</h2>
         <input v-model="searchQuery" type="text" placeholder="Buscar casos..." class="w-full md:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" />
                     </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <CaseCard v-for="caseItem in filteredCases" :key="caseItem.id" :caseData="caseItem" />
                   </div>
-
+      <div v-if="hasMore" class="flex justify-center mt-8">
+        <button @click="loadMore" class="px-6 py-2 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition">Cargar más</button>
+            </div>
     </section>
   </div>
 </template>
@@ -67,6 +69,9 @@ export default {
       recentCases: [],
       popularCases: [],
       searchQuery: '',
+      page: 1,
+      pageSize: 9,
+      hasMore: true,
     }
   },
   computed: {
@@ -89,16 +94,26 @@ export default {
   },
   methods: {
     async fetchCases() {
-      // Fetch all cases at once (no pagination)
-      const res = await fetch(`${API_BASE_URL}cases/?ordering=-date`)
+      // Fetch all cases (paginated)
+      const res = await fetch(`${API_BASE_URL}cases/?ordering=-date&page=${this.page}&page_size=${this.pageSize}`)
       const data = await res.json()
-      this.allCases = data
+      if (data.results) {
+        this.allCases = [...this.allCases, ...data.results]
+        this.hasMore = !!data.next
+      } else {
+        this.allCases = [...this.allCases, ...data]
+        this.hasMore = false
+      }
       // Recent: 6 most recent
       this.recentCases = this.allCases.slice(0, 6)
       // Popular: 3 with highest amount (or popularity field if available)
       this.popularCases = [...this.allCases]
         .sort((a, b) => (b.amount || 0) - (a.amount || 0))
         .slice(0, 3)
+    },
+    loadMore() {
+      this.page += 1
+      this.fetchCases()
     },
   },
 }
