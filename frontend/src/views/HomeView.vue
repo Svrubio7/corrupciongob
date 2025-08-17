@@ -13,11 +13,13 @@
           <p class="text-base md:text-xl mb-6 md:mb-6 max-w-3xl mx-auto">
             Información clara sobre cómo las instituciones públicas españolas gestionan y emplean los fondos públicos. Promovemos la transparencia y la responsabilidad en el gasto público.
           </p>
-          <div class="flex justify-center space-x-4 mt-6">
+          <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-6">
             <router-link to="/app" class="btn-secondary">
               Explorar Casos
             </router-link>
-            
+            <a href="#quien-soy" class="btn-secondary">
+              ¿Quién soy?
+            </a>
           </div>
         </div>
         <!-- Statistics Section Overlay -->
@@ -97,7 +99,7 @@
     </section>
 
     <!-- Donation Section -->
-    <section class="py-20">
+    <section id="quien-soy" class="py-20">
       <div class="container mx-auto px-4">
         <div class="max-w-2xl mx-auto bg-white/70 rounded-xl shadow-lg p-10 md:p-12 flex flex-col items-center">
           <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">¿Quién soy?</h2>
