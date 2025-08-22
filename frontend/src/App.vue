@@ -18,11 +18,13 @@ export default {
         </div>
         <!-- Mobile: Centered logo absolutely -->
         <div class="md:hidden absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center h-full">
-          <img
-            src="/paglogo.png"
-            alt="Auditando Impuestos Logo"
-            class="h-10 w-auto max-h-12"
-          />
+          <router-link to="/">
+            <img
+              src="/paglogo.png"
+              alt="Auditando Impuestos Logo"
+              class="h-10 w-auto max-h-12 cursor-pointer"
+            />
+          </router-link>
         </div>
         <!-- Desktop: Right menu -->
         <div class="flex-1 flex justify-end space-x-6 hidden md:flex">
