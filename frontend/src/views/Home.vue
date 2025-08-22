@@ -200,7 +200,6 @@
 
 <script>
 import CaseCard from '@/components/CaseCard.vue'
-import { updateMetaTags, resetMetaTags } from '@/utils/metaTags'
 import heroImg from '@/assets/banknotes-7850299_1920.jpg'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -280,13 +279,6 @@ export default {
     
     // Add keyboard listener for escape key
     document.addEventListener('keydown', this.handleKeydown)
-    
-    // Update meta tags for social media
-    updateMetaTags({
-      title: 'Auditoría del Dinero Público - Explora Casos',
-      description: 'Descubre y explora casos de auditoría del dinero público. Transparencia y rendición de cuentas. Aprende cómo los políticos utilizan tus impuestos.',
-      image: heroImg
-    })
   },
   beforeUnmount() {
     // Remove click outside listener
@@ -294,9 +286,6 @@ export default {
     
     // Remove keyboard listener
     document.removeEventListener('keydown', this.handleKeydown)
-    
-    // Reset meta tags
-    resetMetaTags()
   },
   methods: {
     async fetchCases() {

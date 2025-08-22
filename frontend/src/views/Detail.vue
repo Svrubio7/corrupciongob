@@ -54,10 +54,7 @@
 
 <script>
 import axios from 'axios'
-import { updateCaseMetaTags, resetMetaTags } from '@/utils/metaTags'
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 export default {
   name: "Detail",
   data() {
@@ -81,16 +78,9 @@ export default {
       this.sourcesList = res.data.sources
         ? res.data.sources.split('\n').filter(Boolean)
         : []
-      
-      // Update meta tags for social media sharing
-      updateCaseMetaTags(this.caseData)
     } catch (e) {
       this.caseData = null
     }
-  },
-  beforeUnmount() {
-    // Reset meta tags when leaving the page
-    resetMetaTags()
   }
 }
 </script>
