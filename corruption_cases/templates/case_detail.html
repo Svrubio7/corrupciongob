@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>{{ title }}</title>
+    <meta name="title" content="{{ title }}">
+    <meta name="description" content="{{ description }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{{ type }}">
+    <meta property="og:url" content="{{ url }}">
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:image" content="{{ image }}">
+    <meta property="og:site_name" content="{{ site_name }}">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url }}">
+    <meta property="twitter:title" content="{{ title }}">
+    <meta property="twitter:description" content="{{ description }}">
+    <meta property="twitter:image" content="{{ image }}">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="Spanish">
+    <meta name="author" content="Auditando Impuestos">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/paglogo.png">
+    
+    <!-- Preload the main image for better performance -->
+    <link rel="preload" as="image" href="{{ image }}">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        .case-info {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .case-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .case-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1a202c;
+        }
+        .case-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+        .case-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+        .meta-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        .meta-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        .meta-value {
+            color: #4a5568;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #2b6cb0;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background: #2c5282;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #718096;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .case-title {
+                font-size: 1.5rem;
+            }
+            .case-meta {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/paglogo.png" alt="Auditando Impuestos Logo" class="logo">
+            <h1>Auditando Impuestos</h1>
+            <p>Transparencia y rendición de cuentas del dinero público</p>
+        </div>
+        
+        <div class="case-info">
+            {% if case %}
+                {% if case.main_image %}
+                    <img src="{{ case.main_image.url }}" alt="{{ case.title }}" class="case-image">
+                {% endif %}
+                
+                <h2 class="case-title">{{ case.title }}</h2>
+                <p class="case-description">{{ case.short_description }}</p>
+                
+                <div class="case-meta">
+                    {% if case.date %}
+                    <div class="meta-item">
+                        <div class="meta-label">Fecha</div>
+                        <div class="meta-value">{{ case.date|date:"d/m/Y" }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if case.amount %}
+                    <div class="meta-item">
+                        <div class="meta-label">Importe</div>
+                        <div class="meta-value">€{{ case.amount|floatformat:2 }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if case.institution %}
+                    <div class="meta-item">
+                        <div class="meta-label">Institución</div>
+                        <div class="meta-value">{{ case.institution.name }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if case.region %}
+                    <div class="meta-item">
+                        <div class="meta-label">Región</div>
+                        <div class="meta-value">{{ case.region.name }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div style="text-align: center;">
+                    <a href="/app/case/{{ case.slug }}" class="cta-button">
+                        Ver Caso Completo
+                    </a>
+                </div>
+            {% else %}
+                <div style="text-align: center;">
+                    <h2 class="case-title">Caso no encontrado</h2>
+                    <p class="case-description">El caso solicitado no fue encontrado o ha sido eliminado.</p>
+                    <a href="/" class="cta-button">Volver al Inicio</a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="footer">
+            <p>© {% now "Y" %} Auditando Impuestos. Hecho con transparencia.</p>
+        </div>
+    </div>
+</body>
+</html>

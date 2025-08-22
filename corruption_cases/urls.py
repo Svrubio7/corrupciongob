@@ -15,4 +15,6 @@ router.register(r'case-images', views.CaseImageViewSet)
 # The API URLs are now determined automatically by the router
 urlpatterns = [
     path('', include(router.urls)),
+    # Special route for social media crawlers - case detail pages
+    path('case/<slug:slug>/', views.case_detail_view, name='case_detail'),
 ] 

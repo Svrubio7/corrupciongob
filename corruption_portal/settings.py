@@ -62,7 +62,10 @@ ROOT_URLCONF = 'corruption_portal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'dist'),],  # <-- Add this line
+        'DIRS': [
+            os.path.join(BASE_DIR, 'frontend', 'dist'),
+            os.path.join(BASE_DIR, 'corruption_cases', 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

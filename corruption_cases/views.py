@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -6,6 +6,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q, Sum, Count
 from django.utils import timezone
 from datetime import timedelta
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 
 from .models import (
     PoliticalParty, Institution, CorruptionType, Region, 
@@ -164,3 +166,59 @@ class CaseImageViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_fields = ['case']
     ordering_fields = ['order', 'created_at']
     ordering = ['order', 'created_at']
+
+
+def case_detail_view(request, slug):
+    """
+    Render case detail page with proper meta tags for social media sharing.
+    This view is specifically for social media crawlers and SEO.
+    """
+    try:
+        case = get_object_or_404(CorruptionCase, slug=slug)
+        
+        # Prepare meta tag data with proper image URL
+        if case.main_image:
+            # Build absolute URL for the image
+            image_url = request.build_absolute_uri(case.main_image.url)
+        else:
+            # Fallback to logo
+            image_url = request.build_absolute_uri('/static/auditandoimpuestologo.png')
+        
+        meta_data = {
+            'title': f"{case.title} - Auditando Impuestos",
+            'description': case.short_description or 'Caso de corrupción y auditoría del dinero público',
+            'image': image_url,
+            'url': f"https://auditandoimpuestos.es/app/case/{case.slug}",
+            'type': 'article',
+            'site_name': 'Auditando Impuestos',
+            'case': case
+        }
+        
+        # Render the HTML with meta tags
+        html_content = render_to_string('case_detail.html', meta_data)
+        return HttpResponse(html_content, content_type='text/html')
+        
+    except CorruptionCase.DoesNotExist:
+        # Return 404 with basic meta tags
+        meta_data = {
+            'title': 'Caso no encontrado - Auditando Impuestos',
+            'description': 'El caso solicitado no fue encontrado',
+            'image': request.build_absolute_uri('/static/auditandoimpuestologo.png'),
+            'url': request.build_absolute_uri(),
+            'type': 'website',
+            'site_name': 'Auditando Impuestos'
+        }
+        html_content = render_to_string('case_detail.html', meta_data)
+        return HttpResponse(html_content, content_type='text/html', status=404)
+    except Exception as e:
+        # Return error with basic meta tags
+        meta_data = {
+            'title': 'Error - Auditando Impuestos',
+            'description': 'Ha ocurrido un error al cargar el caso',
+            'image': request.build_absolute_uri('/static/auditandoimpuestologo.png'),
+            'url': request.build_absolute_uri(),
+            'type': 'website',
+            'site_name': 'Auditando Impuestos'
+        }
+        html_content = render_to_string('case_detail.html', meta_data)
+        return HttpResponse(html_content, content_type='text/html', status=500)
