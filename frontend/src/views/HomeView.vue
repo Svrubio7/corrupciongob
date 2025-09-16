@@ -117,7 +117,7 @@ export default {
   computed: {
     backgroundStyle() {
       return {
-        backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url(${landingBg})`
+        backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.40)), url(${landingBg})`
       }
     },
   },
