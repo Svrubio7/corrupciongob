@@ -191,7 +191,7 @@ def case_detail_view(request, slug):
             'title': f"{case.title} - D.E.GU",
             'description': case.short_description or 'Caso de corrupción y auditoría del dinero público',
             'image': image_url,
-            'url': f"https://degugobierno.es/app/case/{case.slug}",
+            'url': f"https://degu.es/app/case/{case.slug}",
             'type': 'article',
             'site_name': 'D.E.GU',
             'case': case
