@@ -28,11 +28,11 @@
       <span v-if="caseData.region">
         &nbsp;| <span class="font-semibold">Región:</span> {{ caseData.region.name }}
       </span>
-      <div class="mb-6 text-lg text-palette-black">
+      <div class="mb-6 text-lg text-palette-black prose prose-lg max-w-none">
         <!-- Use processed description with embedded images if available, otherwise use regular paragraphs -->
         <div v-if="caseData.processed_description" v-html="caseData.processed_description"></div>
         <div v-else>
-          <p v-for="(p, i) in fullDescriptionParagraphs" :key="i" class="mb-4" v-text="p"></p>
+          <p v-for="(p, i) in fullDescriptionParagraphs" :key="i" class="mb-4 leading-relaxed" v-text="p"></p>
         </div>
       </div>
     </div>
@@ -74,9 +74,15 @@ export default {
   },
   computed: {
     fullDescriptionParagraphs() {
-      return this.caseData && this.caseData.full_description
-        ? this.caseData.full_description.split(/(?:\r\n|\r|\n){2,}/g)
-        : [];
+      if (!this.caseData || !this.caseData.full_description) {
+        return [];
+      }
+      
+      // Split by double line breaks and filter out empty strings
+      return this.caseData.full_description
+        .split(/(?:\r\n|\r|\n){2,}/g)
+        .map(p => p.trim())
+        .filter(p => p.length > 0);
     }
   },
   async created() {

@@ -204,14 +204,14 @@ class CorruptionCase(models.Model):
         return 1
     
     def get_processed_description(self):
-        """Process description to embed images in text"""
+        """Process description to embed images in text and handle titles/subtitles"""
         import re
         from django.utils.safestring import mark_safe
         
         description = self.full_description
         images = list(self.images.all().order_by('order', 'created_at'))
         
-        # Find all image markers like <imagen1>, <imagen2>, etc.
+        # First, process image markers
         pattern = r'<imagen(\d+)>'
         matches = re.findall(pattern, description)
         
@@ -234,7 +234,29 @@ class CorruptionCase(models.Model):
                 # Remove marker if image doesn't exist
                 description = description.replace(marker, '')
         
-        return mark_safe(description)
+        # Process titles and subtitles
+        # Handle ## subtitles first (to avoid conflicts with # titles)
+        description = re.sub(r'^##(.+?)$', r'<h3 class="text-xl font-bold text-palette-black mt-6 mb-3">\1</h3>', description, flags=re.MULTILINE)
+        # Handle # titles
+        description = re.sub(r'^#(.+?)$', r'<h2 class="text-2xl font-bold text-palette-black mt-8 mb-4">\1</h2>', description, flags=re.MULTILINE)
+        
+        # Convert line breaks to paragraphs
+        # Split by double line breaks first
+        paragraphs = description.split('\n\n')
+        processed_paragraphs = []
+        
+        for paragraph in paragraphs:
+            paragraph = paragraph.strip()
+            if paragraph:
+                # If it's not already HTML (contains tags), wrap in <p>
+                if not re.search(r'<[^>]+>', paragraph):
+                    paragraph = f'<p class="mb-4 leading-relaxed">{paragraph}</p>'
+                processed_paragraphs.append(paragraph)
+        
+        # Join paragraphs with proper spacing
+        final_description = '\n\n'.join(processed_paragraphs)
+        
+        return mark_safe(final_description)
     
     def clean(self):
         """Validate file size"""

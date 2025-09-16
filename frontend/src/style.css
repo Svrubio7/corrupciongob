@@ -38,6 +38,33 @@
   .font-crimson { font-family: 'Crimson Text', serif; }
 }
 
+/* Typography improvements for article content */
+@layer components {
+  .prose h2 {
+    @apply text-2xl font-bold text-palette-black mt-8 mb-4;
+  }
+  
+  .prose h3 {
+    @apply text-xl font-bold text-palette-black mt-6 mb-3;
+  }
+  
+  .prose p {
+    @apply mb-4 leading-relaxed;
+  }
+  
+  .prose .embedded-image {
+    @apply my-6;
+  }
+  
+  .prose .embedded-image img {
+    @apply w-full h-auto rounded-lg shadow-md;
+  }
+  
+  .prose .embedded-image p {
+    @apply text-sm text-gray-600 mt-2 text-center italic mb-0;
+  }
+}
+
 @layer components {
   .btn-primary {
     @apply bg-palette-primary hover:bg-palette-taupe text-palette-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
