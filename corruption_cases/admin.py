@@ -31,7 +31,7 @@ class CorruptionTypeAdmin(admin.ModelAdmin):
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
     list_display = ['name', 'autonomous_community', 'created_at']
-    list_filter = ['autonomous_community', 'region', 'created_at']
+    list_filter = ['autonomous_community', 'created_at']
     search_fields = ['name', 'autonomous_community']
 
 @admin.register(Tag)
@@ -48,13 +48,13 @@ class CaseImageInline(admin.TabularInline):
 class CorruptionCaseAdmin(admin.ModelAdmin):
     list_display = [
         'title', 'date', 'amount_display', 'political_party', 
-        'institution', 'is_featured', 'created_at'
+        'institution', 'publication_type', 'author_name', 'is_featured', 'created_at'
     ]
     list_filter = [
         'date', 'political_party', 'institution', 'corruption_type', 
-        'region', 'is_featured', 'created_at'
+        'region', 'publication_type', 'is_annual_amount', 'is_featured', 'created_at'
     ]
-    search_fields = ['title', 'short_description', 'full_description']
+    search_fields = ['title', 'short_description', 'full_description', 'author_name']
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ['created_at', 'updated_at']
     inlines = [CaseImageInline]
@@ -62,8 +62,15 @@ class CorruptionCaseAdmin(admin.ModelAdmin):
         ('Basic Information', {
             'fields': ('title', 'slug', 'short_description', 'full_description')
         }),
+        ('Publication Details', {
+            'fields': ('publication_type', 'author_name')
+        }),
         ('Key Details', {
             'fields': ('date', 'amount', 'main_image')
+        }),
+        ('Annual Amount Details', {
+            'fields': ('is_annual_amount', 'start_date'),
+            'description': 'Check if this is an annual payment and set the start date'
         }),
         ('Categorization', {
             'fields': ('political_party', 'institution', 'corruption_type', 'region', 'tags')
