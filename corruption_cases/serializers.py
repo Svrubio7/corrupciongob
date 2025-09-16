@@ -44,13 +44,18 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
     region = RegionSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
+    total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
+    years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
+    publication_type_display = serializers.CharField(source='get_publication_type_display', read_only=True)
     
     class Meta:
         model = CorruptionCase
         fields = [
             'id', 'title', 'slug', 'short_description', 'date', 'amount', 
-            'amount_display', 'main_image', 'political_party', 'institution', 
-            'corruption_type', 'region', 'tags', 'is_featured', 'created_at'
+            'amount_display', 'total_amount', 'years_duration', 'main_image', 
+            'political_party', 'institution', 'corruption_type', 'region', 'tags', 
+            'publication_type', 'publication_type_display', 'author_name', 
+            'is_annual_amount', 'start_date', 'is_featured', 'created_at'
         ]
 
 class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
@@ -62,12 +67,18 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     images = CaseImageSerializer(many=True, read_only=True)
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
+    total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
+    years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
+    publication_type_display = serializers.CharField(source='get_publication_type_display', read_only=True)
+    processed_description = serializers.CharField(source='get_processed_description', read_only=True)
     
     class Meta:
         model = CorruptionCase
         fields = [
-            'id', 'title', 'slug', 'short_description', 'full_description', 
-            'date', 'amount', 'amount_display', 'main_image', 'political_party', 
-            'institution', 'corruption_type', 'region', 'tags', 'images', 
-            'sources', 'is_featured', 'created_at', 'updated_at'
+            'id', 'title', 'slug', 'short_description', 'full_description', 'processed_description',
+            'date', 'amount', 'amount_display', 'total_amount', 'years_duration', 
+            'main_image', 'political_party', 'institution', 'corruption_type', 
+            'region', 'tags', 'images', 'publication_type', 'publication_type_display', 
+            'author_name', 'is_annual_amount', 'start_date', 'sources', 'is_featured', 
+            'created_at', 'updated_at'
         ] 

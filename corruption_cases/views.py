@@ -114,7 +114,10 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     def statistics(self, request):
         """Get corruption statistics"""
         total_cases = self.queryset.count()
-        total_amount = self.queryset.aggregate(total=Sum('amount'))['total'] or 0
+        # Calculate total amount considering annual payments
+        total_amount = 0
+        for case in self.queryset:
+            total_amount += case.get_total_amount()
         featured_count = self.queryset.filter(is_featured=True).count()
         
         # Cases by political party
@@ -182,15 +185,15 @@ def case_detail_view(request, slug):
             image_url = request.build_absolute_uri(case.main_image.url)
         else:
             # Fallback to logo
-            image_url = request.build_absolute_uri('/static/auditandoimpuestologo.png')
+            image_url = request.build_absolute_uri('/static/logodegu.png')
         
         meta_data = {
-            'title': f"{case.title} - Auditando Impuestos",
+            'title': f"{case.title} - D.E.GU",
             'description': case.short_description or 'Caso de corrupción y auditoría del dinero público',
             'image': image_url,
-            'url': f"https://auditandoimpuestos.es/app/case/{case.slug}",
+            'url': f"https://degugobierno.es/app/case/{case.slug}",
             'type': 'article',
-            'site_name': 'Auditando Impuestos',
+            'site_name': 'D.E.GU',
             'case': case
         }
         
@@ -203,7 +206,7 @@ def case_detail_view(request, slug):
         meta_data = {
             'title': 'Caso no encontrado - Auditando Impuestos',
             'description': 'El caso solicitado no fue encontrado',
-            'image': request.build_absolute_uri('/static/auditandoimpuestologo.png'),
+            'image': request.build_absolute_uri('/static/logodegu.png'),
             'url': request.build_absolute_uri(),
             'type': 'website',
             'site_name': 'Auditando Impuestos'
@@ -215,7 +218,7 @@ def case_detail_view(request, slug):
         meta_data = {
             'title': 'Error - Auditando Impuestos',
             'description': 'Ha ocurrido un error al cargar el caso',
-            'image': request.build_absolute_uri('/static/auditandoimpuestologo.png'),
+            'image': request.build_absolute_uri('/static/logodegu.png'),
             'url': request.build_absolute_uri(),
             'type': 'website',
             'site_name': 'Auditando Impuestos'

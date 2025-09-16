@@ -118,6 +118,40 @@ class CorruptionCase(models.Model):
     )
     tags = models.ManyToManyField(Tag, blank=True)
     
+    # Publication type
+    publication_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('article', 'Artículo'),
+            ('case', 'Caso'),
+            ('opinion', 'Artículo de Opinión'),
+            ('report', 'Informe'),
+            ('investigation', 'Investigación'),
+            ('news', 'Noticia'),
+            ('other', 'Otro'),
+        ],
+        default='article',
+        help_text="Tipo de publicación"
+    )
+    
+    # Author name
+    author_name = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Nombre del autor del artículo"
+    )
+    
+    # Annual amount fields
+    is_annual_amount = models.BooleanField(
+        default=False,
+        help_text="¿Es esta cantidad un gasto anual?"
+    )
+    start_date = models.DateField(
+        null=True,
+        blank=True,
+        help_text="Fecha de comienzo del gasto (para calcular años de duración)"
+    )
+    
     # Metadata
     sources = models.TextField(help_text="Links to sources, separated by new lines")
     is_featured = models.BooleanField(default=False)
@@ -144,6 +178,63 @@ class CorruptionCase(models.Model):
     def get_amount_display(self):
         """Format amount as currency"""
         return f"€{self.amount:,.2f}"
+    
+    def get_total_amount(self):
+        """Calculate total amount considering annual payments"""
+        if self.is_annual_amount and self.start_date:
+            from datetime import date
+            today = date.today()
+            years = today.year - self.start_date.year
+            # Add 1 year if we're past the anniversary date
+            if today.month > self.start_date.month or (today.month == self.start_date.month and today.day >= self.start_date.day):
+                years += 1
+            return self.amount * max(1, years)  # At least 1 year
+        return self.amount
+    
+    def get_years_duration(self):
+        """Get number of years this payment has been ongoing"""
+        if self.is_annual_amount and self.start_date:
+            from datetime import date
+            today = date.today()
+            years = today.year - self.start_date.year
+            # Add 1 year if we're past the anniversary date
+            if today.month > self.start_date.month or (today.month == self.start_date.month and today.day >= self.start_date.day):
+                years += 1
+            return max(1, years)
+        return 1
+    
+    def get_processed_description(self):
+        """Process description to embed images in text"""
+        import re
+        from django.utils.safestring import mark_safe
+        
+        description = self.full_description
+        images = list(self.images.all().order_by('order', 'created_at'))
+        
+        # Find all image markers like <imagen1>, <imagen2>, etc.
+        pattern = r'<imagen(\d+)>'
+        matches = re.findall(pattern, description)
+        
+        for match in matches:
+            image_index = int(match) - 1  # Convert to 0-based index
+            marker = f'<imagen{match}>'
+            
+            if 0 <= image_index < len(images):
+                image = images[image_index]
+                # Create HTML for the embedded image
+                image_html = f'''
+                <div class="embedded-image my-6">
+                    <img src="{image.image.url}" alt="{image.caption or 'Imagen'}" 
+                         class="w-full h-auto rounded-lg shadow-md">
+                    {f'<p class="text-sm text-gray-600 mt-2 text-center italic">{image.caption}</p>' if image.caption else ''}
+                </div>
+                '''
+                description = description.replace(marker, image_html)
+            else:
+                # Remove marker if image doesn't exist
+                description = description.replace(marker, '')
+        
+        return mark_safe(description)
     
     def clean(self):
         """Validate file size"""

@@ -1,4 +1,10 @@
+/* Import multiple font options */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +12,15 @@
 
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    /* Current font - Montserrat */
+    font-family: 'Montserrat', system-ui, sans-serif;
+    
+    /* Uncomment one of these to test different fonts: */
+    /* font-family: 'Inter', system-ui, sans-serif; */
+    /* font-family: 'Poppins', system-ui, sans-serif; */
+    /* font-family: 'Source Sans Pro', system-ui, sans-serif; */
+    /* font-family: 'Lora', serif; */
+    /* font-family: 'Crimson Text', serif; */
   }
   
   body {
@@ -14,21 +28,39 @@
   }
 }
 
+/* Font testing classes */
+@layer utilities {
+  .font-inter { font-family: 'Inter', system-ui, sans-serif; }
+  .font-poppins { font-family: 'Poppins', system-ui, sans-serif; }
+  .font-montserrat { font-family: 'Montserrat', system-ui, sans-serif; }
+  .font-source-sans { font-family: 'Source Sans Pro', system-ui, sans-serif; }
+  .font-lora { font-family: 'Lora', serif; }
+  .font-crimson { font-family: 'Crimson Text', serif; }
+}
+
 @layer components {
   .btn-primary {
-    @apply bg-palette-black hover:bg-palette-taupe text-palette-light font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-palette-primary hover:bg-palette-taupe text-palette-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
   
   .btn-secondary {
-    @apply bg-palette-beige hover:bg-palette-taupe text-palette-black font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-palette-secondary hover:bg-palette-taupe text-palette-black font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-accent {
+    @apply bg-palette-accent hover:bg-palette-beige text-palette-black font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
   
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
+    @apply bg-palette-white rounded-xl shadow-sm border border-palette-accent p-6;
   }
   
   .case-card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200;
+    @apply bg-palette-white rounded-xl shadow-sm border border-palette-accent overflow-hidden hover:shadow-md hover:border-palette-primary transition-all duration-200;
+  }
+  
+  .navbar-accent {
+    @apply text-palette-primary hover:text-palette-secondary;
   }
 }
 

@@ -146,8 +146,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://www.auditandoimpuestos.es",
-    "https://auditandoimpuestos.es",
+    "https://www.degugobierno.es",
+    "https://degugobierno.es",
 ]
 # REST Framework settings
 REST_FRAMEWORK = {

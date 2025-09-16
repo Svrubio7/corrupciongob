@@ -6,6 +6,10 @@
       alt="Imagen principal"
       class="w-full h-64 object-cover rounded mb-6"
     />
+    <!-- Author name below main image -->
+    <div v-if="caseData.author_name" class="mb-4">
+      <p class="font-bold text-lg text-palette-black">{{ caseData.author_name }}</p>
+    </div>
     <h1 class="text-3xl font-bold mb-2 text-palette-black">{{ caseData.title }}</h1>
     <div class="text-gray-500 mb-2">
       <span class="font-semibold">Fecha:</span> {{ caseData.date }} |
@@ -25,10 +29,15 @@
         &nbsp;| <span class="font-semibold">Región:</span> {{ caseData.region.name }}
       </span>
       <div class="mb-6 text-lg text-palette-black">
-        <p v-for="(p, i) in fullDescriptionParagraphs" :key="i" class="mb-4" v-text="p"></p>
+        <!-- Use processed description with embedded images if available, otherwise use regular paragraphs -->
+        <div v-if="caseData.processed_description" v-html="caseData.processed_description"></div>
+        <div v-else>
+          <p v-for="(p, i) in fullDescriptionParagraphs" :key="i" class="mb-4" v-text="p"></p>
+        </div>
       </div>
     </div>
-    <div v-if="caseData.images && caseData.images.length" class="mb-6">
+    <!-- Only show additional images section if not using embedded images -->
+    <div v-if="caseData.images && caseData.images.length && !caseData.processed_description" class="mb-6">
       <h2 class="text-xl font-semibold mb-2">Imágenes adicionales</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div v-for="img in caseData.images" :key="img.id">
