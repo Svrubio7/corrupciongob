@@ -146,8 +146,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://www.degugobierno.es",
-    "https://degugobierno.es",
+    "https://www.degu.es",
+    "https://degu.es",
 ]
 # REST Framework settings
 REST_FRAMEWORK = {
