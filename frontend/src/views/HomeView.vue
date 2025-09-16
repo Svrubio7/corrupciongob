@@ -8,7 +8,10 @@
       <div class="container mx-auto px-4 flex-1 flex flex-col justify-center">
         <div class="text-center">
           <h1 class="text-3xl md:text-5xl font-bold mb-6 md:mb-8">
-            Departamento de Eficiencia Gubernamental
+            Departamento de Eficiencia
+          </h1>
+          <h1 class="text-3xl md:text-5xl font-bold mb-6 md:mb-12">
+            Gubernamental
           </h1>
           <p class="text-base md:text-xl mb-6 md:mb-6 max-w-3xl mx-auto">
             Análisis, investigación y publicación de todo lo relacionado con la gestión y gasto público del Gobierno de España.
@@ -20,7 +23,7 @@
           </div>
         </div>
         <!-- Statistics Section Overlay -->
-        <div class="mt-20 flex justify-center">
+        <div class="mt-14 flex justify-center">
           <div class="w-full max-w-6xl bg-white/80 rounded-xl shadow-lg p-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div class="flex flex-col items-center text-center">
@@ -117,7 +120,7 @@ export default {
   computed: {
     backgroundStyle() {
       return {
-        backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.40)), url(${landingBg})`
+        backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${landingBg})`
       }
     },
   },
