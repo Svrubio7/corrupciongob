@@ -1,6 +1,32 @@
 <script>
 export default {
-  name: "App"
+  name: "App",
+  data() {
+    return {
+      showMobileMenu: false
+    }
+  },
+  methods: {
+    toggleMobileMenu() {
+      this.showMobileMenu = !this.showMobileMenu
+    }
+  },
+  mounted() {
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (event) => {
+      const mobileMenu = this.$refs.mobileMenu
+      const hamburgerButton = event.target.closest('[aria-label="Toggle menu"]')
+      
+      if (mobileMenu && !mobileMenu.contains(event.target) && !hamburgerButton) {
+        this.showMobileMenu = false
+      }
+    })
+    
+    // Close mobile menu when route changes
+    this.$router.afterEach(() => {
+      this.showMobileMenu = false
+    })
+  }
 }
 </script>
 
@@ -20,7 +46,7 @@ export default {
                 class="h-8 w-auto mr-3"
               />
               <span class="text-2xl font-bold">
-                <span class="text-palette-primary">DE</span><span class="text-palette-secondary">G</span><span class="text-palette-primary">U</span>
+                <span class="text-palette-primary">D.E.</span><span class="text-palette-secondary">G</span><span class="text-palette-primary">U</span>
               </span>
             </router-link>
           </div>
@@ -35,10 +61,50 @@ export default {
             />
           </router-link>
         </div>
-        <!-- Desktop: Right menu -->
-        <div class="flex-1 flex justify-end space-x-6 hidden md:flex">
-          <router-link to="/" class="navbar-accent font-medium">Inicio</router-link>
-          <router-link to="/app" class="navbar-accent font-medium">Casos</router-link>
+        <!-- Hamburger menu for all screens -->
+        <div class="relative">
+          <button 
+            @click="toggleMobileMenu" 
+            class="p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            aria-label="Toggle menu"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path v-if="!showMobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div v-if="showMobileMenu" ref="mobileMenu" class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+            <router-link 
+              to="/" 
+              @click="showMobileMenu = false"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Inicio
+            </router-link>
+            <router-link 
+              to="/app" 
+              @click="showMobileMenu = false"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Casos
+            </router-link>
+            <router-link 
+              to="/publicaciones" 
+              @click="showMobileMenu = false"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Publicaciones
+            </router-link>
+            <router-link 
+              to="/about" 
+              @click="showMobileMenu = false"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Quiénes somos
+            </router-link>
+          </div>
         </div>
       </div>
     </nav>
@@ -47,7 +113,7 @@ export default {
       <router-view />
     </main>
     <!-- Footer -->
-    <footer class="bg-palette-accent/50 text-palette-black py-6 mt-12 border-t border-palette-primary">
+    <footer v-if="$route.path !== '/about'" class="bg-palette-accent/50 text-palette-black py-6 mt-12 border-t border-palette-primary">
       <div class="container mx-auto px-4 text-center text-sm">
         © {{ new Date().getFullYear() }} <span class="text-palette-primary">DE</span><span class="text-palette-secondary">G</span><span class="text-palette-primary">U</span>  Hecho con transparencia.
       </div>

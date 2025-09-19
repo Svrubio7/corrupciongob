@@ -128,6 +128,7 @@ class CorruptionCase(models.Model):
             ('report', 'Informe'),
             ('investigation', 'Investigación'),
             ('news', 'Noticia'),
+            ('video', 'Vídeo'),
             ('other', 'Otro'),
         ],
         default='article',
@@ -139,6 +140,13 @@ class CorruptionCase(models.Model):
         max_length=200,
         blank=True,
         help_text="Nombre del autor del artículo"
+    )
+    
+    # Video URL (for video publications)
+    video_url = models.URLField(
+        blank=True,
+        null=True,
+        help_text="URL del video (solo para publicaciones tipo 'video')"
     )
     
     # Annual amount fields
@@ -250,11 +258,13 @@ class CorruptionCase(models.Model):
             if paragraph:
                 # If it's not already HTML (contains tags), wrap in <p>
                 if not re.search(r'<[^>]+>', paragraph):
+                    # Replace single line breaks within paragraphs with <br> tags
+                    paragraph = paragraph.replace('\n', '<br>')
                     paragraph = f'<p class="mb-4 leading-relaxed">{paragraph}</p>'
                 processed_paragraphs.append(paragraph)
         
-        # Join paragraphs with proper spacing
-        final_description = '\n\n'.join(processed_paragraphs)
+        # Join paragraphs with proper HTML spacing (no extra newlines)
+        final_description = ''.join(processed_paragraphs)
         
         return mark_safe(final_description)
     

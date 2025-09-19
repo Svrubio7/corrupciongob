@@ -97,8 +97,8 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['get'])
     def featured(self, request):
-        """Get featured corruption cases"""
-        featured_cases = self.queryset.filter(is_featured=True)
+        """Get featured corruption cases (only cases, not other publications)"""
+        featured_cases = self.queryset.filter(is_featured=True, publication_type='case')
         serializer = self.get_serializer(featured_cases, many=True)
         return Response(serializer.data)
 
@@ -112,22 +112,23 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['get'])
     def statistics(self, request):
-        """Get corruption statistics"""
-        total_cases = self.queryset.count()
+        """Get corruption statistics (only for cases, not other publications)"""
+        cases_only = self.queryset.filter(publication_type='case')
+        total_cases = cases_only.count()
         # Calculate total amount considering annual payments
         total_amount = 0
-        for case in self.queryset:
+        for case in cases_only:
             total_amount += case.get_total_amount()
-        featured_count = self.queryset.filter(is_featured=True).count()
+        featured_count = cases_only.filter(is_featured=True).count()
         
         # Cases by political party
-        party_stats = self.queryset.values('political_party__name').annotate(
+        party_stats = cases_only.values('political_party__name').annotate(
             count=Count('id'),
             total_amount=Sum('amount')
         ).order_by('-count')
         
         # Cases by institution type
-        institution_stats = self.queryset.values('institution__institution_type').annotate(
+        institution_stats = cases_only.values('institution__institution_type').annotate(
             count=Count('id'),
             total_amount=Sum('amount')
         ).order_by('-count')
@@ -159,6 +160,13 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         
         search_results = self.queryset.filter(search_query).distinct()
         serializer = self.get_serializer(search_results, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def publications(self, request):
+        """Get all publications (exclude cases)"""
+        publications = self.queryset.exclude(publication_type='case')
+        serializer = self.get_serializer(publications, many=True)
         return Response(serializer.data)
 
 class CaseImageViewSet(viewsets.ReadOnlyModelViewSet):

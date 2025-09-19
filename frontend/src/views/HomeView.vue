@@ -2,22 +2,21 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Hero Section -->
     <section
-        class="bg-gradient-to-r from-primary-600 to-primary-800 text-white min-h-[95vh] flex flex-col justify-center bg-cover bg-center pt-16 pb-12 md:pt-0 md:pb-0"
+        class="bg-gradient-to-r from-primary-600 to-primary-800 text-white min-h-[95vh] flex flex-col justify-center bg-cover bg-center pt-16 pb-12 md:pt-0 md:pb-0 relative overflow-hidden"
         :style="backgroundStyle"
       >
-      <div class="container mx-auto px-4 flex-1 flex flex-col justify-center">
+      <!-- Blurred overlay -->
+      <div class="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
+      <div class="container mx-auto px-4 flex-1 flex flex-col justify-center relative z-10">
         <div class="text-center">
           <h1 class="text-3xl md:text-5xl font-bold mb-6 md:mb-8">
-            Departamento de Eficiencia
-          </h1>
-          <h1 class="text-3xl md:text-5xl font-bold mb-6 md:mb-12">
-            Gubernamental
+            Departamento de Eficiencia Gubernamental
           </h1>
           <p class="text-base md:text-xl mb-6 md:mb-6 max-w-3xl mx-auto">
             Análisis, investigación y publicación de todo lo relacionado con la gestión y gasto público del Gobierno de España.
           </p>
           <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-6">
-            <router-link to="/app" class="btn-secondary">
+            <router-link to="/app" class="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 px-8 py-3 rounded-lg font-semibold transition-all duration-300">
               Explorar Casos
             </router-link>
           </div>
@@ -102,7 +101,7 @@
 </template>
 
 <script>
-import landingBg from '../assets/backgroundcorruption.png' // Adjust path if needed
+import landingBg from '../assets/diputados.jpg' // Adjust path if needed
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default {
   name: 'HomeView',
@@ -120,7 +119,7 @@ export default {
   computed: {
     backgroundStyle() {
       return {
-        backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${landingBg})`
+        backgroundImage: `linear-gradient(to right, rgba(128, 128, 128, 0.5), rgba(128, 128, 128, 0.5)), url(${landingBg})`
       }
     },
   },

@@ -68,7 +68,7 @@
             </button>
             
             <!-- Filter Dropdown Menu -->
-            <div v-if="showFilterMenu" class="filter-menu absolute top-full left-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+            <div v-if="showFilterMenu" class="filter-menu absolute top-full left-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 md:block">
               <div class="p-4 space-y-4">
                 <!-- Institution Filter -->
                 <div>
@@ -166,6 +166,75 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L6 6M6 6l12 12"></path>
               </svg>
             </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mobile Filter Overlay -->
+      <div v-if="showFilterMenu" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" @click="showFilterMenu = false">
+        <div class="absolute right-0 top-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ease-in-out" @click.stop>
+          <div class="p-6 space-y-6">
+            <!-- Header -->
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-gray-900">Filtros</h3>
+              <button @click="showFilterMenu = false" class="p-2 hover:bg-gray-100 rounded-full">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            
+            <!-- Institution Filter -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Institución</label>
+              <input 
+                v-model="institutionSearch" 
+                type="text" 
+                placeholder="Buscar institución..." 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 mb-2"
+              />
+              <select 
+                v-model="selectedInstitution" 
+                @change="applyFilters"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">Todas las instituciones</option>
+                <option v-for="institution in filteredInstitutions" :key="institution.id" :value="institution.id">
+                  {{ institution.name }}
+                </option>
+              </select>
+            </div>
+            
+            <!-- Region Filter -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Región</label>
+              <input 
+                v-model="regionSearch" 
+                type="text" 
+                placeholder="Buscar región..." 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 mb-2"
+              />
+              <select 
+                v-model="selectedRegion" 
+                @change="applyFilters"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">Todas las regiones</option>
+                <option v-for="region in filteredRegions" :key="region.id" :value="region.id">
+                  {{ region.name }}
+                </option>
+              </select>
+            </div>
+            
+            <!-- Clear All Filters Button -->
+            <div class="pt-4 border-t border-gray-200">
+              <button 
+                @click="clearAllFilters"
+                class="w-full px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                Limpiar todos los filtros
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -413,10 +482,7 @@ export default {
 /* Filter menu positioning for mobile */
 @media (max-width: 768px) {
   .filter-menu {
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100vw - 2rem);
-    max-width: 320px;
+    display: none !important;
   }
 }
 

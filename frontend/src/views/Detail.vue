@@ -28,12 +28,13 @@
       <span v-if="caseData.region">
         &nbsp;| <span class="font-semibold">Región:</span> {{ caseData.region.name }}
       </span>
-      <div class="mb-6 text-lg text-palette-black prose prose-lg max-w-none">
-        <!-- Use processed description with embedded images if available, otherwise use regular paragraphs -->
-        <div v-if="caseData.processed_description" v-html="caseData.processed_description"></div>
-        <div v-else>
-          <p v-for="(p, i) in fullDescriptionParagraphs" :key="i" class="mb-4 leading-relaxed" v-text="p"></p>
-        </div>
+    </div>
+    
+    <div class="mb-6 text-lg text-palette-black prose prose-lg max-w-none">
+      <!-- Use processed description with embedded images if available, otherwise use regular paragraphs -->
+      <div v-if="caseData.processed_description" v-html="caseData.processed_description" class="article-content"></div>
+      <div v-else>
+        <p v-for="(p, i) in fullDescriptionParagraphs" :key="i" class="mb-4 leading-relaxed">{{ p }}</p>
       </div>
     </div>
     <!-- Only show additional images section if not using embedded images -->
@@ -93,6 +94,14 @@ export default {
       this.sourcesList = res.data.sources
         ? res.data.sources.split('\n').filter(Boolean)
         : []
+      
+      // If it's a video publication, redirect to the video URL
+      if (this.caseData && this.caseData.publication_type === 'video' && this.caseData.video_url) {
+        window.open(this.caseData.video_url, '_blank')
+        // Redirect back to publicaciones page
+        this.$router.push({ name: 'publicaciones' })
+        return
+      }
     } catch (e) {
       this.caseData = null
     }
