@@ -46,7 +46,24 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
     total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
     years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
-    publication_type_display = serializers.CharField(source='get_publication_type_display', read_only=True)
+    publication_type_display = serializers.SerializerMethodField(read_only=True)
+    
+    def get_publication_type_display(self, obj):
+        """Get the display value for publication_type field"""
+        if hasattr(obj, 'get_publication_type_display'):
+            return obj.get_publication_type_display()
+        # Fallback for cases where the method doesn't exist yet
+        publication_type_choices = {
+            'article': 'Artículo',
+            'case': 'Caso',
+            'opinion': 'Artículo de Opinión',
+            'report': 'Informe',
+            'investigation': 'Investigación',
+            'news': 'Noticia',
+            'video': 'Vídeo',
+            'other': 'Otro',
+        }
+        return publication_type_choices.get(obj.publication_type, obj.publication_type or 'Artículo')
     
     class Meta:
         model = CorruptionCase
@@ -69,8 +86,25 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
     total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
     years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
-    publication_type_display = serializers.CharField(source='get_publication_type_display', read_only=True)
+    publication_type_display = serializers.SerializerMethodField(read_only=True)
     processed_description = serializers.CharField(source='get_processed_description', read_only=True)
+    
+    def get_publication_type_display(self, obj):
+        """Get the display value for publication_type field"""
+        if hasattr(obj, 'get_publication_type_display'):
+            return obj.get_publication_type_display()
+        # Fallback for cases where the method doesn't exist yet
+        publication_type_choices = {
+            'article': 'Artículo',
+            'case': 'Caso',
+            'opinion': 'Artículo de Opinión',
+            'report': 'Informe',
+            'investigation': 'Investigación',
+            'news': 'Noticia',
+            'video': 'Vídeo',
+            'other': 'Otro',
+        }
+        return publication_type_choices.get(obj.publication_type, obj.publication_type or 'Artículo')
     
     class Meta:
         model = CorruptionCase

@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q, Sum, Count
 from django.utils import timezone
@@ -72,8 +73,8 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     ).prefetch_related('tags', 'images')
     lookup_field = 'slug'
     
-    # Disable pagination for this viewset
-    pagination_class = None
+    # Enable pagination for this viewset
+    pagination_class = PageNumberPagination
     
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
