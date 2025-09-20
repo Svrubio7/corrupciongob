@@ -8,7 +8,7 @@
             <!-- Logo Section (Left) -->
             <div class="flex justify-center lg:justify-start">
               <img
-                src="/paglogo.png"
+                :src="hormigaamigableImg"
                 alt="D.E.GU Logo"
                 class="h-64 w-auto md:h-80 lg:h-96"
               />
@@ -252,6 +252,7 @@ import pabloImage from '../assets/pablo.png'
 import sergioImage from '../assets/sergio.png'
 import xIcon from '../assets/Xicon.webp'
 import youtubeIcon from '../assets/youtubewhiteicon.png'
+import hormigaamigableImg from '../assets/hormigaamigable.png'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -269,7 +270,8 @@ export default {
       pabloImage,
       sergioImage,
       xIcon,
-      youtubeIcon
+      youtubeIcon,
+      hormigaamigableImg
     }
   },
   async mounted() {
