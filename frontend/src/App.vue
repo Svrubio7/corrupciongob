@@ -33,7 +33,7 @@ export default {
 <template>
   <div class="min-h-screen flex flex-col bg-palette-light text-palette-black">
     <!-- Navbar -->
-    <nav class="bg-white/50 shadow-sm border-b border-gray-200 fixed w-full z-30 h-12 md:h-16 backdrop-blur">
+    <nav class="bg-white/50 shadow-sm border-b border-gray-200 fixed w-full z-30 h-16 md:h-20 backdrop-blur">
       <div class="container mx-auto px-4 py-0 flex justify-between items-center h-full">
         <!-- Desktop: Logo + text, right menu; Mobile: Centered logo only -->
         <div class="flex-1 flex items-center">
@@ -43,7 +43,7 @@ export default {
               <img
                 src="/paglogo.png"
                 alt="D.E.GU Logo"
-                class="h-8 w-auto mr-3"
+                class="h-16 w-auto mr-3"
               />
               <span class="text-2xl font-bold">
                 <span class="text-palette-primary">D.E.</span><span class="text-palette-secondary">G</span><span class="text-palette-primary">U</span>
@@ -57,7 +57,7 @@ export default {
             <img
               src="/paglogo.png"
               alt="D.E.GU Logo"
-              class="h-10 w-auto max-h-12 cursor-pointer"
+              class="h-18 w-auto max-h-16 cursor-pointer"
             />
           </router-link>
         </div>
@@ -109,7 +109,7 @@ export default {
       </div>
     </nav>
     <!-- Main Content -->
-    <main class="flex-1 pt-12 md:pt-16">
+    <main class="flex-1 pt-16 md:pt-20">
       <router-view />
     </main>
     <!-- Footer -->
