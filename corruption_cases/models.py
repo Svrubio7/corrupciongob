@@ -72,22 +72,21 @@ class Tag(models.Model):
         return self.name
 
 class CorruptionCase(models.Model):
-    titulo = models.CharField(max_length=200, verbose_name="Título", default="Sin título")
+    title = models.CharField(max_length=200, verbose_name="Título")
     slug = models.SlugField(max_length=200, unique=True, blank=True, verbose_name="Slug")
-    descripcion_corta = models.TextField(max_length=500, verbose_name="Descripción corta", default="Sin descripción")
-    descripcion_completa = models.TextField(verbose_name="Descripción completa", default="Sin descripción completa")
+    short_description = models.TextField(max_length=500, verbose_name="Descripción corta")
+    full_description = models.TextField(verbose_name="Descripción completa")
     
     # Key details
-    fecha = models.DateField(verbose_name="Fecha", default='2024-01-01')
-    importe = models.DecimalField(
+    date = models.DateField(verbose_name="Fecha")
+    amount = models.DecimalField(
         max_digits=20, 
         decimal_places=2, 
         validators=[MinValueValidator(0)],
         help_text="Importe en euros",
-        verbose_name="Importe",
-        default=0.00
+        verbose_name="Importe"
     )
-    imagen_principal = models.ImageField(
+    main_image = models.ImageField(
         upload_to='cases/', 
         blank=True, 
         null=True,
@@ -96,21 +95,21 @@ class CorruptionCase(models.Model):
     )
     
     # Relationships
-    partido_politico = models.ForeignKey(
+    political_party = models.ForeignKey(
         PoliticalParty, 
         on_delete=models.SET_NULL, 
         null=True, 
         blank=True,
         verbose_name="Partido político"
     )
-    institucion = models.ForeignKey(
+    institution = models.ForeignKey(
         Institution, 
         on_delete=models.SET_NULL, 
         null=True, 
         blank=True,
         verbose_name="Institución"
     )
-    tipo_corrupcion = models.ForeignKey(
+    corruption_type = models.ForeignKey(
         CorruptionType, 
         on_delete=models.SET_NULL, 
         null=True, 
@@ -124,10 +123,10 @@ class CorruptionCase(models.Model):
         blank=True,
         verbose_name="Región"
     )
-    etiquetas = models.ManyToManyField(Tag, blank=True, verbose_name="Etiquetas")
+    tags = models.ManyToManyField(Tag, blank=True, verbose_name="Etiquetas")
     
     # Publication type
-    tipo_publicacion = models.CharField(
+    publication_type = models.CharField(
         max_length=50,
         choices=[
             ('article', 'Artículo'),
@@ -145,7 +144,7 @@ class CorruptionCase(models.Model):
     )
     
     # Author name
-    nombre_autor = models.CharField(
+    author_name = models.CharField(
         max_length=200,
         blank=True,
         help_text="Nombre del autor del artículo",
@@ -153,7 +152,7 @@ class CorruptionCase(models.Model):
     )
     
     # External URL (for any publication type that should redirect to external link)
-    url_externa = models.URLField(
+    external_url = models.URLField(
         blank=True,
         null=True,
         help_text="URL externa para redirigir (para videos, artículos, noticias, etc.)",
@@ -161,12 +160,12 @@ class CorruptionCase(models.Model):
     )
     
     # Annual amount fields
-    es_importe_anual = models.BooleanField(
+    is_annual_amount = models.BooleanField(
         default=False,
         help_text="¿Es esta cantidad un gasto anual?",
         verbose_name="Es importe anual"
     )
-    fecha_inicio = models.DateField(
+    start_date = models.DateField(
         null=True,
         blank=True,
         help_text="Fecha de comienzo del gasto (para calcular años de duración)",
@@ -174,22 +173,22 @@ class CorruptionCase(models.Model):
     )
     
     # Metadata
-    fuentes = models.TextField(help_text="Enlaces a fuentes, separados por líneas nuevas", verbose_name="Fuentes", default="Sin fuentes")
-    es_destacado = models.BooleanField(default=False, verbose_name="Es destacado")
-    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    fecha_actualizacion = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualización")
+    sources = models.TextField(help_text="Enlaces a fuentes, separados por líneas nuevas", verbose_name="Fuentes")
+    is_featured = models.BooleanField(default=False, verbose_name="Es destacado")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualización")
     
     class Meta:
-        ordering = ['-importe', '-fecha', '-fecha_creacion']  # Order by amount by default
+        ordering = ['-amount', '-date', '-created_at']  # Order by amount by default
         verbose_name = "Publicación"
         verbose_name_plural = "Publicaciones"
     
     def __str__(self):
-        return self.titulo
+        return self.title
     
     def save(self, *args, **kwargs):
-        if not self.slug or self.slug != slugify(self.titulo):
-            self.slug = slugify(self.titulo)
+        if not self.slug or self.slug != slugify(self.title):
+            self.slug = slugify(self.title)
             # Ensure uniqueness
             original_slug = self.slug
             for x in range(1, 1000):
@@ -200,28 +199,28 @@ class CorruptionCase(models.Model):
     
     def get_amount_display(self):
         """Format amount as currency"""
-        return f"€{self.importe:,.2f}"
+        return f"€{self.amount:,.2f}"
     
     def get_total_amount(self):
         """Calculate total amount considering annual payments"""
-        if self.es_importe_anual and self.fecha_inicio:
+        if self.is_annual_amount and self.start_date:
             from datetime import date
             today = date.today()
-            years = today.year - self.fecha_inicio.year
+            years = today.year - self.start_date.year
             # Add 1 year if we're past the anniversary date
-            if today.month > self.fecha_inicio.month or (today.month == self.fecha_inicio.month and today.day >= self.fecha_inicio.day):
+            if today.month > self.start_date.month or (today.month == self.start_date.month and today.day >= self.start_date.day):
                 years += 1
-            return self.importe * max(1, years)  # At least 1 year
-        return self.importe
+            return self.amount * max(1, years)  # At least 1 year
+        return self.amount
     
     def get_years_duration(self):
         """Get number of years this payment has been ongoing"""
-        if self.es_importe_anual and self.fecha_inicio:
+        if self.is_annual_amount and self.start_date:
             from datetime import date
             today = date.today()
-            years = today.year - self.fecha_inicio.year
+            years = today.year - self.start_date.year
             # Add 1 year if we're past the anniversary date
-            if today.month > self.fecha_inicio.month or (today.month == self.fecha_inicio.month and today.day >= self.fecha_inicio.day):
+            if today.month > self.start_date.month or (today.month == self.start_date.month and today.day >= self.start_date.day):
                 years += 1
             return max(1, years)
         return 1
@@ -231,8 +230,8 @@ class CorruptionCase(models.Model):
         import re
         from django.utils.safestring import mark_safe
         
-        description = self.descripcion_completa
-        images = list(self.imagenes.all().order_by('orden', 'fecha_creacion'))
+        description = self.full_description
+        images = list(self.case_images.all().order_by('order', 'created_at'))
         
         # First, process image markers
         pattern = r'<imagen(\d+)>'
@@ -247,9 +246,9 @@ class CorruptionCase(models.Model):
                 # Create HTML for the embedded image
                 image_html = f'''
                 <div class="embedded-image my-6">
-                    <img src="{image.imagen.url}" alt="{image.titulo or 'Imagen'}" 
+                    <img src="{image.image.url}" alt="{image.caption or 'Imagen'}" 
                          class="w-full h-auto rounded-lg shadow-md">
-                    {f'<p class="text-sm text-gray-600 mt-2 text-center italic">{image.titulo}</p>' if image.titulo else ''}
+                    {f'<p class="text-sm text-gray-600 mt-2 text-center italic">{image.caption}</p>' if image.caption else ''}
                 </div>
                 '''
                 description = description.replace(marker, image_html)
@@ -286,38 +285,38 @@ class CorruptionCase(models.Model):
     def clean(self):
         """Validate file size"""
         super().clean()
-        if self.imagen_principal:
+        if self.main_image:
             # Check file size (10MB limit)
-            if self.imagen_principal.size > 10 * 1024 * 1024:  # 10MB in bytes
+            if self.main_image.size > 10 * 1024 * 1024:  # 10MB in bytes
                 raise ValidationError({
-                    'imagen_principal': 'El tamaño del archivo debe ser menor a 10MB. Por favor comprime la imagen o elige un archivo más pequeño.'
+                    'main_image': 'El tamaño del archivo debe ser menor a 10MB. Por favor comprime la imagen o elige un archivo más pequeño.'
                 })
 
-class ImagenPublicacion(models.Model):
-    publicacion = models.ForeignKey(CorruptionCase, on_delete=models.CASCADE, related_name='imagenes', verbose_name="Publicación")
-    imagen = models.ImageField(
+class CaseImage(models.Model):
+    case = models.ForeignKey(CorruptionCase, on_delete=models.CASCADE, related_name='case_images', verbose_name="Publicación")
+    image = models.ImageField(
         upload_to='cases/detail/',
         help_text="Tamaño máximo: 10MB",
         verbose_name="Imagen"
     )
-    titulo = models.CharField(max_length=200, blank=True, verbose_name="Título")
-    orden = models.PositiveIntegerField(default=0, verbose_name="Orden")
-    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    caption = models.CharField(max_length=200, blank=True, verbose_name="Título")
+    order = models.PositiveIntegerField(default=0, verbose_name="Orden")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     
     class Meta:
-        ordering = ['orden', 'fecha_creacion']
+        ordering = ['order', 'created_at']
         verbose_name = "Imagen de publicación"
         verbose_name_plural = "Imágenes de publicación"
     
     def __str__(self):
-        return f"{self.publicacion.titulo} - {self.titulo or 'Imagen'}"
+        return f"{self.case.title} - {self.caption or 'Imagen'}"
     
     def clean(self):
         """Validate file size"""
         super().clean()
-        if self.imagen:
+        if self.image:
             # Check file size (10MB limit)
-            if self.imagen.size > 10 * 1024 * 1024:  # 10MB in bytes
+            if self.image.size > 10 * 1024 * 1024:  # 10MB in bytes
                 raise ValidationError({
-                    'imagen': 'El tamaño del archivo debe ser menor a 10MB. Por favor comprime la imagen o elige un archivo más pequeño.'
+                    'image': 'El tamaño del archivo debe ser menor a 10MB. Por favor comprime la imagen o elige un archivo más pequeño.'
                 })

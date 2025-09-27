@@ -12,11 +12,11 @@ from django.template.loader import render_to_string
 
 from .models import (
     PoliticalParty, Institution, CorruptionType, Region, 
-    Tag, CorruptionCase, ImagenPublicacion
+    Tag, CorruptionCase, CaseImage
 )
 from .serializers import (
     PoliticalPartySerializer, InstitutionSerializer, CorruptionTypeSerializer,
-    RegionSerializer, TagSerializer, ImagenPublicacionSerializer,
+    RegionSerializer, TagSerializer, CaseImageSerializer,
     CorruptionCaseListSerializer, CorruptionCaseDetailSerializer
 )
 
@@ -70,7 +70,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CorruptionCase.objects.select_related(
         'political_party', 'institution', 'corruption_type', 'region'
-    ).prefetch_related('tags', 'images')
+    ).prefetch_related('tags', 'case_images')
     lookup_field = 'slug'
     
     # Enable pagination for this viewset
@@ -78,18 +78,18 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
-        'fecha': ['exact', 'gte', 'lte', 'range'],
-        'importe': ['exact', 'gte', 'lte', 'range'],
-        'partido_politico': ['exact'],
-        'institucion': ['exact'],
-        'tipo_corrupcion': ['exact'],
+        'date': ['exact', 'gte', 'lte', 'range'],
+        'amount': ['exact', 'gte', 'lte', 'range'],
+        'political_party': ['exact'],
+        'institution': ['exact'],
+        'corruption_type': ['exact'],
         'region': ['exact'],
-        'es_destacado': ['exact'],
+        'is_featured': ['exact'],
         'tags': ['exact'],
     }
-    search_fields = ['titulo', 'descripcion_corta', 'descripcion_completa']
-    ordering_fields = ['fecha', 'importe', 'titulo', 'fecha_creacion']
-    ordering = ['-fecha', '-fecha_creacion']
+    search_fields = ['title', 'short_description', 'full_description']
+    ordering_fields = ['date', 'amount', 'title', 'created_at']
+    ordering = ['-date', '-created_at']
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -99,7 +99,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=['get'])
     def featured(self, request):
         """Get featured corruption cases (only cases, not other publications)"""
-        featured_cases = self.queryset.filter(es_destacado=True, tipo_publicacion='case')
+        featured_cases = self.queryset.filter(is_featured=True, publication_type='case')
         serializer = self.get_serializer(featured_cases, many=True)
         return Response(serializer.data)
 
@@ -107,7 +107,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     def recent(self, request):
         """Get recent corruption cases (last 30 days)"""
         thirty_days_ago = timezone.now().date() - timedelta(days=30)
-        recent_cases = self.queryset.filter(fecha__gte=thirty_days_ago)
+        recent_cases = self.queryset.filter(date__gte=thirty_days_ago)
         serializer = self.get_serializer(recent_cases, many=True)
         return Response(serializer.data)
 
@@ -120,18 +120,18 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         total_amount = 0
         for case in cases_only:
             total_amount += case.get_total_amount()
-        featured_count = cases_only.filter(es_destacado=True).count()
+        featured_count = cases_only.filter(is_featured=True).count()
         
         # Cases by political party
-        party_stats = cases_only.values('partido_politico__name').annotate(
+        party_stats = cases_only.values('political_party__name').annotate(
             count=Count('id'),
-            total_amount=Sum('importe')
+            total_amount=Sum('amount')
         ).order_by('-count')
         
         # Cases by institution type
-        institution_stats = cases_only.values('institucion__institution_type').annotate(
+        institution_stats = cases_only.values('institution__institution_type').annotate(
             count=Count('id'),
-            total_amount=Sum('importe')
+            total_amount=Sum('amount')
         ).order_by('-count')
         
         return Response({
@@ -150,12 +150,12 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({'error': 'Query parameter "q" is required'}, status=400)
         
         # Search in multiple fields
-        search_query = Q(titulo__icontains=query) | \
-                      Q(descripcion_corta__icontains=query) | \
-                      Q(descripcion_completa__icontains=query) | \
-                      Q(partido_politico__name__icontains=query) | \
-                      Q(institucion__name__icontains=query) | \
-                      Q(tipo_corrupcion__name__icontains=query) | \
+        search_query = Q(title__icontains=query) | \
+                      Q(short_description__icontains=query) | \
+                      Q(full_description__icontains=query) | \
+                      Q(political_party__name__icontains=query) | \
+                      Q(institution__name__icontains=query) | \
+                      Q(corruption_type__name__icontains=query) | \
                       Q(region__name__icontains=query) | \
                       Q(tags__name__icontains=query)
         
@@ -166,18 +166,18 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=['get'])
     def publications(self, request):
         """Get all publications (exclude cases)"""
-        publications = self.queryset.exclude(tipo_publicacion='case')
+        publications = self.queryset.exclude(publication_type='case')
         serializer = self.get_serializer(publications, many=True)
         return Response(serializer.data)
 
-class ImagenPublicacionViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = ImagenPublicacion.objects.all()
-    serializer_class = ImagenPublicacionSerializer
+class CaseImageViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = CaseImage.objects.all()
+    serializer_class = CaseImageSerializer
     pagination_class = None
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['publicacion']
-    ordering_fields = ['orden', 'fecha_creacion']
-    ordering = ['orden', 'fecha_creacion']
+    filterset_fields = ['case']
+    ordering_fields = ['order', 'created_at']
+    ordering = ['order', 'created_at']
 
 
 def case_detail_view(request, slug):
@@ -197,8 +197,8 @@ def case_detail_view(request, slug):
             image_url = request.build_absolute_uri('/static/logodegu.png')
         
         meta_data = {
-            'title': f"{case.titulo} - D.E.GU",
-            'description': case.descripcion_corta or 'Caso de corrupción y auditoría del dinero público',
+            'title': f"{case.title} - D.E.GU",
+            'description': case.short_description or 'Caso de corrupción y auditoría del dinero público',
             'image': image_url,
             'url': f"https://degu.es/app/case/{case.slug}",
             'type': 'article',

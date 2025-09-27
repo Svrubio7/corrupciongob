@@ -10,7 +10,7 @@ router.register(r'corruption-types', views.CorruptionTypeViewSet)
 router.register(r'regions', views.RegionViewSet)
 router.register(r'tags', views.TagViewSet)
 router.register(r'cases', views.CorruptionCaseViewSet)
-router.register(r'case-images', views.ImagenPublicacionViewSet)
+router.register(r'case-images', views.CaseImageViewSet)
 
 # The API URLs are now determined automatically by the router
 urlpatterns = [
