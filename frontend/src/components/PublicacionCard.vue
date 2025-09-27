@@ -3,9 +3,9 @@
     <!-- Image Section -->
     <div class="relative h-48 overflow-hidden">
       <img 
-        v-if="publicacion.imagen_principal" 
-        :src="publicacion.imagen_principal" 
-        :alt="publicacion.titulo"
+        v-if="publicacion.main_image" 
+        :src="publicacion.main_image" 
+        :alt="publicacion.title"
         class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
       />
       <div v-else class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
@@ -14,13 +14,13 @@
       
       <!-- Publication Type Badge -->
       <div class="absolute top-3 left-3">
-        <span class="px-3 py-1 text-xs font-semibold rounded-full" :class="getTypeBadgeClass(publicacion.tipo_publicacion)">
-          {{ getTypeDisplayName(publicacion.tipo_publicacion) }}
+        <span class="px-3 py-1 text-xs font-semibold rounded-full" :class="getTypeBadgeClass(publicacion.publication_type)">
+          {{ getTypeDisplayName(publicacion.publication_type) }}
         </span>
       </div>
       
       <!-- Video Icon for videos -->
-      <div v-if="publicacion.tipo_publicacion === 'video'" class="absolute top-3 right-3">
+      <div v-if="publicacion.publication_type === 'video'" class="absolute top-3 right-3">
         <div class="bg-black/70 rounded-full p-2">
           <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
             <path d="M8 5v10l8-5-8-5z"/>
@@ -34,20 +34,20 @@
       <!-- Title -->
       <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 hover:text-primary-600 transition-colors cursor-pointer"
           @click="handleClick">
-        {{ publicacion.titulo }}
+        {{ publicacion.title }}
       </h3>
       
       <!-- Author -->
-      <div v-if="publicacion.nombre_autor" class="flex items-center mb-3">
+      <div v-if="publicacion.author_name" class="flex items-center mb-3">
         <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
         </svg>
-        <span class="text-sm text-gray-600">{{ publicacion.nombre_autor }}</span>
+        <span class="text-sm text-gray-600">{{ publicacion.author_name }}</span>
       </div>
       
       <!-- Description -->
       <p class="text-gray-600 text-sm mb-4 line-clamp-3">
-        {{ publicacion.descripcion_corta }}
+        {{ publicacion.short_description }}
       </p>
       
       <!-- Footer -->
@@ -57,14 +57,14 @@
           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
-          {{ formatDate(publicacion.fecha) }}
+          {{ formatDate(publicacion.date) }}
         </div>
         
         <!-- Read More Button -->
         <button 
           @click="handleClick"
           class="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center transition-colors">
-          {{ publicacion.url_externa ? 'Ver enlace' : 'Leer más' }}
+          {{ publicacion.external_url ? 'Ver enlace' : 'Leer más' }}
           <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
@@ -86,9 +86,9 @@ export default {
   methods: {
     handleClick() {
       // Check if there's an external URL
-      if (this.publicacion.url_externa) {
+      if (this.publicacion.external_url) {
         // Open external URL in new tab
-        window.open(this.publicacion.url_externa, '_blank');
+        window.open(this.publicacion.external_url, '_blank');
       } else {
         // Navigate to detail page
         this.$router.push({ name: 'publicacion-detail', params: { slug: this.publicacion.slug } });

@@ -1,29 +1,29 @@
 <template>
   <div v-if="caseData" class="max-w-3xl mx-auto py-10 px-4">
     <img
-      v-if="caseData.imagen_principal"
-      :src="caseData.imagen_principal"
+      v-if="caseData.main_image"
+      :src="caseData.main_image"
       alt="Imagen principal"
       class="w-full h-64 object-cover rounded mb-6"
     />
     <!-- Author name below main image -->
-    <div v-if="caseData.nombre_autor" class="mb-4">
-      <p class="font-bold text-lg text-palette-black">{{ caseData.nombre_autor }}</p>
+    <div v-if="caseData.author_name" class="mb-4">
+      <p class="font-bold text-lg text-palette-black">{{ caseData.author_name }}</p>
     </div>
-    <h1 class="text-3xl font-bold mb-2 text-palette-black">{{ caseData.titulo }}</h1>
+    <h1 class="text-3xl font-bold mb-2 text-palette-black">{{ caseData.title }}</h1>
     <div class="text-gray-500 mb-2">
-      <span class="font-semibold">Fecha:</span> {{ caseData.fecha }} |
+      <span class="font-semibold">Fecha:</span> {{ caseData.date }} |
       <span class="font-semibold">Importe:</span> {{ caseData.amount_display }}
                 </div>
     <div class="mb-4">
-      <span v-if="caseData.partido_politico">
-        <span class="font-semibold">Partido:</span> {{ caseData.partido_politico.name }}
+      <span v-if="caseData.political_party">
+        <span class="font-semibold">Partido:</span> {{ caseData.political_party.name }}
       </span>
-      <span v-if="caseData.institucion">
-        &nbsp;| <span class="font-semibold">Institución:</span> {{ caseData.institucion.name }}
+      <span v-if="caseData.institution">
+        &nbsp;| <span class="font-semibold">Institución:</span> {{ caseData.institution.name }}
       </span>
-      <span v-if="caseData.tipo_corrupcion">
-        &nbsp;| <span class="font-semibold">Tipo:</span> {{ caseData.tipo_corrupcion.name }}
+      <span v-if="caseData.corruption_type">
+        &nbsp;| <span class="font-semibold">Tipo:</span> {{ caseData.corruption_type.name }}
       </span>
       <span v-if="caseData.region">
         &nbsp;| <span class="font-semibold">Región:</span> {{ caseData.region.name }}
@@ -38,12 +38,12 @@
       </div>
     </div>
     <!-- Show additional images section if there are images available -->
-    <div v-if="caseData.imagenes && caseData.imagenes.length" class="mb-6">
+    <div v-if="caseData.case_images && caseData.case_images.length" class="mb-6">
       <h2 class="text-xl font-semibold mb-2">Imágenes adicionales</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div v-for="img in caseData.imagenes" :key="img.id">
-          <img :src="img.imagen" :alt="img.titulo" class="w-full rounded" />
-          <div class="text-sm text-gray-600 mt-1">{{ img.titulo }}</div>
+        <div v-for="img in caseData.case_images" :key="img.id">
+          <img :src="img.image" :alt="img.caption" class="w-full rounded" />
+          <div class="text-sm text-gray-600 mt-1">{{ img.caption }}</div>
                     </div>
                   </div>
                 </div>
@@ -75,12 +75,12 @@ export default {
   },
   computed: {
     fullDescriptionParagraphs() {
-      if (!this.caseData || !this.caseData.descripcion_completa) {
+      if (!this.caseData || !this.caseData.full_description) {
         return [];
       }
       
       // Split by double line breaks and filter out empty strings
-      return this.caseData.descripcion_completa
+      return this.caseData.full_description
         .split(/(?:\r\n|\r|\n){2,}/g)
         .map(p => p.trim())
         .filter(p => p.length > 0);
@@ -91,13 +91,13 @@ export default {
     try {
       const res = await axios.get(`${API_BASE_URL}cases/${slug}/`)
       this.caseData = res.data
-      this.sourcesList = res.data.fuentes
-        ? res.data.fuentes.split('\n').filter(Boolean)
+      this.sourcesList = res.data.sources
+        ? res.data.sources.split('\n').filter(Boolean)
         : []
       
       // If there's an external URL, redirect to it and don't show detail page
-      if (this.caseData && this.caseData.url_externa) {
-        window.open(this.caseData.url_externa, '_blank')
+      if (this.caseData && this.caseData.external_url) {
+        window.open(this.caseData.external_url, '_blank')
         // Redirect back to publicaciones page
         this.$router.push({ name: 'publicaciones' })
         return

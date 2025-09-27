@@ -52,9 +52,9 @@
           <div v-for="featuredCase in featuredCases.slice(0, 3)" :key="featuredCase.id" class="case-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
             <div class="aspect-w-16 aspect-h-9 bg-gray-200">
               <img 
-                v-if="featuredCase.imagen_principal" 
-                :src="featuredCase.imagen_principal" 
-                :alt="featuredCase.titulo"
+                v-if="featuredCase.main_image" 
+                :src="featuredCase.main_image" 
+                :alt="featuredCase.title"
                 class="w-full h-48 object-cover"
               />
               <div v-else class="w-full h-48 bg-gray-300 flex items-center justify-center">
@@ -63,17 +63,17 @@
             </div>
             <div class="p-6">
               <div class="flex items-center justify-between mb-2">
-                <span class="text-sm text-gray-500">{{ formatDate(featuredCase.fecha) }}</span>
+                <span class="text-sm text-gray-500">{{ formatDate(featuredCase.date) }}</span>
                 <span class="text-sm font-semibold text-primary-600">{{ featuredCase.amount_display }}</span>
               </div>
-              <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ featuredCase.titulo }}</h3>
-              <p class="text-gray-600 text-sm mb-4">{{ featuredCase.descripcion_corta }}</p>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ featuredCase.title }}</h3>
+              <p class="text-gray-600 text-sm mb-4">{{ featuredCase.short_description }}</p>
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2">
-                  <span v-if="featuredCase.partido_politico"
+                  <span v-if="featuredCase.political_party"
                         class="px-2 py-1 text-xs rounded-full"
-                        :style="{ backgroundColor: (featuredCase.partido_politico?.color || '#ccc') + '20', color: featuredCase.partido_politico?.color || '#333' }">
-                    {{ featuredCase.partido_politico.short_name }}
+                        :style="{ backgroundColor: (featuredCase.political_party?.color || '#ccc') + '20', color: featuredCase.political_party?.color || '#333' }">
+                    {{ featuredCase.political_party.short_name }}
                   </span>
                 </div>
                 <router-link 

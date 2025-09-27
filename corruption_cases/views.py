@@ -114,7 +114,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=['get'])
     def statistics(self, request):
         """Get corruption statistics (only for cases, not other publications)"""
-        cases_only = self.queryset.filter(tipo_publicacion='case')
+        cases_only = self.queryset.filter(publication_type='case')
         total_cases = cases_only.count()
         # Calculate total amount considering annual payments
         total_amount = 0
@@ -189,9 +189,9 @@ def case_detail_view(request, slug):
         case = get_object_or_404(CorruptionCase, slug=slug)
         
         # Prepare meta tag data with proper image URL
-        if case.imagen_principal:
+        if case.main_image:
             # Build absolute URL for the image
-            image_url = request.build_absolute_uri(case.imagen_principal.url)
+            image_url = request.build_absolute_uri(case.main_image.url)
         else:
             # Fallback to logo
             image_url = request.build_absolute_uri('/static/logodegu.png')

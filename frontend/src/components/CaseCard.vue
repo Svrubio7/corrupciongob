@@ -2,20 +2,20 @@
   <div class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden flex flex-col h-full">
     <router-link :to="`/app/case/${caseData.slug || caseData.id}`" class="block">
       <img
-        v-if="caseData.imagen_principal"
-        :src="caseData.imagen_principal"
-        :alt="caseData.titulo"
+        v-if="caseData.main_image"
+        :src="caseData.main_image"
+        :alt="caseData.title"
         class="w-full h-48 object-cover"
       />
       <div v-else class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">
         Sin imagen
       </div>
       <div class="p-4 flex-1 flex flex-col">
-        <h3 class="text-lg font-bold text-gray-900 mb-2">{{ caseData.titulo }}</h3>
-        <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ caseData.descripcion_corta }}</p>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">{{ caseData.title }}</h3>
+        <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ caseData.short_description }}</p>
         <div class="mt-auto flex items-center justify-between">
-          <span v-if="caseData.importe" class="text-primary-600 font-semibold">€{{ formatAmount(caseData.importe) }}</span>
-          <span v-if="caseData.fecha" class="text-xs text-gray-500">{{ formatDate(caseData.fecha) }}</span>
+          <span v-if="caseData.amount" class="text-primary-600 font-semibold">€{{ formatAmount(caseData.amount) }}</span>
+          <span v-if="caseData.date" class="text-xs text-gray-500">{{ formatDate(caseData.date) }}</span>
         </div>
       </div>
     </router-link>
