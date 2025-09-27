@@ -152,12 +152,12 @@ class CorruptionCase(models.Model):
     )
     
     # External URL (for any publication type that should redirect to external link)
-    external_url = models.URLField(
-        blank=True,
-        null=True,
-        help_text="URL externa para redirigir (para videos, artículos, noticias, etc.)",
-        verbose_name="URL externa"
-    )
+    # external_url = models.URLField(
+    #     blank=True,
+    #     null=True,
+    #     help_text="URL externa para redirigir (para videos, artículos, noticias, etc.)",
+    #     verbose_name="URL externa"
+    # )
     
     # Annual amount fields
     is_annual_amount = models.BooleanField(

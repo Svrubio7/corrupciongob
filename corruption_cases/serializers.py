@@ -72,7 +72,7 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
             'amount_display', 'total_amount', 'years_duration', 'main_image', 
             'political_party', 'institution', 'corruption_type', 'region', 'tags', 
             'publication_type', 'publication_type_display', 'author_name', 
-            'external_url', 'is_annual_amount', 'start_date', 'is_featured', 'created_at'
+            'is_annual_amount', 'start_date', 'is_featured', 'created_at'
         ]
 
 class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
@@ -112,7 +112,7 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
             'id', 'title', 'slug', 'short_description', 'full_description', 'processed_description',
             'date', 'amount', 'amount_display', 'total_amount', 'years_duration', 
             'main_image', 'political_party', 'institution', 'corruption_type', 
-            'region', 'tags', 'case_images', 'publication_type', 'publication_type_display', 
-            'author_name', 'external_url', 'is_annual_amount', 'start_date', 'sources', 'is_featured', 
+            'region', 'tags', 'case_images',             'publication_type', 'publication_type_display', 
+            'author_name', 'is_annual_amount', 'start_date', 'sources', 'is_featured', 
             'created_at', 'updated_at'
         ] 

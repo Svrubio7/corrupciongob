@@ -63,7 +63,7 @@ class CorruptionCaseAdmin(admin.ModelAdmin):
             'fields': ('title', 'slug', 'short_description', 'full_description')
         }),
         ('Detalles de Publicación', {
-            'fields': ('publication_type', 'author_name', 'external_url')
+            'fields': ('publication_type', 'author_name')
         }),
         ('Detalles Clave', {
             'fields': ('date', 'amount', 'main_image')
