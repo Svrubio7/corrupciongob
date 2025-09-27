@@ -308,8 +308,8 @@ export default {
       return this.allCases.filter(c => {
         // Text search filter
         const matchesSearch = !this.searchQuery || 
-          c.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          (c.short_description && c.short_description.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          c.titulo.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          (c.descripcion_corta && c.descripcion_corta.toLowerCase().includes(this.searchQuery.toLowerCase()))
         
         // Institution filter
         const matchesInstitution = !this.selectedInstitution || 
@@ -360,7 +360,7 @@ export default {
     async fetchCases() {
       try {
         // Fetch all cases (paginated)
-        const res = await fetch(`${API_BASE_URL}cases/?ordering=-date&page=${this.page}&page_size=${this.pageSize}`)
+        const res = await fetch(`${API_BASE_URL}cases/?ordering=-fecha&page=${this.page}&page_size=${this.pageSize}`)
         if (!res.ok) throw new Error('Failed to fetch cases')
         
         const data = await res.json()
@@ -384,7 +384,7 @@ export default {
         this.recentCases = this.allCases.slice(0, 6)
         // Popular: 3 with highest amount (or popularity field if available)
         this.popularCases = [...this.allCases]
-          .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+          .sort((a, b) => (b.importe || 0) - (a.importe || 0))
           .slice(0, 3)
       } catch (error) {
         console.error('Error fetching cases:', error)

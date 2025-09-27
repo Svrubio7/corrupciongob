@@ -22,9 +22,9 @@
             <!-- Main Carousel Image -->
             <div class="relative h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
               <img 
-                v-if="currentFeatured.main_image"
-                :src="currentFeatured.main_image" 
-                :alt="currentFeatured.title"
+              v-if="currentFeatured.imagen_principal"
+              :src="currentFeatured.imagen_principal" 
+              :alt="currentFeatured.titulo"
                 class="w-full h-full object-cover transition-opacity duration-500"
               />
               <div v-else class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
@@ -39,32 +39,32 @@
                 <div class="max-w-4xl">
                   <!-- Publication Type Badge -->
                   <span class="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold mb-4">
-                    {{ getTypeDisplayName(currentFeatured.publication_type) }}
+                    {{ getTypeDisplayName(currentFeatured.tipo_publicacion) }}
                   </span>
                   
                   <!-- Title -->
                   <h3 class="text-3xl md:text-4xl font-bold mb-4 line-clamp-2">
-                    {{ currentFeatured.title }}
+                    {{ currentFeatured.titulo }}
                   </h3>
                   
                   <!-- Author and Date -->
                   <div class="flex items-center mb-4 text-white/90">
-                    <span v-if="currentFeatured.author_name" class="mr-6">
-                      Por {{ currentFeatured.author_name }}
+                    <span v-if="currentFeatured.nombre_autor" class="mr-6">
+                      Por {{ currentFeatured.nombre_autor }}
                     </span>
-                    <span>{{ formatDate(currentFeatured.date) }}</span>
+                    <span>{{ formatDate(currentFeatured.fecha) }}</span>
                   </div>
                   
                   <!-- Description -->
                   <p class="text-lg text-white/90 mb-6 line-clamp-3">
-                    {{ currentFeatured.short_description }}
+                    {{ currentFeatured.descripcion_corta }}
                   </p>
                   
                   <!-- CTA Button -->
                   <button 
                     @click="handleFeaturedClick(currentFeatured)"
                     class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300">
-                    {{ currentFeatured.publication_type === 'video' ? 'Ver Video' : 'Leer Más' }}
+                    {{ currentFeatured.tipo_publicacion === 'video' ? 'Ver Video' : 'Leer Más' }}
                   </button>
                 </div>
               </div>
@@ -173,13 +173,13 @@ export default {
       
       // Filter by type
       if (this.selectedType) {
-        filtered = filtered.filter(pub => pub.publication_type === this.selectedType)
+        filtered = filtered.filter(pub => pub.tipo_publicacion === this.selectedType)
       }
       
       // Sort by date
       return filtered.sort((a, b) => {
-        const dateA = new Date(a.date)
-        const dateB = new Date(b.date)
+        const dateA = new Date(a.fecha)
+        const dateB = new Date(b.fecha)
         
         if (this.sortOrder === 'asc') {
           return dateA - dateB

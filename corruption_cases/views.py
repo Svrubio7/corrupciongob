@@ -78,18 +78,18 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
-        'date': ['exact', 'gte', 'lte', 'range'],
-        'amount': ['exact', 'gte', 'lte', 'range'],
-        'political_party': ['exact'],
-        'institution': ['exact'],
-        'corruption_type': ['exact'],
+        'fecha': ['exact', 'gte', 'lte', 'range'],
+        'importe': ['exact', 'gte', 'lte', 'range'],
+        'partido_politico': ['exact'],
+        'institucion': ['exact'],
+        'tipo_corrupcion': ['exact'],
         'region': ['exact'],
         'es_destacado': ['exact'],
         'tags': ['exact'],
     }
-    search_fields = ['title', 'short_description', 'full_description']
-    ordering_fields = ['date', 'amount', 'title', 'created_at']
-    ordering = ['-date', '-created_at']
+    search_fields = ['titulo', 'descripcion_corta', 'descripcion_completa']
+    ordering_fields = ['fecha', 'importe', 'titulo', 'fecha_creacion']
+    ordering = ['-fecha', '-fecha_creacion']
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -107,7 +107,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     def recent(self, request):
         """Get recent corruption cases (last 30 days)"""
         thirty_days_ago = timezone.now().date() - timedelta(days=30)
-        recent_cases = self.queryset.filter(date__gte=thirty_days_ago)
+        recent_cases = self.queryset.filter(fecha__gte=thirty_days_ago)
         serializer = self.get_serializer(recent_cases, many=True)
         return Response(serializer.data)
 
@@ -123,15 +123,15 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         featured_count = cases_only.filter(es_destacado=True).count()
         
         # Cases by political party
-        party_stats = cases_only.values('political_party__name').annotate(
+        party_stats = cases_only.values('partido_politico__name').annotate(
             count=Count('id'),
-            total_amount=Sum('amount')
+            total_amount=Sum('importe')
         ).order_by('-count')
         
         # Cases by institution type
-        institution_stats = cases_only.values('institution__institution_type').annotate(
+        institution_stats = cases_only.values('institucion__institution_type').annotate(
             count=Count('id'),
-            total_amount=Sum('amount')
+            total_amount=Sum('importe')
         ).order_by('-count')
         
         return Response({
@@ -150,12 +150,12 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({'error': 'Query parameter "q" is required'}, status=400)
         
         # Search in multiple fields
-        search_query = Q(title__icontains=query) | \
-                      Q(short_description__icontains=query) | \
-                      Q(full_description__icontains=query) | \
-                      Q(political_party__name__icontains=query) | \
-                      Q(institution__name__icontains=query) | \
-                      Q(corruption_type__name__icontains=query) | \
+        search_query = Q(titulo__icontains=query) | \
+                      Q(descripcion_corta__icontains=query) | \
+                      Q(descripcion_completa__icontains=query) | \
+                      Q(partido_politico__name__icontains=query) | \
+                      Q(institucion__name__icontains=query) | \
+                      Q(tipo_corrupcion__name__icontains=query) | \
                       Q(region__name__icontains=query) | \
                       Q(tags__name__icontains=query)
         
@@ -197,8 +197,8 @@ def case_detail_view(request, slug):
             image_url = request.build_absolute_uri('/static/logodegu.png')
         
         meta_data = {
-            'title': f"{case.title} - D.E.GU",
-            'description': case.short_description or 'Caso de corrupción y auditoría del dinero público',
+            'title': f"{case.titulo} - D.E.GU",
+            'description': case.descripcion_corta or 'Caso de corrupción y auditoría del dinero público',
             'image': image_url,
             'url': f"https://degu.es/app/case/{case.slug}",
             'type': 'article',
