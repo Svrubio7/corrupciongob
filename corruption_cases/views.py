@@ -12,11 +12,11 @@ from django.template.loader import render_to_string
 
 from .models import (
     PoliticalParty, Institution, CorruptionType, Region, 
-    Tag, CorruptionCase, CaseImage
+    Tag, CorruptionCase, ImagenPublicacion
 )
 from .serializers import (
     PoliticalPartySerializer, InstitutionSerializer, CorruptionTypeSerializer,
-    RegionSerializer, TagSerializer, CaseImageSerializer,
+    RegionSerializer, TagSerializer, ImagenPublicacionSerializer,
     CorruptionCaseListSerializer, CorruptionCaseDetailSerializer
 )
 
@@ -84,7 +84,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         'institution': ['exact'],
         'corruption_type': ['exact'],
         'region': ['exact'],
-        'is_featured': ['exact'],
+        'es_destacado': ['exact'],
         'tags': ['exact'],
     }
     search_fields = ['title', 'short_description', 'full_description']
@@ -99,7 +99,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=['get'])
     def featured(self, request):
         """Get featured corruption cases (only cases, not other publications)"""
-        featured_cases = self.queryset.filter(is_featured=True, publication_type='case')
+        featured_cases = self.queryset.filter(es_destacado=True, tipo_publicacion='case')
         serializer = self.get_serializer(featured_cases, many=True)
         return Response(serializer.data)
 
@@ -114,13 +114,13 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=['get'])
     def statistics(self, request):
         """Get corruption statistics (only for cases, not other publications)"""
-        cases_only = self.queryset.filter(publication_type='case')
+        cases_only = self.queryset.filter(tipo_publicacion='case')
         total_cases = cases_only.count()
         # Calculate total amount considering annual payments
         total_amount = 0
         for case in cases_only:
             total_amount += case.get_total_amount()
-        featured_count = cases_only.filter(is_featured=True).count()
+        featured_count = cases_only.filter(es_destacado=True).count()
         
         # Cases by political party
         party_stats = cases_only.values('political_party__name').annotate(
@@ -166,18 +166,18 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=['get'])
     def publications(self, request):
         """Get all publications (exclude cases)"""
-        publications = self.queryset.exclude(publication_type='case')
+        publications = self.queryset.exclude(tipo_publicacion='case')
         serializer = self.get_serializer(publications, many=True)
         return Response(serializer.data)
 
-class CaseImageViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = CaseImage.objects.all()
-    serializer_class = CaseImageSerializer
+class ImagenPublicacionViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = ImagenPublicacion.objects.all()
+    serializer_class = ImagenPublicacionSerializer
     pagination_class = None
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['case']
-    ordering_fields = ['order', 'created_at']
-    ordering = ['order', 'created_at']
+    filterset_fields = ['publicacion']
+    ordering_fields = ['orden', 'fecha_creacion']
+    ordering = ['orden', 'fecha_creacion']
 
 
 def case_detail_view(request, slug):
@@ -189,9 +189,9 @@ def case_detail_view(request, slug):
         case = get_object_or_404(CorruptionCase, slug=slug)
         
         # Prepare meta tag data with proper image URL
-        if case.main_image:
+        if case.imagen_principal:
             # Build absolute URL for the image
-            image_url = request.build_absolute_uri(case.main_image.url)
+            image_url = request.build_absolute_uri(case.imagen_principal.url)
         else:
             # Fallback to logo
             image_url = request.build_absolute_uri('/static/logodegu.png')

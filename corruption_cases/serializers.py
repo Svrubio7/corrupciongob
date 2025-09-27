@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     PoliticalParty, Institution, CorruptionType, Region, 
-    Tag, CorruptionCase, CaseImage
+    Tag, CorruptionCase, ImagenPublicacion
 )
 
 class PoliticalPartySerializer(serializers.ModelSerializer):
@@ -31,18 +31,18 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ['id', 'name', 'created_at']
 
-class CaseImageSerializer(serializers.ModelSerializer):
+class ImagenPublicacionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CaseImage
-        fields = ['id', 'image', 'caption', 'order', 'created_at']
+        model = ImagenPublicacion
+        fields = ['id', 'imagen', 'titulo', 'orden', 'fecha_creacion']
 
 class CorruptionCaseListSerializer(serializers.ModelSerializer):
     """Serializer for list view - includes basic info"""
-    political_party = PoliticalPartySerializer(read_only=True)
-    institution = InstitutionSerializer(read_only=True)
-    corruption_type = CorruptionTypeSerializer(read_only=True)
+    partido_politico = PoliticalPartySerializer(read_only=True)
+    institucion = InstitutionSerializer(read_only=True)
+    tipo_corrupcion = CorruptionTypeSerializer(read_only=True)
     region = RegionSerializer(read_only=True)
-    tags = TagSerializer(many=True, read_only=True)
+    etiquetas = TagSerializer(many=True, read_only=True)
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
     total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
     years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
@@ -63,26 +63,26 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
             'video': 'Vídeo',
             'other': 'Otro',
         }
-        return publication_type_choices.get(obj.publication_type, obj.publication_type or 'Artículo')
+        return publication_type_choices.get(obj.tipo_publicacion, obj.tipo_publicacion or 'Artículo')
     
     class Meta:
         model = CorruptionCase
         fields = [
-            'id', 'title', 'slug', 'short_description', 'date', 'amount', 
-            'amount_display', 'total_amount', 'years_duration', 'main_image', 
-            'political_party', 'institution', 'corruption_type', 'region', 'tags', 
-            'publication_type', 'publication_type_display', 'author_name', 
-            'video_url', 'is_annual_amount', 'start_date', 'is_featured', 'created_at'
+            'id', 'titulo', 'slug', 'descripcion_corta', 'fecha', 'importe', 
+            'amount_display', 'total_amount', 'years_duration', 'imagen_principal', 
+            'partido_politico', 'institucion', 'tipo_corrupcion', 'region', 'etiquetas', 
+            'tipo_publicacion', 'publication_type_display', 'nombre_autor', 
+            'url_externa', 'es_importe_anual', 'fecha_inicio', 'es_destacado', 'fecha_creacion'
         ]
 
 class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
     """Serializer for detail view - includes all info"""
-    political_party = PoliticalPartySerializer(read_only=True)
-    institution = InstitutionSerializer(read_only=True)
-    corruption_type = CorruptionTypeSerializer(read_only=True)
+    partido_politico = PoliticalPartySerializer(read_only=True)
+    institucion = InstitutionSerializer(read_only=True)
+    tipo_corrupcion = CorruptionTypeSerializer(read_only=True)
     region = RegionSerializer(read_only=True)
-    tags = TagSerializer(many=True, read_only=True)
-    images = CaseImageSerializer(many=True, read_only=True)
+    etiquetas = TagSerializer(many=True, read_only=True)
+    imagenes = ImagenPublicacionSerializer(many=True, read_only=True)
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
     total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
     years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
@@ -104,15 +104,15 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
             'video': 'Vídeo',
             'other': 'Otro',
         }
-        return publication_type_choices.get(obj.publication_type, obj.publication_type or 'Artículo')
+        return publication_type_choices.get(obj.tipo_publicacion, obj.tipo_publicacion or 'Artículo')
     
     class Meta:
         model = CorruptionCase
         fields = [
-            'id', 'title', 'slug', 'short_description', 'full_description', 'processed_description',
-            'date', 'amount', 'amount_display', 'total_amount', 'years_duration', 
-            'main_image', 'political_party', 'institution', 'corruption_type', 
-            'region', 'tags', 'images', 'publication_type', 'publication_type_display', 
-            'author_name', 'video_url', 'is_annual_amount', 'start_date', 'sources', 'is_featured', 
-            'created_at', 'updated_at'
+            'id', 'titulo', 'slug', 'descripcion_corta', 'descripcion_completa', 'processed_description',
+            'fecha', 'importe', 'amount_display', 'total_amount', 'years_duration', 
+            'imagen_principal', 'partido_politico', 'institucion', 'tipo_corrupcion', 
+            'region', 'etiquetas', 'imagenes', 'tipo_publicacion', 'publication_type_display', 
+            'nombre_autor', 'url_externa', 'es_importe_anual', 'fecha_inicio', 'fuentes', 'es_destacado', 
+            'fecha_creacion', 'fecha_actualizacion'
         ] 

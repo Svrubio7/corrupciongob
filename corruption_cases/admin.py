@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import (
     PoliticalParty, Institution, CorruptionType, Region, 
-    Tag, CorruptionCase, CaseImage
+    Tag, CorruptionCase, ImagenPublicacion
 )
 
 @admin.register(PoliticalParty)
@@ -39,47 +39,47 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ['name', 'created_at']
     search_fields = ['name']
 
-class CaseImageInline(admin.TabularInline):
-    model = CaseImage
+class ImagenPublicacionInline(admin.TabularInline):
+    model = ImagenPublicacion
     extra = 1
-    fields = ['image', 'caption', 'order']
+    fields = ['imagen', 'titulo', 'orden']
 
 @admin.register(CorruptionCase)
 class CorruptionCaseAdmin(admin.ModelAdmin):
     list_display = [
-        'title', 'date', 'amount_display', 'political_party', 
-        'institution', 'publication_type', 'author_name', 'is_featured', 'created_at'
+        'titulo', 'fecha', 'amount_display', 'partido_politico', 
+        'institucion', 'tipo_publicacion', 'nombre_autor', 'es_destacado', 'fecha_creacion'
     ]
     list_filter = [
-        'date', 'political_party', 'institution', 'corruption_type', 
-        'region', 'publication_type', 'is_annual_amount', 'is_featured', 'created_at'
+        'fecha', 'partido_politico', 'institucion', 'tipo_corrupcion', 
+        'region', 'tipo_publicacion', 'es_importe_anual', 'es_destacado', 'fecha_creacion'
     ]
-    search_fields = ['title', 'short_description', 'full_description', 'author_name']
-    prepopulated_fields = {'slug': ('title',)}
-    readonly_fields = ['created_at', 'updated_at']
-    inlines = [CaseImageInline]
+    search_fields = ['titulo', 'descripcion_corta', 'descripcion_completa', 'nombre_autor']
+    prepopulated_fields = {'slug': ('titulo',)}
+    readonly_fields = ['fecha_creacion', 'fecha_actualizacion']
+    inlines = [ImagenPublicacionInline]
     fieldsets = (
-        ('Basic Information', {
-            'fields': ('title', 'slug', 'short_description', 'full_description')
+        ('Información Básica', {
+            'fields': ('titulo', 'slug', 'descripcion_corta', 'descripcion_completa')
         }),
-        ('Publication Details', {
-            'fields': ('publication_type', 'author_name')
+        ('Detalles de Publicación', {
+            'fields': ('tipo_publicacion', 'nombre_autor', 'url_externa')
         }),
-        ('Key Details', {
-            'fields': ('date', 'amount', 'main_image')
+        ('Detalles Clave', {
+            'fields': ('fecha', 'importe', 'imagen_principal')
         }),
-        ('Annual Amount Details', {
-            'fields': ('is_annual_amount', 'start_date'),
-            'description': 'Check if this is an annual payment and set the start date'
+        ('Detalles de Importe Anual', {
+            'fields': ('es_importe_anual', 'fecha_inicio'),
+            'description': 'Marca si este es un pago anual y establece la fecha de inicio'
         }),
-        ('Categorization', {
-            'fields': ('political_party', 'institution', 'corruption_type', 'region', 'tags')
+        ('Categorización', {
+            'fields': ('partido_politico', 'institucion', 'tipo_corrupcion', 'region', 'etiquetas')
         }),
-        ('Content', {
-            'fields': ('sources', 'is_featured')
+        ('Contenido', {
+            'fields': ('fuentes', 'es_destacado')
         }),
-        ('Metadata', {
-            'fields': ('created_at', 'updated_at'),
+        ('Metadatos', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion'),
             'classes': ('collapse',)
         }),
     )
@@ -88,7 +88,7 @@ class CorruptionCaseAdmin(admin.ModelAdmin):
     amount_display.short_description = 'Amount'
     def get_queryset(self, request):
         return super().get_queryset(request).select_related(
-            'political_party', 'institution', 'corruption_type', 'region'
+            'partido_politico', 'institucion', 'tipo_corrupcion', 'region'
         )
 
 # Customize admin site

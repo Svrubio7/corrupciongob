@@ -204,11 +204,11 @@ export default {
         const data = await response.json()
         
         // Filter out cases (only show non-case publications)
-        this.allPublications = data.filter(item => item.publication_type !== 'case')
+        this.allPublications = data.filter(item => item.tipo_publicacion !== 'case')
         
         // Get latest 5 for carousel
         this.featuredPublications = this.allPublications
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
           .slice(0, 5)
           
       } catch (error) {
@@ -236,8 +236,9 @@ export default {
     },
     
     handleFeaturedClick(publicacion) {
-      if (publicacion.publication_type === 'video' && publicacion.video_url) {
-        window.open(publicacion.video_url, '_blank')
+      // Check if there's an external URL
+      if (publicacion.url_externa) {
+        window.open(publicacion.url_externa, '_blank')
       } else {
         this.$router.push({ name: 'publicacion-detail', params: { slug: publicacion.slug } })
       }

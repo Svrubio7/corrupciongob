@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 import os
 
 class PoliticalParty(models.Model):
@@ -71,55 +72,62 @@ class Tag(models.Model):
         return self.name
 
 class CorruptionCase(models.Model):
-    title = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True, blank=True)
-    short_description = models.TextField(max_length=500)
-    full_description = models.TextField()
+    titulo = models.CharField(max_length=200, verbose_name="Título", default="Sin título")
+    slug = models.SlugField(max_length=200, unique=True, blank=True, verbose_name="Slug")
+    descripcion_corta = models.TextField(max_length=500, verbose_name="Descripción corta", default="Sin descripción")
+    descripcion_completa = models.TextField(verbose_name="Descripción completa", default="Sin descripción completa")
     
     # Key details
-    date = models.DateField()
-    amount = models.DecimalField(
+    fecha = models.DateField(verbose_name="Fecha", default='2024-01-01')
+    importe = models.DecimalField(
         max_digits=20, 
         decimal_places=2, 
         validators=[MinValueValidator(0)],
-        help_text="Amount in euros"
+        help_text="Importe en euros",
+        verbose_name="Importe",
+        default=0.00
     )
-    main_image = models.ImageField(
+    imagen_principal = models.ImageField(
         upload_to='cases/', 
         blank=True, 
         null=True,
-        help_text="Maximum file size: 10MB"
+        help_text="Tamaño máximo: 10MB",
+        verbose_name="Imagen principal"
     )
     
     # Relationships
-    political_party = models.ForeignKey(
+    partido_politico = models.ForeignKey(
         PoliticalParty, 
         on_delete=models.SET_NULL, 
         null=True, 
-        blank=True
+        blank=True,
+        verbose_name="Partido político"
     )
-    institution = models.ForeignKey(
+    institucion = models.ForeignKey(
         Institution, 
         on_delete=models.SET_NULL, 
         null=True, 
-        blank=True
+        blank=True,
+        verbose_name="Institución"
     )
-    corruption_type = models.ForeignKey(
+    tipo_corrupcion = models.ForeignKey(
         CorruptionType, 
         on_delete=models.SET_NULL, 
         null=True, 
-        blank=True
+        blank=True,
+        verbose_name="Tipo de corrupción"
     )
     region = models.ForeignKey(
         Region, 
         on_delete=models.SET_NULL, 
         null=True, 
-        blank=True
+        blank=True,
+        verbose_name="Región"
     )
-    tags = models.ManyToManyField(Tag, blank=True)
+    etiquetas = models.ManyToManyField(Tag, blank=True, verbose_name="Etiquetas")
     
     # Publication type
-    publication_type = models.CharField(
+    tipo_publicacion = models.CharField(
         max_length=50,
         choices=[
             ('article', 'Artículo'),
@@ -132,49 +140,56 @@ class CorruptionCase(models.Model):
             ('other', 'Otro'),
         ],
         default='article',
-        help_text="Tipo de publicación"
+        help_text="Tipo de publicación",
+        verbose_name="Tipo de publicación"
     )
     
     # Author name
-    author_name = models.CharField(
+    nombre_autor = models.CharField(
         max_length=200,
         blank=True,
-        help_text="Nombre del autor del artículo"
+        help_text="Nombre del autor del artículo",
+        verbose_name="Nombre del autor"
     )
     
-    # Video URL (for video publications)
-    video_url = models.URLField(
+    # External URL (for any publication type that should redirect to external link)
+    url_externa = models.URLField(
         blank=True,
         null=True,
-        help_text="URL del video (solo para publicaciones tipo 'video')"
+        help_text="URL externa para redirigir (para videos, artículos, noticias, etc.)",
+        verbose_name="URL externa"
     )
     
     # Annual amount fields
-    is_annual_amount = models.BooleanField(
+    es_importe_anual = models.BooleanField(
         default=False,
-        help_text="¿Es esta cantidad un gasto anual?"
+        help_text="¿Es esta cantidad un gasto anual?",
+        verbose_name="Es importe anual"
     )
-    start_date = models.DateField(
+    fecha_inicio = models.DateField(
         null=True,
         blank=True,
-        help_text="Fecha de comienzo del gasto (para calcular años de duración)"
+        help_text="Fecha de comienzo del gasto (para calcular años de duración)",
+        verbose_name="Fecha de inicio"
     )
     
     # Metadata
-    sources = models.TextField(help_text="Links to sources, separated by new lines")
-    is_featured = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    fuentes = models.TextField(help_text="Enlaces a fuentes, separados por líneas nuevas", verbose_name="Fuentes", default="Sin fuentes")
+    es_destacado = models.BooleanField(default=False, verbose_name="Es destacado")
+    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    fecha_actualizacion = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualización")
     
     class Meta:
-        ordering = ['-amount', '-date', '-created_at']  # Order by amount by default
+        ordering = ['-importe', '-fecha', '-fecha_creacion']  # Order by amount by default
+        verbose_name = "Publicación"
+        verbose_name_plural = "Publicaciones"
     
     def __str__(self):
-        return self.title
+        return self.titulo
     
     def save(self, *args, **kwargs):
-        if not self.slug or self.slug != slugify(self.title):
-            self.slug = slugify(self.title)
+        if not self.slug or self.slug != slugify(self.titulo):
+            self.slug = slugify(self.titulo)
             # Ensure uniqueness
             original_slug = self.slug
             for x in range(1, 1000):
@@ -185,28 +200,28 @@ class CorruptionCase(models.Model):
     
     def get_amount_display(self):
         """Format amount as currency"""
-        return f"€{self.amount:,.2f}"
+        return f"€{self.importe:,.2f}"
     
     def get_total_amount(self):
         """Calculate total amount considering annual payments"""
-        if self.is_annual_amount and self.start_date:
+        if self.es_importe_anual and self.fecha_inicio:
             from datetime import date
             today = date.today()
-            years = today.year - self.start_date.year
+            years = today.year - self.fecha_inicio.year
             # Add 1 year if we're past the anniversary date
-            if today.month > self.start_date.month or (today.month == self.start_date.month and today.day >= self.start_date.day):
+            if today.month > self.fecha_inicio.month or (today.month == self.fecha_inicio.month and today.day >= self.fecha_inicio.day):
                 years += 1
-            return self.amount * max(1, years)  # At least 1 year
-        return self.amount
+            return self.importe * max(1, years)  # At least 1 year
+        return self.importe
     
     def get_years_duration(self):
         """Get number of years this payment has been ongoing"""
-        if self.is_annual_amount and self.start_date:
+        if self.es_importe_anual and self.fecha_inicio:
             from datetime import date
             today = date.today()
-            years = today.year - self.start_date.year
+            years = today.year - self.fecha_inicio.year
             # Add 1 year if we're past the anniversary date
-            if today.month > self.start_date.month or (today.month == self.start_date.month and today.day >= self.start_date.day):
+            if today.month > self.fecha_inicio.month or (today.month == self.fecha_inicio.month and today.day >= self.fecha_inicio.day):
                 years += 1
             return max(1, years)
         return 1
@@ -216,8 +231,8 @@ class CorruptionCase(models.Model):
         import re
         from django.utils.safestring import mark_safe
         
-        description = self.full_description
-        images = list(self.images.all().order_by('order', 'created_at'))
+        description = self.descripcion_completa
+        images = list(self.imagenes.all().order_by('orden', 'fecha_creacion'))
         
         # First, process image markers
         pattern = r'<imagen(\d+)>'
@@ -232,9 +247,9 @@ class CorruptionCase(models.Model):
                 # Create HTML for the embedded image
                 image_html = f'''
                 <div class="embedded-image my-6">
-                    <img src="{image.image.url}" alt="{image.caption or 'Imagen'}" 
+                    <img src="{image.imagen.url}" alt="{image.titulo or 'Imagen'}" 
                          class="w-full h-auto rounded-lg shadow-md">
-                    {f'<p class="text-sm text-gray-600 mt-2 text-center italic">{image.caption}</p>' if image.caption else ''}
+                    {f'<p class="text-sm text-gray-600 mt-2 text-center italic">{image.titulo}</p>' if image.titulo else ''}
                 </div>
                 '''
                 description = description.replace(marker, image_html)
@@ -271,35 +286,38 @@ class CorruptionCase(models.Model):
     def clean(self):
         """Validate file size"""
         super().clean()
-        if self.main_image:
+        if self.imagen_principal:
             # Check file size (10MB limit)
-            if self.main_image.size > 10 * 1024 * 1024:  # 10MB in bytes
+            if self.imagen_principal.size > 10 * 1024 * 1024:  # 10MB in bytes
                 raise ValidationError({
-                    'main_image': 'File size must be under 10MB. Please compress the image or choose a smaller file.'
+                    'imagen_principal': 'El tamaño del archivo debe ser menor a 10MB. Por favor comprime la imagen o elige un archivo más pequeño.'
                 })
 
-class CaseImage(models.Model):
-    case = models.ForeignKey(CorruptionCase, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(
+class ImagenPublicacion(models.Model):
+    publicacion = models.ForeignKey(CorruptionCase, on_delete=models.CASCADE, related_name='imagenes', verbose_name="Publicación")
+    imagen = models.ImageField(
         upload_to='cases/detail/',
-        help_text="Maximum file size: 10MB"
+        help_text="Tamaño máximo: 10MB",
+        verbose_name="Imagen"
     )
-    caption = models.CharField(max_length=200, blank=True)
-    order = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+    titulo = models.CharField(max_length=200, blank=True, verbose_name="Título")
+    orden = models.PositiveIntegerField(default=0, verbose_name="Orden")
+    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     
     class Meta:
-        ordering = ['order', 'created_at']
+        ordering = ['orden', 'fecha_creacion']
+        verbose_name = "Imagen de publicación"
+        verbose_name_plural = "Imágenes de publicación"
     
     def __str__(self):
-        return f"{self.case.title} - {self.caption or 'Image'}"
+        return f"{self.publicacion.titulo} - {self.titulo or 'Imagen'}"
     
     def clean(self):
         """Validate file size"""
         super().clean()
-        if self.image:
+        if self.imagen:
             # Check file size (10MB limit)
-            if self.image.size > 10 * 1024 * 1024:  # 10MB in bytes
+            if self.imagen.size > 10 * 1024 * 1024:  # 10MB in bytes
                 raise ValidationError({
-                    'image': 'File size must be under 10MB. Please compress the image or choose a smaller file.'
+                    'imagen': 'El tamaño del archivo debe ser menor a 10MB. Por favor comprime la imagen o elige un archivo más pequeño.'
                 })
