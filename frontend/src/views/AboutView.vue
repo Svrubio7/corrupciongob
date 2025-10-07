@@ -216,7 +216,7 @@
     
 
     <!-- Call to Action -->
-    <section class="bg-gradient-to-r from-palette-primary to-palette-secondary text-white py-20 pb-32">
+    <section class="bg-gradient-to-r from-palette-primary to-palette-secondary text-white py-20">
       <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
           <h2 class="text-3xl md:text-4xl font-bold mb-6">
@@ -234,13 +234,6 @@
             </router-link>
           </div>
           </div>
-        </div>
-        
-        <!-- Footer -->
-        <div class="container mx-auto px-4 text-center mt-16">
-          <p class="text-white/80">
-            © 2025 DEGU Hecho con transparencia.
-          </p>
         </div>
       </section>
     </div>

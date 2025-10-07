@@ -113,9 +113,41 @@ export default {
       <router-view />
     </main>
     <!-- Footer -->
-    <footer v-if="$route.path !== '/about'" class="bg-palette-accent/50 text-palette-black py-6 mt-12 border-t border-palette-primary">
-      <div class="container mx-auto px-4 text-center text-sm">
-        © {{ new Date().getFullYear() }} <span class="text-palette-primary">DE</span><span class="text-palette-secondary">G</span><span class="text-palette-primary">U</span>  Hecho con transparencia.
+    <footer class="bg-gradient-to-r from-palette-primary to-palette-secondary text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="pl-8 md:pl-16 lg:pl-24 max-w-4xl">
+          <!-- Contact Section -->
+          <div class="text-left mb-8">
+            <h3 class="text-xl font-semibold mb-3">Contacto</h3>
+            <p class="text-white/90 mb-2">
+              Si quieres colaborar o anunciarte con nosotros, contáctanos en
+            </p>
+            <a href="mailto:degubernamental@gmail.com" class="text-white font-semibold hover:underline">
+              degubernamental@gmail.com
+            </a>
+          </div>
+
+          <!-- Social Networks Section -->
+          <div class="text-left mb-8 pb-8 border-b border-white/20">
+            <p class="text-white/90 mb-4">
+              Visita nuestras otras redes sociales y ayúdanos a seguir con este proyecto en Patreon
+            </p>
+            <a 
+              href="https://linktr.ee/DEGubernamental" 
+              target="_blank"
+              class="inline-block bg-white text-palette-primary font-semibold px-6 py-2 rounded-lg hover:bg-gray-100 transition"
+            >
+              linktr.ee/DEGubernamental
+            </a>
+          </div>
+
+          <!-- Copyright -->
+          <div class="text-left">
+            <p class="text-white/80 text-sm">
+              © {{ new Date().getFullYear() }} DEGU Hecho con transparencia.
+            </p>
+          </div>
+        </div>
       </div>
     </footer>
   </div>
