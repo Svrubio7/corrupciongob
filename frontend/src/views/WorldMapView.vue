@@ -38,43 +38,43 @@
           <!-- Map Area -->
           <div class="flex-1">
             <div class="relative">
-              <!-- Map Legend -->
-              <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-4 z-10">
-                <h3 class="text-sm font-semibold text-gray-900 mb-3">Intensidad de Fondos</h3>
-                <div class="space-y-2">
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-4 rounded" style="background-color: #FFF"></div>
-                    <span class="text-xs text-gray-600">Sin datos</span>
+                  <!-- Map Legend -->
+                  <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-4 z-10">
+                    <h3 class="text-sm font-semibold text-gray-900 mb-3">Intensidad de Fondos</h3>
+                    <div class="space-y-2">
+                      <div class="flex items-center gap-2">
+                        <div class="w-8 h-4 rounded" style="background-color: #FFF"></div>
+                        <span class="text-xs text-gray-600">Sin datos</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <div class="w-8 h-4 rounded" style="background-color: #FFEB9C"></div>
+                        <span class="text-xs text-gray-600">Bajo</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <div class="w-8 h-4 rounded" style="background-color: #FFC966"></div>
+                        <span class="text-xs text-gray-600">Medio</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <div class="w-8 h-4 rounded" style="background-color: #FF9933"></div>
+                        <span class="text-xs text-gray-600">Alto</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <div class="w-8 h-4 rounded" style="background-color: #D62F25"></div>
+                        <span class="text-xs text-gray-600">Muy Alto</span>
+                      </div>
+                    </div>
+                    <div v-if="maxAmount > 0" class="mt-4 pt-4 border-t border-gray-200">
+                      <p class="text-xs text-gray-600">
+                        <span class="font-semibold">Máximo:</span><br/>
+                        €{{ formatAmount(maxAmount) }}
+                      </p>
+                    </div>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-4 rounded" style="background-color: #FFEB9C"></div>
-                    <span class="text-xs text-gray-600">Bajo</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-4 rounded" style="background-color: #FFC966"></div>
-                    <span class="text-xs text-gray-600">Medio</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-4 rounded" style="background-color: #FF9933"></div>
-                    <span class="text-xs text-gray-600">Alto</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-4 rounded" style="background-color: #D62F25"></div>
-                    <span class="text-xs text-gray-600">Muy Alto</span>
-                  </div>
-                </div>
-                <div v-if="maxAmount > 0" class="mt-4 pt-4 border-t border-gray-200">
-                  <p class="text-xs text-gray-600">
-                    <span class="font-semibold">Máximo:</span><br/>
-                    €{{ formatAmount(maxAmount) }}
-                  </p>
-                </div>
-              </div>
 
               <!-- Zoom Controls -->
               <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-2 z-10 flex flex-col gap-2">
-                <button 
-                  @click="zoomIn" 
+                <button
+                  @click="zoomIn"
                   class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
                   title="Acercar"
                 >
@@ -82,8 +82,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                   </svg>
                 </button>
-                <button 
-                  @click="zoomOut" 
+                <button
+                  @click="zoomOut"
                   class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
                   title="Alejar"
                 >
@@ -91,8 +91,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6"></path>
                   </svg>
                 </button>
-                <button 
-                  @click="resetZoom" 
+                <button
+                  @click="resetZoom"
                   class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
                   title="Resetear zoom"
                 >
@@ -102,13 +102,13 @@
                 </button>
               </div>
 
-              <!-- World Map Container -->
-              <div 
-                ref="mapContainer" 
-                class="w-full h-96 border border-gray-200 rounded-lg overflow-hidden bg-gray-50"
-              >
-                <svg ref="worldMap" class="w-full h-full"></svg>
-              </div>
+                  <!-- World Map Container -->
+                  <div
+                    ref="mapContainer"
+                    class="w-full h-[500px] md:h-[600px] border border-gray-200 rounded-lg overflow-hidden bg-gray-50"
+                  >
+                    <svg ref="worldMap" id="worldMap" class="w-full h-full"></svg>
+                  </div>
 
               <!-- Map loads even without data - no overlay needed -->
             </div>
@@ -228,7 +228,8 @@ export default {
       path: null,
       zoom: null,
       svg: null,
-      g: null
+      g: null,
+      tooltip: null
     }
   },
   computed: {
@@ -249,85 +250,51 @@ export default {
   methods: {
     async loadWorldMap() {
       try {
-        // Try to load GeoJSON with ISO codes
+        // Load GeoJSON with ISO codes
         const worldData = await d3.json('/countries.json')
         this.countries = worldData
-        console.log('Mapa cargado desde GeoJSON:', this.countries.features.length, 'países')
+        console.log('Mapa mundial cargado:', this.countries.features.length, 'países')
+        
+        // Map loaded successfully
+        this.loading = false
+        this.error = null
+        
+        // Wait for DOM to be ready before setting up map
+        await this.$nextTick()
+        
+        // Add small delay to ensure container is fully rendered
+        setTimeout(() => {
+          this.setupMap()
+        }, 100)
         
       } catch (error) {
-        console.log('No se pudo cargar GeoJSON, usando mapa de fallback:', error.message)
-        
-        // Create a simple fallback map with basic countries
-        this.countries = this.createFallbackMap()
-        console.log('Mapa de fallback creado:', this.countries.features.length, 'países')
-      }
-      
-      // Setup D3 map (always works)
-      this.setupMap()
-      
-      // Map loaded successfully, stop loading
-      this.loading = false
-      this.error = null
-    },
-    
-    createFallbackMap() {
-      // Simple fallback map with basic world outline
-      return {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            properties: { 
-              NAME: "España", 
-              ISO_A3: "ESP",
-              ADM0_A3: "ESP"
-            },
-            geometry: {
-              type: "Polygon",
-              coordinates: [[[-9.3, 35.2], [-9.3, 43.8], [3.3, 43.8], [3.3, 35.2], [-9.3, 35.2]]]
-            }
-          },
-          {
-            type: "Feature", 
-            properties: { 
-              NAME: "Francia", 
-              ISO_A3: "FRA",
-              ADM0_A3: "FRA"
-            },
-            geometry: {
-              type: "Polygon",
-              coordinates: [[[-5.1, 41.3], [-5.1, 51.1], [9.6, 51.1], [9.6, 41.3], [-5.1, 41.3]]]
-            }
-          },
-          {
-            type: "Feature",
-            properties: { 
-              NAME: "Portugal", 
-              ISO_A3: "PRT",
-              ADM0_A3: "PRT"
-            },
-            geometry: {
-              type: "Polygon",
-              coordinates: [[[-9.5, 36.8], [-9.5, 42.2], [-6.2, 42.2], [-6.2, 36.8], [-9.5, 36.8]]]
-            }
-          }
-        ]
+        console.error('Error cargando mapa mundial:', error)
+        this.error = `Error cargando el mapa mundial: ${error.message}`
+        this.loading = false
       }
     },
     
     setupMap() {
-      if (!this.countries || !this.countries.features) return
+      if (!this.countries || !this.countries.features) {
+        console.log('No hay datos de países para renderizar')
+        return
+      }
       
       // Get container dimensions
       const container = this.$refs.mapContainer
-      if (!container) return
+      if (!container) {
+        console.log('No se encontró el contenedor del mapa')
+        return
+      }
       
       const width = container.clientWidth
       const height = container.clientHeight
       
+      console.log(`Dimensiones del mapa: ${width}x${height}`)
+      
       // Create projection
       this.projection = d3.geoNaturalEarth1()
-        .scale(width / 6)
+        .scale(Math.min(width, height) / 4)
         .translate([width / 2, height / 2])
       
       // Create path generator
@@ -336,13 +303,16 @@ export default {
       // Clear existing SVG content
       d3.select(this.$refs.worldMap).selectAll('*').remove()
       
-      // Create SVG
+      // Create SVG with explicit dimensions
       this.svg = d3.select(this.$refs.worldMap)
         .attr('width', width)
         .attr('height', height)
+        .style('background-color', '#f8f9fa')
       
       // Create main group
       this.g = this.svg.append('g')
+      
+      console.log(`Renderizando ${this.countries.features.length} países`)
       
       // Add countries
       this.g.selectAll('path')
@@ -350,14 +320,17 @@ export default {
         .enter()
         .append('path')
         .attr('d', this.path)
-        .attr('fill', '#f8f9fa')
+        .attr('fill', '#e9ecef')
         .attr('stroke', '#dee2e6')
         .attr('stroke-width', 0.5)
         .attr('class', 'country-path')
-        .attr('data-iso', d => d.properties.ISO_A3 || d.properties.ADM0_A3)
+        .attr('data-iso', d => this.getCountryCode(d))
         .on('click', (event, d) => this.handleCountryClick(event, d))
         .on('mouseover', (event, d) => this.handleCountryHover(event, d))
         .on('mouseout', (event, d) => this.handleCountryLeave(event, d))
+        .style('cursor', 'pointer')
+      
+      console.log('Países renderizados en el mapa')
       
       // Setup zoom
       this.zoom = d3.zoom()
@@ -545,19 +518,34 @@ export default {
     },
     
     handleCountryHover(event, d) {
-      // Add hover effect
+      const countryCode = this.getCountryCode(d)
+      const countryData = this.getCountryData(countryCode)
+      
+      // Add hover effect with glow
       d3.select(event.target)
         .transition()
-        .duration(150)
-        .attr('opacity', 0.8)
+        .duration(200)
+        .attr('opacity', 0.9)
+        .attr('stroke', '#3b82f6')
+        .attr('stroke-width', 2)
+        .attr('filter', 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))')
+      
+      // Show tooltip with country info
+      this.showTooltip(event, d, countryData)
     },
     
     handleCountryLeave(event, d) {
       // Remove hover effect
       d3.select(event.target)
         .transition()
-        .duration(150)
+        .duration(200)
         .attr('opacity', 1)
+        .attr('stroke', '#dee2e6')
+        .attr('stroke-width', 0.5)
+        .attr('filter', null)
+      
+      // Hide tooltip
+      this.hideTooltip()
     },
     
     zoomIn() {
@@ -588,25 +576,87 @@ export default {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
       }).format(amount)
+    },
+    
+    showTooltip(event, d, countryData) {
+      // Create tooltip if it doesn't exist
+      if (!this.tooltip) {
+        this.tooltip = d3.select('body')
+          .append('div')
+          .attr('class', 'map-tooltip')
+          .style('position', 'absolute')
+          .style('background', 'rgba(0, 0, 0, 0.9)')
+          .style('color', 'white')
+          .style('padding', '12px 16px')
+          .style('border-radius', '8px')
+          .style('font-size', '14px')
+          .style('font-weight', '500')
+          .style('pointer-events', 'none')
+          .style('z-index', '1000')
+          .style('box-shadow', '0 4px 12px rgba(0, 0, 0, 0.3)')
+          .style('border', '1px solid rgba(255, 255, 255, 0.2)')
+          .style('opacity', 0)
+          .style('transition', 'opacity 0.2s ease')
+      }
+      
+      const countryName = d.properties.NAME || d.properties.ADMIN || 'País desconocido'
+      const amount = countryData ? this.formatAmount(countryData.total_amount) : 'Sin datos'
+      const cases = countryData ? countryData.total_cases : 0
+      
+      let tooltipContent = `<div style="font-weight: 600; margin-bottom: 4px;">${countryName}</div>`
+      
+      if (countryData && countryData.total_amount > 0) {
+        tooltipContent += `
+          <div style="color: #fbbf24; margin-bottom: 2px;">💰 €${amount}</div>
+          <div style="color: #93c5fd; margin-bottom: 4px;">📊 ${cases} casos</div>
+          <div style="font-size: 12px; color: #d1d5db;">Haz clic para ver detalles</div>
+        `
+      } else {
+        tooltipContent += `
+          <div style="color: #9ca3af;">Sin casos registrados</div>
+        `
+      }
+      
+      this.tooltip
+        .html(tooltipContent)
+        .style('left', (event.pageX + 10) + 'px')
+        .style('top', (event.pageY - 10) + 'px')
+        .transition()
+        .duration(200)
+        .style('opacity', 1)
+    },
+    
+    hideTooltip() {
+      if (this.tooltip) {
+        this.tooltip
+          .transition()
+          .duration(200)
+          .style('opacity', 0)
+      }
     }
   },
   
   beforeUnmount() {
     // Cleanup D3 event listeners and resize listener
     window.removeEventListener('resize', this.handleResize)
-    
+
     if (this.svg) {
       this.svg.on('.zoom', null)
       this.svg.on('click', null)
     }
-    
+
     if (this.g) {
       this.g.selectAll('path')
         .on('click', null)
         .on('mouseover', null)
         .on('mouseout', null)
     }
-    
+
+    // Cleanup tooltip
+    if (this.tooltip) {
+      this.tooltip.remove()
+    }
+
     // Clear resize timeout
     if (this.resizeTimeout) {
       clearTimeout(this.resizeTimeout)
@@ -622,6 +672,20 @@ export default {
 
 .country-path:hover {
   filter: brightness(0.9);
+}
+
+/* Ensure SVG is visible */
+svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Map container styling */
+#worldMap {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
 }
 </style>
 

@@ -4,7 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/static/',
+  base: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -13,10 +13,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000', // Change this to your Django backend port
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
     },
   },
+  publicDir: 'public',
+  assetsInclude: ['**/*.json'],
 })
