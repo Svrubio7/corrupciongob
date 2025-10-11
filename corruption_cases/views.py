@@ -12,11 +12,11 @@ from django.template.loader import render_to_string
 
 from .models import (
     PoliticalParty, Institution, CorruptionType, Region, 
-    Tag, CorruptionCase, CaseImage
+    Tag, Country, CorruptionCase, CaseImage
 )
 from .serializers import (
     PoliticalPartySerializer, InstitutionSerializer, CorruptionTypeSerializer,
-    RegionSerializer, TagSerializer, CaseImageSerializer,
+    RegionSerializer, TagSerializer, CountrySerializer, CaseImageSerializer,
     CorruptionCaseListSerializer, CorruptionCaseDetailSerializer
 )
 
@@ -67,9 +67,18 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['name', 'created_at']
     ordering = ['name']
 
+class CountryViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
+    pagination_class = None
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'code']
+    ordering_fields = ['name', 'created_at']
+    ordering = ['name']
+
 class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CorruptionCase.objects.select_related(
-        'political_party', 'institution', 'corruption_type', 'region'
+        'political_party', 'institution', 'corruption_type', 'region', 'country'
     ).prefetch_related('tags', 'case_images')
     lookup_field = 'slug'
     
@@ -84,6 +93,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         'institution': ['exact'],
         'corruption_type': ['exact'],
         'region': ['exact'],
+        'country': ['exact'],
         'is_featured': ['exact'],
         'tags': ['exact'],
     }
@@ -169,6 +179,39 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         publications = self.queryset.exclude(publication_type='case')
         serializer = self.get_serializer(publications, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def by_country(self, request):
+        """Get corruption statistics grouped by country with cases"""
+        from django.db.models import Count, Sum
+        from decimal import Decimal
+        
+        # Get all countries with cases
+        countries_with_cases = Country.objects.filter(
+            corruptioncase__isnull=False
+        ).distinct()
+        
+        country_data = []
+        for country in countries_with_cases:
+            cases = self.queryset.filter(country=country, publication_type='case')
+            
+            # Calculate total amount considering annual payments
+            total_amount = Decimal('0')
+            for case in cases:
+                total_amount += case.get_total_amount()
+            
+            if cases.exists():
+                country_data.append({
+                    'country': CountrySerializer(country).data,
+                    'total_cases': cases.count(),
+                    'total_amount': float(total_amount),
+                    'cases': CorruptionCaseListSerializer(cases, many=True).data
+                })
+        
+        # Sort by total amount descending
+        country_data.sort(key=lambda x: x['total_amount'], reverse=True)
+        
+        return Response(country_data)
 
 class CaseImageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CaseImage.objects.all()

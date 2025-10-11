@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     PoliticalParty, Institution, CorruptionType, Region, 
-    Tag, CorruptionCase, CaseImage
+    Tag, Country, CorruptionCase, CaseImage
 )
 
 class PoliticalPartySerializer(serializers.ModelSerializer):
@@ -31,6 +31,11 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ['id', 'name', 'created_at']
 
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = ['id', 'name', 'code', 'created_at']
+
 class CaseImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = CaseImage
@@ -42,6 +47,7 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
     institution = InstitutionSerializer(read_only=True)
     corruption_type = CorruptionTypeSerializer(read_only=True)
     region = RegionSerializer(read_only=True)
+    country = CountrySerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
     total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
@@ -70,7 +76,7 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'slug', 'short_description', 'date', 'amount', 
             'amount_display', 'total_amount', 'years_duration', 'main_image', 
-            'political_party', 'institution', 'corruption_type', 'region', 'tags', 
+            'political_party', 'institution', 'corruption_type', 'region', 'country', 'tags', 
             'publication_type', 'publication_type_display', 'author_name', 
             'external_url', 'is_annual_amount', 'start_date', 'is_featured', 'created_at'
         ]
@@ -81,6 +87,7 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
     institution = InstitutionSerializer(read_only=True)
     corruption_type = CorruptionTypeSerializer(read_only=True)
     region = RegionSerializer(read_only=True)
+    country = CountrySerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     case_images = CaseImageSerializer(many=True, read_only=True)
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
@@ -112,7 +119,7 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
             'id', 'title', 'slug', 'short_description', 'full_description', 'processed_description',
             'date', 'amount', 'amount_display', 'total_amount', 'years_duration', 
             'main_image', 'political_party', 'institution', 'corruption_type', 
-            'region', 'tags', 'case_images',             'publication_type', 'publication_type_display', 
+            'region', 'country', 'tags', 'case_images', 'publication_type', 'publication_type_display', 
             'author_name', 'external_url', 'is_annual_amount', 'start_date', 'sources', 'is_featured', 
             'created_at', 'updated_at'
         ] 

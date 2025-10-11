@@ -61,6 +61,20 @@ class Region(models.Model):
     def __str__(self):
         return self.name
 
+class Country(models.Model):
+    """Country model for tracking international money destinations"""
+    name = models.CharField(max_length=100, unique=True, verbose_name="Nombre del país")
+    code = models.CharField(max_length=3, unique=True, verbose_name="Código ISO", help_text="Código ISO 3166-1 alpha-3")
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['name']
+        verbose_name = "País"
+        verbose_name_plural = "Países"
+    
+    def __str__(self):
+        return self.name
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -122,6 +136,14 @@ class CorruptionCase(models.Model):
         null=True, 
         blank=True,
         verbose_name="Región"
+    )
+    country = models.ForeignKey(
+        'Country',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="País destino",
+        help_text="País al que se destina el dinero público"
     )
     tags = models.ManyToManyField(Tag, blank=True, verbose_name="Etiquetas")
     

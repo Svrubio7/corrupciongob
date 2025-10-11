@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Detail from '../views/Detail.vue'
 import AboutView from '../views/AboutView.vue'
 import PublicacionesView from '../views/PublicacionesView.vue'
+import WorldMapView from '../views/WorldMapView.vue'
 
 const routes = [
   { path: '/', name: 'homeview', component: HomeView },
@@ -11,6 +12,7 @@ const routes = [
   { path: '/app/case/:slug', name: 'case-detail', component: Detail, props: true },
   { path: '/app/publicacion/:slug', name: 'publicacion-detail', component: Detail, props: true },
   { path: '/publicaciones', name: 'publicaciones', component: PublicacionesView },
+  { path: '/mapa', name: 'world-map', component: WorldMapView },
   { path: '/about', name: 'about', component: AboutView },
   { path: '/:catchAll(.*)', redirect: '/' }
 ]

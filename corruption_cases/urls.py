@@ -9,6 +9,7 @@ router.register(r'institutions', views.InstitutionViewSet)
 router.register(r'corruption-types', views.CorruptionTypeViewSet)
 router.register(r'regions', views.RegionViewSet)
 router.register(r'tags', views.TagViewSet)
+router.register(r'countries', views.CountryViewSet)
 router.register(r'cases', views.CorruptionCaseViewSet)
 router.register(r'case-images', views.CaseImageViewSet)
 
