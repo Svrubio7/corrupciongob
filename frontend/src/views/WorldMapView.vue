@@ -251,7 +251,7 @@ export default {
     async loadWorldMap() {
       try {
         // Load GeoJSON with ISO codes
-        const worldData = await d3.json('/countries.json')
+        const worldData = await d3.json(`${import.meta.env.BASE_URL}countries.json`)
         this.countries = worldData
         console.log('Mapa mundial cargado:', this.countries.features.length, 'países')
         
