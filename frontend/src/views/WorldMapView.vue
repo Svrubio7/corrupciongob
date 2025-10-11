@@ -34,7 +34,7 @@
 
       <!-- Map Container -->
       <div v-else class="bg-white rounded-2xl shadow-xl p-6 mb-8">
-        <div class="flex flex-col lg:flex-row gap-8">
+        <div class="flex flex-col lg:flex-row gap-6">
           <!-- Map Area -->
           <div class="flex-1">
             <div class="relative">
@@ -115,61 +115,47 @@
           </div>
 
           <!-- Country Info Panel -->
-          <div v-if="selectedCountry" class="lg:w-96">
-            <div class="bg-gradient-to-br from-primary-50 to-white rounded-xl shadow-lg p-6 sticky top-4">
-              <button 
-                @click="selectedCountry = null" 
-                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white hover:bg-gray-100 transition-colors shadow"
-              >
-                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </button>
-
-              <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">
-                  {{ selectedCountry.country.name }}
-                </h2>
-                <p class="text-sm text-gray-600">Código: {{ selectedCountry.country.code }}</p>
-              </div>
-
-              <div class="space-y-4">
-                <div class="bg-white rounded-lg p-4 shadow">
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm text-gray-600">Total Destinado</span>
-                    <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                  </div>
-                  <p class="text-3xl font-bold text-primary-600">
-                    €{{ formatAmount(selectedCountry.total_amount) }}
-                  </p>
+          <div v-if="selectedCountry" class="w-full max-w-sm lg:max-w-xs lg:sticky lg:top-4 lg:self-start">
+            <div class="bg-white rounded-lg shadow-lg border border-gray-100 p-4">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex-1">
+                  <h3 class="text-lg font-semibold text-gray-900 leading-tight">
+                    {{ selectedCountry.country.name }}
+                  </h3>
+                  <p class="text-xs text-gray-500 mt-1">{{ selectedCountry.country.code }}</p>
                 </div>
-
-                <div class="bg-white rounded-lg p-4 shadow">
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm text-gray-600">Número de Casos</span>
-                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                  </div>
-                  <p class="text-3xl font-bold text-gray-900">
-                    {{ selectedCountry.total_cases }}
-                  </p>
-                </div>
-              </div>
-
-              <div class="mt-6">
                 <button 
-                  @click="scrollToCases"
-                  class="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-lg flex items-center justify-center gap-2"
+                  @click="selectedCountry = null" 
+                  class="ml-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
                 >
-                  Ver todos los casos
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                   </svg>
                 </button>
               </div>
+
+              <div class="space-y-3">
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span class="text-sm text-gray-600">Total destinado</span>
+                  <span class="text-sm font-semibold text-primary-600">
+                    €{{ formatAmount(selectedCountry.total_amount) }}
+                  </span>
+                </div>
+                
+                <div class="flex justify-between items-center py-2">
+                  <span class="text-sm text-gray-600">Casos registrados</span>
+                  <span class="text-sm font-semibold text-gray-900">
+                    {{ selectedCountry.total_cases }}
+                  </span>
+                </div>
+              </div>
+
+              <button 
+                @click="scrollToCases"
+                class="w-full mt-4 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium py-2 px-4 rounded-md transition-colors"
+              >
+                Ver casos
+              </button>
             </div>
           </div>
         </div>
