@@ -43,7 +43,7 @@
                     <h3 class="text-sm font-semibold text-gray-900 mb-3">Intensidad de Fondos</h3>
                     <div class="space-y-2">
                       <div class="flex items-center gap-2">
-                        <div class="w-8 h-4 rounded" style="background-color: #FFF"></div>
+                        <div class="w-8 h-4 rounded" style="background-color: #d1d5db"></div>
                         <span class="text-xs text-gray-600">Sin datos</span>
                       </div>
                       <div class="flex items-center gap-2">
@@ -320,8 +320,8 @@ export default {
         .enter()
         .append('path')
         .attr('d', this.path)
-        .attr('fill', '#e9ecef')
-        .attr('stroke', '#dee2e6')
+        .attr('fill', '#d1d5db')
+        .attr('stroke', '#6b7280')
         .attr('stroke-width', 0.5)
         .attr('class', 'country-path')
         .attr('data-iso', d => this.getCountryCode(d))
@@ -411,7 +411,7 @@ export default {
               this.selectedCountry.country.code === countryCode) {
             return '#000'
           }
-          return '#dee2e6'
+          return '#6b7280'
         })
         .attr('stroke-width', (d) => {
           const countryCode = this.getCountryCode(d)
@@ -443,7 +443,7 @@ export default {
     
     getCountryColor(countryData) {
       if (!countryData || !countryData.total_amount || countryData.total_amount === 0) {
-        return '#ffffff' // White for no data
+        return '#d1d5db' // Gray for no data
       }
       
       // Gaussian distribution coloring
@@ -540,7 +540,7 @@ export default {
         .transition()
         .duration(200)
         .attr('opacity', 1)
-        .attr('stroke', '#dee2e6')
+        .attr('stroke', '#6b7280')
         .attr('stroke-width', 0.5)
         .attr('filter', null)
       

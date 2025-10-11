@@ -4,7 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [vue()],
-  base: './',
+  base: '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -18,6 +18,10 @@ export default defineConfig({
         secure: false,
       },
     },
+    strictPort: false,
+    hmr: {
+      overlay: true
+    }
   },
   publicDir: 'public',
   assetsInclude: ['**/*.json'],
