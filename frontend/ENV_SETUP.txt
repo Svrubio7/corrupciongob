@@ -1,0 +1,91 @@
+═══════════════════════════════════════════════════════════════
+  CONFIGURAR GOOGLE ANALYTICS - Crear archivo .env
+═══════════════════════════════════════════════════════════════
+
+📝 Paso 1: Crear el archivo .env
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+En la carpeta frontend/, crea un archivo llamado:  .env
+
+(Importante: el archivo se llama ".env" sin extensión)
+
+
+📝 Paso 2: Copiar este contenido en el archivo .env
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Copia y pega exactamente esto:
+
+# API Configuration
+VITE_API_BASE_URL=http://localhost:8000/api/
+
+# Google Analytics
+VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+
+
+📝 Paso 3: Obtener tu ID de Google Analytics
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Ve a: https://analytics.google.com/
+2. Crea una cuenta (si no tienes)
+3. Crea una propiedad para tu sitio web
+4. Copia tu ID de medición (ejemplo: G-ABC123DEF4)
+
+
+📝 Paso 4: Reemplazar el ID en el archivo .env
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Cambia esta línea:
+VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+
+Por tu ID real:
+VITE_GA_MEASUREMENT_ID=G-ABC123DEF4
+
+
+📝 Paso 5: Guardar y reiniciar
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Guarda el archivo .env
+2. Reinicia el servidor de desarrollo:
+   
+   npm run dev
+
+
+✅ EJEMPLO COMPLETO DEL ARCHIVO .env:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# API Configuration
+VITE_API_BASE_URL=http://localhost:8000/api/
+
+# Google Analytics
+VITE_GA_MEASUREMENT_ID=G-ABC123DEF4
+
+
+⚠️ IMPORTANTE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ El archivo .env NO se sube a Git (está en .gitignore)
+✅ Reemplaza G-XXXXXXXXXX con tu ID real
+✅ Reinicia el servidor después de crear el archivo
+
+
+🔍 VERIFICAR QUE FUNCIONA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Abre tu web (http://localhost:5173)
+2. Abre la consola del navegador (F12)
+3. Acepta las cookies analíticas
+4. Deberías ver en consola:
+   ✅ Google Analytics habilitado
+   ✅ Script de Google Analytics cargado
+
+
+📞 Si tienes problemas:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Asegúrate de que el archivo se llama exactamente ".env"
+- Verifica que el ID empieza con "G-" (para GA4)
+- Reinicia el servidor
+- Lee: frontend/GOOGLE_ANALYTICS_SETUP.md
+
+═══════════════════════════════════════════════════════════════
+

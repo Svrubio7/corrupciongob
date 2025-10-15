@@ -5,6 +5,9 @@ import Detail from '../views/Detail.vue'
 import AboutView from '../views/AboutView.vue'
 import PublicacionesView from '../views/PublicacionesView.vue'
 import WorldMapView from '../views/WorldMapView.vue'
+import PrivacyPolicy from '../views/PrivacyPolicy.vue'
+import CookiePolicy from '../views/CookiePolicy.vue'
+import LegalNotice from '../views/LegalNotice.vue'
 
 const routes = [
   { path: '/', name: 'homeview', component: HomeView },
@@ -14,6 +17,9 @@ const routes = [
   { path: '/publicaciones', name: 'publicaciones', component: PublicacionesView },
   { path: '/mapa', name: 'world-map', component: WorldMapView },
   { path: '/about', name: 'about', component: AboutView },
+  { path: '/politica-privacidad', name: 'privacy-policy', component: PrivacyPolicy },
+  { path: '/politica-cookies', name: 'cookie-policy', component: CookiePolicy },
+  { path: '/aviso-legal', name: 'legal-notice', component: LegalNotice },
   { path: '/:catchAll(.*)', redirect: '/' }
 ]
 

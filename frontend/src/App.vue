@@ -1,6 +1,18 @@
 <script>
+import { useCookieConsent } from './composables/useCookieConsent'
+import CookieSettingsButton from './components/CookieSettingsButton.vue'
+
 export default {
   name: "App",
+  components: {
+    CookieSettingsButton
+  },
+  setup() {
+    // Initialize cookie consent
+    useCookieConsent()
+    
+    return {}
+  },
   data() {
     return {
       showMobileMenu: false
@@ -9,6 +21,27 @@ export default {
   methods: {
     toggleMobileMenu() {
       this.showMobileMenu = !this.showMobileMenu
+    },
+    openCookieSettings() {
+      console.log('🍪 Abriendo configuración de cookies desde footer...')
+      
+      if (window.CookieConsent) {
+        try {
+          window.CookieConsent.showPreferences()
+          console.log('✅ Modal abierto correctamente')
+        } catch (error) {
+          console.error('❌ Error al abrir modal:', error)
+        }
+      } else {
+        console.warn('⚠️ CookieConsent no disponible, esperando...')
+        setTimeout(() => {
+          if (window.CookieConsent) {
+            window.CookieConsent.showPreferences()
+          } else {
+            alert('El sistema de cookies está cargando. Por favor, intenta de nuevo.')
+          }
+        }, 500)
+      }
     }
   },
   mounted() {
@@ -119,6 +152,9 @@ export default {
     <main class="flex-1 pt-16 md:pt-20">
       <router-view />
     </main>
+    
+    <!-- Cookie Settings Button (floating) -->
+    <CookieSettingsButton />
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-palette-primary to-palette-secondary text-white py-12">
       <div class="container mx-auto px-4">
@@ -148,10 +184,47 @@ export default {
             </a>
           </div>
 
+          <!-- Legal Links -->
+          <div class="text-left mb-8 pb-8 border-b border-white/20">
+            <h3 class="text-xl font-semibold mb-3">Información Legal</h3>
+            <div class="flex flex-wrap gap-4 items-center">
+              <router-link 
+                to="/aviso-legal" 
+                class="text-white/90 hover:text-white hover:underline transition"
+              >
+                Aviso Legal
+              </router-link>
+              <span class="text-white/50">|</span>
+              <router-link 
+                to="/politica-privacidad" 
+                class="text-white/90 hover:text-white hover:underline transition"
+              >
+                Política de Privacidad
+              </router-link>
+              <span class="text-white/50">|</span>
+              <router-link 
+                to="/politica-cookies" 
+                class="text-white/90 hover:text-white hover:underline transition"
+              >
+                Política de Cookies
+              </router-link>
+              <span class="text-white/50">|</span>
+              <button
+                @click="openCookieSettings"
+                class="text-white/90 hover:text-white hover:underline transition cursor-pointer bg-transparent border-none p-0 font-inherit"
+              >
+                Configurar Cookies
+              </button>
+            </div>
+          </div>
+
           <!-- Copyright -->
           <div class="text-left">
-            <p class="text-white/80 text-sm">
-              © {{ new Date().getFullYear() }} DEGU Hecho con transparencia.
+            <p class="text-white/80 text-sm mb-2">
+              © {{ new Date().getFullYear() }} DEGU - Hecho con transparencia
+            </p>
+            <p class="text-white/70 text-xs">
+              Sergio Verdugo Rubio | NIF: 77199933L | Alameda Principal 24, 1
             </p>
           </div>
         </div>
