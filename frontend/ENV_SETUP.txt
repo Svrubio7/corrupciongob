@@ -19,7 +19,7 @@ Copia y pega exactamente esto:
 VITE_API_BASE_URL=http://localhost:8000/api/
 
 # Google Analytics
-VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+VITE_GA_MEASUREMENT_ID=G-8VZ3X6K5F2
 
 
 📝 Paso 3: Obtener tu ID de Google Analytics
@@ -31,14 +31,13 @@ VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 4. Copia tu ID de medición (ejemplo: G-ABC123DEF4)
 
 
-📝 Paso 4: Reemplazar el ID en el archivo .env
+📝 Paso 4: El ID ya está configurado
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Cambia esta línea:
-VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+Tu archivo .env ya debe tener:
+VITE_GA_MEASUREMENT_ID=G-8VZ3X6K5F2
 
-Por tu ID real:
-VITE_GA_MEASUREMENT_ID=G-ABC123DEF4
+Este es tu ID de Google Analytics correcto.
 
 
 📝 Paso 5: Guardar y reiniciar
@@ -57,15 +56,22 @@ VITE_GA_MEASUREMENT_ID=G-ABC123DEF4
 VITE_API_BASE_URL=http://localhost:8000/api/
 
 # Google Analytics
-VITE_GA_MEASUREMENT_ID=G-ABC123DEF4
+VITE_GA_MEASUREMENT_ID=G-8VZ3X6K5F2
 
 
 ⚠️ IMPORTANTE:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ El archivo .env NO se sube a Git (está en .gitignore)
-✅ Reemplaza G-XXXXXXXXXX con tu ID real
+✅ Tu ID de Google Analytics es: G-8VZ3X6K5F2
 ✅ Reinicia el servidor después de crear el archivo
+
+🚀 PARA PRODUCCIÓN (RENDER):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+En Render, agrega estas variables de entorno:
+1. VITE_GA_MEASUREMENT_ID = G-8VZ3X6K5F2
+2. VITE_API_BASE_URL = https://degu.es/api/
 
 
 🔍 VERIFICAR QUE FUNCIONA:

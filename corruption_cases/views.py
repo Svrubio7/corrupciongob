@@ -120,14 +120,14 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
             return CorruptionCaseDetailSerializer
         return CorruptionCaseListSerializer
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], pagination_class=None)
     def featured(self, request):
         """Get featured corruption cases (only cases, not other publications)"""
         featured_cases = super().get_queryset().filter(is_featured=True, publication_type='case')
         serializer = self.get_serializer(featured_cases, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], pagination_class=None)
     def recent(self, request):
         """Get recent corruption cases (last 30 days)"""
         thirty_days_ago = timezone.now().date() - timedelta(days=30)
@@ -135,7 +135,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(recent_cases, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], pagination_class=None)
     def statistics(self, request):
         """Get corruption statistics (only for cases, not other publications)"""
         cases_only = super().get_queryset().filter(publication_type='case')
@@ -166,7 +166,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
             'institution_statistics': institution_stats,
         })
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], pagination_class=None)
     def search(self, request):
         """Advanced search endpoint"""
         query = request.query_params.get('q', '')
@@ -187,14 +187,14 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(search_results, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], pagination_class=None)
     def publications(self, request):
-        """Get all publications (exclude cases)"""
+        """Get all publications (exclude cases) - no pagination"""
         publications = super().get_queryset().exclude(publication_type='case')
         serializer = self.get_serializer(publications, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], pagination_class=None)
     def by_country(self, request):
         """Get corruption statistics grouped by country with cases"""
         from django.db.models import Count, Sum

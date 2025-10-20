@@ -203,8 +203,8 @@ export default {
         const response = await fetch(`${API_BASE_URL}cases/publications/`)
         const data = await response.json()
         
-        // Filter out cases (only show non-case publications)
-        this.allPublications = data.filter(item => item.publication_type !== 'case')
+        // Backend already filters out cases, so just use the data directly
+        this.allPublications = data
         
         // Get latest 5 for carousel
         this.featuredPublications = this.allPublications
