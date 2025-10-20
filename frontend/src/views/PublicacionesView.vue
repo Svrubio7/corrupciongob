@@ -32,7 +32,7 @@
               </div>
               
               <!-- Overlay -->
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
               
               <!-- Content -->
               <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
