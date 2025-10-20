@@ -12,9 +12,11 @@
     </div>
     <h1 class="text-3xl font-bold mb-2 text-palette-black">{{ caseData.title }}</h1>
     <div class="text-gray-500 mb-2">
-      <span class="font-semibold">Fecha:</span> {{ caseData.date }} |
-      <span class="font-semibold">Importe:</span> {{ caseData.amount_display }}
-                </div>
+      <span class="font-semibold">Fecha:</span> {{ caseData.date }}
+      <span v-if="caseData.amount_display && caseData.amount_display !== 'Sin importe'">
+        | <span class="font-semibold">Importe:</span> {{ caseData.amount_display }}
+      </span>
+    </div>
     <div class="mb-4">
       <span v-if="caseData.political_party">
         <span class="font-semibold">Partido:</span> {{ caseData.political_party.name }}
@@ -31,11 +33,8 @@
     </div>
     
     <div class="mb-6 text-lg text-palette-black prose prose-lg max-w-none">
-      <!-- Use processed description with embedded images if available, otherwise use regular paragraphs -->
-      <div v-if="caseData.processed_description" v-html="caseData.processed_description" class="article-content"></div>
-      <div v-else>
-        <p v-for="(p, i) in fullDescriptionParagraphs" :key="i" class="mb-4 leading-relaxed">{{ p }}</p>
-      </div>
+      <!-- Always use processed description for proper paragraph rendering -->
+      <div v-html="caseData.processed_description || ''" class="article-content"></div>
     </div>
     <!-- Show additional images section if there are images available -->
     <div v-if="caseData.case_images && caseData.case_images.length" class="mb-6">
@@ -71,19 +70,6 @@ export default {
     return {
       caseData: null,
       sourcesList: [],
-    }
-  },
-  computed: {
-    fullDescriptionParagraphs() {
-      if (!this.caseData || !this.caseData.full_description) {
-        return [];
-      }
-      
-      // Split by double line breaks and filter out empty strings
-      return this.caseData.full_description
-        .split(/(?:\r\n|\r|\n){2,}/g)
-        .map(p => p.trim())
-        .filter(p => p.length > 0);
     }
   },
   async created() {

@@ -507,14 +507,13 @@ export default {
       const countryCode = this.getCountryCode(d)
       const countryData = this.getCountryData(countryCode)
       
-      // Add hover effect with glow
+      // Add hover effect without filter (which causes visual issues)
       d3.select(event.target)
         .transition()
         .duration(200)
         .attr('opacity', 0.9)
         .attr('stroke', '#3b82f6')
         .attr('stroke-width', 2)
-        .attr('filter', 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))')
       
       // Show tooltip with country info
       this.showTooltip(event, d, countryData)
@@ -585,7 +584,7 @@ export default {
           .style('transition', 'opacity 0.2s ease')
       }
       
-      const countryName = d.properties.NAME || d.properties.ADMIN || 'País desconocido'
+      const countryName = d.properties.name || d.properties.NAME || d.properties.ADMIN || 'País desconocido'
       const amount = countryData ? this.formatAmount(countryData.total_amount) : 'Sin datos'
       const cases = countryData ? countryData.total_cases : 0
       

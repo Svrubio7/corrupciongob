@@ -95,9 +95,11 @@ class CorruptionCase(models.Model):
     date = models.DateField(verbose_name="Fecha")
     amount = models.DecimalField(
         max_digits=20, 
-        decimal_places=2, 
+        decimal_places=2,
+        null=True,
+        blank=True,
         validators=[MinValueValidator(0)],
-        help_text="Importe en euros",
+        help_text="Importe en euros (obligatorio solo para casos)",
         verbose_name="Importe"
     )
     main_image = models.ImageField(
@@ -221,10 +223,14 @@ class CorruptionCase(models.Model):
     
     def get_amount_display(self):
         """Format amount as currency"""
+        if self.amount is None:
+            return "Sin importe"
         return f"€{self.amount:,.2f}"
     
     def get_total_amount(self):
         """Calculate total amount considering annual payments"""
+        if self.amount is None:
+            return 0
         if self.is_annual_amount and self.start_date:
             from datetime import date
             today = date.today()
@@ -305,8 +311,15 @@ class CorruptionCase(models.Model):
         return mark_safe(final_description)
     
     def clean(self):
-        """Validate file size"""
+        """Validate file size and required fields based on publication type"""
         super().clean()
+        
+        # Validate amount is required for cases
+        if self.publication_type == 'case' and (self.amount is None or self.amount == 0):
+            raise ValidationError({
+                'amount': 'El importe es obligatorio para publicaciones de tipo "Caso".'
+            })
+        
         if self.main_image:
             # Check file size (10MB limit)
             if self.main_image.size > 10 * 1024 * 1024:  # 10MB in bytes

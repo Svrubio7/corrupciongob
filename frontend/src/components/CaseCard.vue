@@ -15,6 +15,7 @@
         <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ caseData.short_description }}</p>
         <div class="mt-auto flex items-center justify-between">
           <span v-if="caseData.amount" class="text-primary-600 font-semibold">€{{ formatAmount(caseData.amount) }}</span>
+          <span v-else-if="caseData.publication_type === 'case'" class="text-gray-500 font-semibold">Sin importe</span>
           <span v-if="caseData.date" class="text-xs text-gray-500">{{ formatDate(caseData.date) }}</span>
         </div>
       </div>
