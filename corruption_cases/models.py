@@ -302,23 +302,52 @@ class CorruptionCase(models.Model):
                 if re.search(r'<[^>]+>', paragraph):
                     processed_paragraphs.append(paragraph)
                 else:
-                    # Otherwise, process as text
-                    # Replace single line breaks with <br> for bullet lists
-                    # But detect if it's a list item
+                    # Process each line individually to detect bullet points
                     lines = paragraph.split('\n')
-                    if len(lines) > 1 and all(line.strip().startswith('-') or not line.strip() for line in lines):
-                        # It's a list
-                        list_items = [line.strip()[1:].strip() for line in lines if line.strip().startswith('-')]
+                    processed_lines = []
+                    current_list_items = []
+                    
+                    for line in lines:
+                        line = line.strip()
+                        if not line:
+                            # Empty line - close any pending list
+                            if current_list_items:
+                                list_html = '<ul class="list-disc list-inside mb-4 space-y-2">'
+                                for item in current_list_items:
+                                    list_html += f'<li class="leading-relaxed">{item}</li>'
+                                list_html += '</ul>'
+                                processed_lines.append(list_html)
+                                current_list_items = []
+                            continue
+                        
+                        if line.startswith('-'):
+                            # It's a bullet point
+                            item_text = line[1:].strip()
+                            current_list_items.append(item_text)
+                        else:
+                            # Regular text - close any pending list first
+                            if current_list_items:
+                                list_html = '<ul class="list-disc list-inside mb-4 space-y-2">'
+                                for item in current_list_items:
+                                    list_html += f'<li class="leading-relaxed">{item}</li>'
+                                list_html += '</ul>'
+                                processed_lines.append(list_html)
+                                current_list_items = []
+                            processed_lines.append(line)
+                    
+                    # Close any remaining list
+                    if current_list_items:
                         list_html = '<ul class="list-disc list-inside mb-4 space-y-2">'
-                        for item in list_items:
+                        for item in current_list_items:
                             list_html += f'<li class="leading-relaxed">{item}</li>'
                         list_html += '</ul>'
-                        processed_paragraphs.append(list_html)
-                    else:
-                        # Regular paragraph
-                        paragraph = paragraph.replace('\n', '<br>')
-                        paragraph = f'<p class="mb-4 leading-relaxed">{paragraph}</p>'
-                        processed_paragraphs.append(paragraph)
+                        processed_lines.append(list_html)
+                    
+                    # Join processed lines
+                    if processed_lines:
+                        paragraph_content = '<br>'.join(processed_lines)
+                        paragraph_html = f'<p class="mb-4 leading-relaxed">{paragraph_content}</p>'
+                        processed_paragraphs.append(paragraph_html)
         
         # Join paragraphs with proper HTML spacing
         final_description = '\n'.join(processed_paragraphs)
