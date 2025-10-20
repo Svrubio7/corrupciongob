@@ -147,15 +147,18 @@ export function useCookieConsent() {
 
   // Función para habilitar Google Analytics
   const enableGoogleAnalytics = () => {
-    console.log('✅ Google Analytics habilitado')
-    
     // Obtener el ID de Google Analytics desde variables de entorno
     const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
     
     if (!GA_MEASUREMENT_ID) {
-      console.warn('⚠️ No se ha configurado VITE_GA_MEASUREMENT_ID en el archivo .env')
+      // Solo mostrar warning en desarrollo, no en producción
+      if (import.meta.env.DEV) {
+        console.warn('⚠️ No se ha configurado VITE_GA_MEASUREMENT_ID en el archivo .env')
+      }
       return
     }
+    
+    console.log('✅ Google Analytics habilitado')
 
     // Prevenir cargar múltiples veces
     if (window.gtag_loaded) {

@@ -104,13 +104,14 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         """
         Override get_queryset to filter by publication_type.
-        By default, only show cases. Custom actions handle their own filtering.
+        - 'list' action: only show cases
+        - 'retrieve' action: show any publication type (to allow viewing article details)
+        - Custom actions handle their own filtering
         """
         queryset = super().get_queryset()
         
-        # Only apply automatic filtering for list and retrieve actions
-        # Custom actions (featured, publications, statistics, etc.) handle their own filtering
-        if self.action in ['list', 'retrieve']:
+        # Only filter for 'list' action (not 'retrieve' so we can view any publication detail)
+        if self.action == 'list':
             queryset = queryset.filter(publication_type='case')
         
         return queryset

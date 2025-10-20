@@ -54,8 +54,10 @@
                       </li>
                     </ul>
                   </div>
-    <router-link to="/app" class="btn-primary bg-palette-black text-palette-light px-6 py-2 rounded-lg font-semibold hover:bg-palette-taupe transition">
-      Volver al listado
+    <router-link 
+      :to="caseData.publication_type === 'case' ? '/app' : '/publicaciones'" 
+      class="btn-primary bg-palette-black text-palette-light px-6 py-2 rounded-lg font-semibold hover:bg-palette-taupe transition">
+      {{ caseData.publication_type === 'case' ? 'Volver a Casos' : 'Volver a Publicaciones' }}
     </router-link>
   </div>
   <div v-else class="text-center py-20 text-xl text-gray-500">Cargando...</div>
@@ -84,8 +86,9 @@ export default {
       // If there's an external URL, redirect to it and don't show detail page
       if (this.caseData && this.caseData.external_url) {
         window.open(this.caseData.external_url, '_blank')
-        // Redirect back to publicaciones page
-        this.$router.push({ name: 'publicaciones' })
+        // Redirect back to appropriate page based on publication type
+        const backRoute = this.caseData.publication_type === 'case' ? '/app' : '/publicaciones'
+        this.$router.push(backRoute)
         return
       }
     } catch (e) {
