@@ -41,7 +41,14 @@
     <section class="container mx-auto px-4 pt-16 pb-24">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <h2 class="text-2xl md:text-3xl font-bold">Todos los Casos</h2>
-        <input v-model="searchQuery" type="text" placeholder="Buscar casos..." class="w-full md:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        <input 
+          id="search-cases"
+          name="search-cases"
+          v-model="searchQuery" 
+          type="text" 
+          placeholder="Buscar casos..." 
+          class="w-full md:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" 
+        />
       </div>
       
       <!-- Filters Section -->
@@ -72,14 +79,18 @@
               <div class="p-4 space-y-4">
                 <!-- Institution Filter -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Institución</label>
+                  <label for="institution-search" class="block text-sm font-medium text-gray-700 mb-2">Institución</label>
                   <input 
+                    id="institution-search"
+                    name="institution-search"
                     v-model="institutionSearch" 
                     type="text" 
                     placeholder="Buscar institución..." 
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 mb-2"
                   />
                   <select 
+                    id="institution-filter"
+                    name="institution-filter"
                     v-model="selectedInstitution" 
                     @change="applyFilters"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -93,14 +104,18 @@
                 
                 <!-- Region Filter -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Región</label>
+                  <label for="region-search" class="block text-sm font-medium text-gray-700 mb-2">Región</label>
                   <input 
+                    id="region-search"
+                    name="region-search"
                     v-model="regionSearch" 
                     type="text" 
                     placeholder="Buscar región..." 
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 mb-2"
                   />
                   <select 
+                    id="region-filter"
+                    name="region-filter"
                     v-model="selectedRegion" 
                     @change="applyFilters"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -186,14 +201,18 @@
             
             <!-- Institution Filter -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Institución</label>
+              <label for="institution-search-mobile" class="block text-sm font-medium text-gray-700 mb-2">Institución</label>
               <input 
+                id="institution-search-mobile"
+                name="institution-search-mobile"
                 v-model="institutionSearch" 
                 type="text" 
                 placeholder="Buscar institución..." 
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 mb-2"
               />
               <select 
+                id="institution-filter-mobile"
+                name="institution-filter-mobile"
                 v-model="selectedInstitution" 
                 @change="applyFilters"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -207,14 +226,18 @@
             
             <!-- Region Filter -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Región</label>
+              <label for="region-search-mobile" class="block text-sm font-medium text-gray-700 mb-2">Región</label>
               <input 
+                id="region-search-mobile"
+                name="region-search-mobile"
                 v-model="regionSearch" 
                 type="text" 
                 placeholder="Buscar región..." 
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 mb-2"
               />
               <select 
+                id="region-filter-mobile"
+                name="region-filter-mobile"
                 v-model="selectedRegion" 
                 @change="applyFilters"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"

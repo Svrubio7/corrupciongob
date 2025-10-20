@@ -37,6 +37,19 @@ class CountrySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'code', 'created_at']
 
 class CaseImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    
+    def get_image(self, obj):
+        """Return HTTPS URL for image"""
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                url = request.build_absolute_uri(obj.image.url)
+                # Force HTTPS
+                return url.replace('http://', 'https://')
+            return obj.image.url.replace('http://', 'https://')
+        return None
+    
     class Meta:
         model = CaseImage
         fields = ['id', 'image', 'caption', 'order', 'created_at']
@@ -53,6 +66,18 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
     total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
     years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
     publication_type_display = serializers.SerializerMethodField(read_only=True)
+    main_image = serializers.SerializerMethodField()
+    
+    def get_main_image(self, obj):
+        """Return HTTPS URL for main image"""
+        if obj.main_image:
+            request = self.context.get('request')
+            if request:
+                url = request.build_absolute_uri(obj.main_image.url)
+                # Force HTTPS
+                return url.replace('http://', 'https://')
+            return obj.main_image.url.replace('http://', 'https://')
+        return None
     
     def get_publication_type_display(self, obj):
         """Get the display value for publication_type field"""
@@ -94,7 +119,28 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
     total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
     years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
     publication_type_display = serializers.SerializerMethodField(read_only=True)
-    processed_description = serializers.CharField(source='get_processed_description', read_only=True)
+    processed_description = serializers.SerializerMethodField()
+    main_image = serializers.SerializerMethodField()
+    
+    def get_main_image(self, obj):
+        """Return HTTPS URL for main image"""
+        if obj.main_image:
+            request = self.context.get('request')
+            if request:
+                url = request.build_absolute_uri(obj.main_image.url)
+                # Force HTTPS
+                return url.replace('http://', 'https://')
+            return obj.main_image.url.replace('http://', 'https://')
+        return None
+    
+    def get_processed_description(self, obj):
+        """Return processed description with HTTPS URLs"""
+        description = obj.get_processed_description()
+        # Force HTTPS in any URLs within the description
+        if description:
+            description = description.replace('http://www.degu.es/', 'https://www.degu.es/')
+            description = description.replace('http://degu.es/', 'https://degu.es/')
+        return description
     
     def get_publication_type_display(self, obj):
         """Get the display value for publication_type field"""

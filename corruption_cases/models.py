@@ -286,27 +286,42 @@ class CorruptionCase(models.Model):
         
         # Process titles and subtitles
         # Handle ## subtitles first (to avoid conflicts with # titles)
-        description = re.sub(r'^##(.+?)$', r'<h3 class="text-xl font-bold text-palette-black mt-6 mb-3">\1</h3>', description, flags=re.MULTILINE)
+        description = re.sub(r'^##\s*(.+?)$', r'\n<h3 class="text-xl font-bold text-palette-black mt-6 mb-3">\1</h3>\n', description, flags=re.MULTILINE)
         # Handle # titles
-        description = re.sub(r'^#(.+?)$', r'<h2 class="text-2xl font-bold text-palette-black mt-8 mb-4">\1</h2>', description, flags=re.MULTILINE)
+        description = re.sub(r'^#\s*(.+?)$', r'\n<h2 class="text-2xl font-bold text-palette-black mt-8 mb-4">\1</h2>\n', description, flags=re.MULTILINE)
         
         # Convert line breaks to paragraphs
-        # Split by double line breaks first
-        paragraphs = description.split('\n\n')
+        # Split by double line breaks OR by HTML tags
+        paragraphs = re.split(r'\n\n+|(?=<h[23])|(?<=</h[23]>)', description)
         processed_paragraphs = []
         
         for paragraph in paragraphs:
             paragraph = paragraph.strip()
             if paragraph:
-                # If it's not already HTML (contains tags), wrap in <p>
-                if not re.search(r'<[^>]+>', paragraph):
-                    # Replace single line breaks within paragraphs with <br> tags
-                    paragraph = paragraph.replace('\n', '<br>')
-                    paragraph = f'<p class="mb-4 leading-relaxed">{paragraph}</p>'
-                processed_paragraphs.append(paragraph)
+                # If it's already HTML (contains tags), keep as is
+                if re.search(r'<[^>]+>', paragraph):
+                    processed_paragraphs.append(paragraph)
+                else:
+                    # Otherwise, process as text
+                    # Replace single line breaks with <br> for bullet lists
+                    # But detect if it's a list item
+                    lines = paragraph.split('\n')
+                    if len(lines) > 1 and all(line.strip().startswith('-') or not line.strip() for line in lines):
+                        # It's a list
+                        list_items = [line.strip()[1:].strip() for line in lines if line.strip().startswith('-')]
+                        list_html = '<ul class="list-disc list-inside mb-4 space-y-2">'
+                        for item in list_items:
+                            list_html += f'<li class="leading-relaxed">{item}</li>'
+                        list_html += '</ul>'
+                        processed_paragraphs.append(list_html)
+                    else:
+                        # Regular paragraph
+                        paragraph = paragraph.replace('\n', '<br>')
+                        paragraph = f'<p class="mb-4 leading-relaxed">{paragraph}</p>'
+                        processed_paragraphs.append(paragraph)
         
-        # Join paragraphs with proper HTML spacing (no extra newlines)
-        final_description = ''.join(processed_paragraphs)
+        # Join paragraphs with proper HTML spacing
+        final_description = '\n'.join(processed_paragraphs)
         
         return mark_safe(final_description)
     

@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'csp.middleware.CSPMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -172,3 +173,22 @@ MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10MB
 if not DEBUG:
     DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50MB for production
     FILE_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50MB for production
+
+# Content Security Policy
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "'unsafe-inline'",  # Needed for inline scripts from Vue/Vite
+    "https://www.googletagmanager.com",  # Google Analytics
+    "https://www.google-analytics.com",  # Google Analytics
+)
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Needed for inline styles from Tailwind
+CSP_IMG_SRC = ("'self'", "data:", "https:", "http:")  # Allow images from anywhere
+CSP_FONT_SRC = ("'self'", "data:", "https:")
+CSP_CONNECT_SRC = ("'self'", "https://www.google-analytics.com", "https://www.googletagmanager.com")
+CSP_FRAME_SRC = ("'none'",)
+CSP_OBJECT_SRC = ("'none'",)
+CSP_BASE_URI = ("'self'",)
+CSP_FORM_ACTION = ("'self'",)
+CSP_FRAME_ANCESTORS = ("'none'",)
+CSP_UPGRADE_INSECURE_REQUESTS = True
