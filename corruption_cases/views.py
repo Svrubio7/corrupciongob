@@ -101,6 +101,20 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['date', 'amount', 'title', 'created_at']
     ordering = ['-date', '-created_at']
 
+    def get_queryset(self):
+        """
+        Override get_queryset to filter by publication_type.
+        By default, only show cases. Custom actions handle their own filtering.
+        """
+        queryset = super().get_queryset()
+        
+        # Only apply automatic filtering for list and retrieve actions
+        # Custom actions (featured, publications, statistics, etc.) handle their own filtering
+        if self.action in ['list', 'retrieve']:
+            queryset = queryset.filter(publication_type='case')
+        
+        return queryset
+
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return CorruptionCaseDetailSerializer
@@ -109,7 +123,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=['get'])
     def featured(self, request):
         """Get featured corruption cases (only cases, not other publications)"""
-        featured_cases = self.queryset.filter(is_featured=True, publication_type='case')
+        featured_cases = super().get_queryset().filter(is_featured=True, publication_type='case')
         serializer = self.get_serializer(featured_cases, many=True)
         return Response(serializer.data)
 
@@ -117,14 +131,14 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     def recent(self, request):
         """Get recent corruption cases (last 30 days)"""
         thirty_days_ago = timezone.now().date() - timedelta(days=30)
-        recent_cases = self.queryset.filter(date__gte=thirty_days_ago)
+        recent_cases = super().get_queryset().filter(date__gte=thirty_days_ago, publication_type='case')
         serializer = self.get_serializer(recent_cases, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def statistics(self, request):
         """Get corruption statistics (only for cases, not other publications)"""
-        cases_only = self.queryset.filter(publication_type='case')
+        cases_only = super().get_queryset().filter(publication_type='case')
         total_cases = cases_only.count()
         # Calculate total amount considering annual payments
         total_amount = 0
@@ -169,14 +183,14 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
                       Q(region__name__icontains=query) | \
                       Q(tags__name__icontains=query)
         
-        search_results = self.queryset.filter(search_query).distinct()
+        search_results = super().get_queryset().filter(search_query, publication_type='case').distinct()
         serializer = self.get_serializer(search_results, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def publications(self, request):
         """Get all publications (exclude cases)"""
-        publications = self.queryset.exclude(publication_type='case')
+        publications = super().get_queryset().exclude(publication_type='case')
         serializer = self.get_serializer(publications, many=True)
         return Response(serializer.data)
     
@@ -188,12 +202,13 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         
         # Get all countries with cases
         countries_with_cases = Country.objects.filter(
-            corruptioncase__isnull=False
+            corruptioncase__isnull=False,
+            corruptioncase__publication_type='case'
         ).distinct()
         
         country_data = []
         for country in countries_with_cases:
-            cases = self.queryset.filter(country=country, publication_type='case')
+            cases = super().get_queryset().filter(country=country, publication_type='case')
             
             # Calculate total amount considering annual payments
             total_amount = Decimal('0')
