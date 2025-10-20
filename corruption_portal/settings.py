@@ -179,12 +179,27 @@ CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = (
     "'self'",
     "'unsafe-inline'",  # Needed for inline scripts from Vue/Vite
+    "'unsafe-eval'",    # Needed for Vue/Vite development and some libraries
     "https://www.googletagmanager.com",  # Google Analytics
     "https://www.google-analytics.com",  # Google Analytics
 )
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Needed for inline styles from Tailwind
+CSP_STYLE_SRC = (
+    "'self'", 
+    "'unsafe-inline'",  # Needed for inline styles from Tailwind
+    "https://fonts.googleapis.com",  # Google Fonts
+)
+CSP_STYLE_SRC_ELEM = (
+    "'self'", 
+    "'unsafe-inline'",  # Needed for inline styles from Tailwind
+    "https://fonts.googleapis.com",  # Google Fonts
+)
 CSP_IMG_SRC = ("'self'", "data:", "https:", "http:")  # Allow images from anywhere
-CSP_FONT_SRC = ("'self'", "data:", "https:")
+CSP_FONT_SRC = (
+    "'self'", 
+    "data:", 
+    "https://fonts.gstatic.com",  # Google Fonts files
+    "https:"
+)
 CSP_CONNECT_SRC = ("'self'", "https://www.google-analytics.com", "https://www.googletagmanager.com")
 CSP_FRAME_SRC = ("'none'",)
 CSP_OBJECT_SRC = ("'none'",)
