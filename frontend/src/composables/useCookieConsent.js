@@ -141,22 +141,35 @@ export function useCookieConsent() {
             disableGoogleAnalytics()
           }
         }
+      },
+
+      onInit: ({ cookie }) => {
+        console.log('🍪 Cookie consent inicializado')
+        
+        // Verificar estado inicial de Google Analytics
+        if (cookie.categories.includes('analytics')) {
+          console.log('📊 Analytics ya habilitado, verificando estado...')
+          setTimeout(() => {
+            checkGoogleAnalyticsStatus()
+          }, 2000)
+        }
+        
+        // Verificación periódica cada 30 segundos para asegurar que GA sigue funcionando
+        setInterval(() => {
+          if (CookieConsent.acceptedCategory('analytics')) {
+            checkGoogleAnalyticsStatus()
+          }
+        }, 30000)
       }
     })
   })
 
   // Función para habilitar Google Analytics
   const enableGoogleAnalytics = () => {
-    // Obtener el ID de Google Analytics desde variables de entorno
-    const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
+    // ID de Google Analytics hardcodeado para DEGU
+    const GA_MEASUREMENT_ID = 'G-6YXB42ZE93'
     
-    if (!GA_MEASUREMENT_ID) {
-      // Solo mostrar warning en desarrollo, no en producción
-      if (import.meta.env.DEV) {
-        console.warn('⚠️ No se ha configurado VITE_GA_MEASUREMENT_ID en el archivo .env')
-      }
-      return
-    }
+    console.log('🔧 Inicializando Google Analytics con ID:', GA_MEASUREMENT_ID)
     
     console.log('✅ Google Analytics habilitado')
 
@@ -185,8 +198,22 @@ export function useCookieConsent() {
     script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
     script.async = true
     script.onload = () => {
-      console.log('✅ Script de Google Analytics cargado')
+      console.log('✅ Script de Google Analytics cargado correctamente')
       window.gtag_loaded = true
+      
+      // Verificar que Google Analytics está funcionando
+      setTimeout(() => {
+        if (window.gtag && typeof window.gtag === 'function') {
+          console.log('✅ Google Analytics está funcionando correctamente')
+        } else {
+          console.error('❌ ERROR: Google Analytics no se ha inicializado correctamente')
+          console.warn('⚠️ ADVERTENCIA: La medición de datos puede no estar funcionando')
+        }
+      }, 1000)
+    }
+    script.onerror = () => {
+      console.error('❌ ERROR: No se pudo cargar el script de Google Analytics')
+      console.warn('⚠️ ADVERTENCIA: La medición de datos no está funcionando - verificar conexión a internet')
     }
     document.head.appendChild(script)
   }
@@ -195,7 +222,8 @@ export function useCookieConsent() {
   const disableGoogleAnalytics = () => {
     console.log('🚫 Google Analytics deshabilitado')
     
-    const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
+    // ID de Google Analytics hardcodeado para DEGU
+    const GA_MEASUREMENT_ID = 'G-6YXB42ZE93'
     
     if (GA_MEASUREMENT_ID && window.gtag) {
       // Deshabilitar Google Analytics
@@ -214,6 +242,29 @@ export function useCookieConsent() {
     })
   }
 
+  // Función para verificar el estado de Google Analytics
+  const checkGoogleAnalyticsStatus = () => {
+    const GA_MEASUREMENT_ID = 'G-6YXB42ZE93'
+    const isLoaded = window.gtag_loaded || false
+    const hasGtag = window.gtag && typeof window.gtag === 'function'
+    const hasDataLayer = window.dataLayer && Array.isArray(window.dataLayer)
+    
+    console.log('📊 Estado de Google Analytics:')
+    console.log('  - ID de medición:', GA_MEASUREMENT_ID)
+    console.log('  - Script cargado:', isLoaded)
+    console.log('  - Función gtag disponible:', hasGtag)
+    console.log('  - DataLayer disponible:', hasDataLayer)
+    console.log('  - Analytics habilitado:', CookieConsent.acceptedCategory('analytics'))
+    
+    if (!isLoaded || !hasGtag || !hasDataLayer) {
+      console.warn('⚠️ ADVERTENCIA: Google Analytics no está funcionando correctamente')
+      return false
+    }
+    
+    console.log('✅ Google Analytics está funcionando correctamente')
+    return true
+  }
+
   // Exponer métodos útiles
   return {
     showPreferences: () => {
@@ -224,7 +275,10 @@ export function useCookieConsent() {
     },
     acceptCategory: (category) => {
       CookieConsent.acceptCategory(category)
-    }
+    },
+    checkGoogleAnalyticsStatus,
+    enableGoogleAnalytics,
+    disableGoogleAnalytics
   }
 }
 
