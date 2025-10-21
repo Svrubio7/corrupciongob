@@ -286,9 +286,9 @@ class CorruptionCase(models.Model):
         
         # Process titles and subtitles
         # Handle ## subtitles first (to avoid conflicts with # titles)
-        description = re.sub(r'^##\s*(.+?)$', r'\n<h3 class="text-lg font-bold text-palette-black mt-0 mb-0">\1</h3>\n', description, flags=re.MULTILINE)
+        description = re.sub(r'^##\s*(.+?)$', r'\n<h3 class="text-xl font-bold text-palette-black mt-3 mb-2">\1</h3>\n', description, flags=re.MULTILINE)
         # Handle # titles
-        description = re.sub(r'^#\s*(.+?)$', r'\n<h2 class="text-xl font-bold text-palette-black mt-0 mb-0">\1</h2>\n', description, flags=re.MULTILINE)
+        description = re.sub(r'^#\s*(.+?)$', r'\n<h2 class="text-2xl font-bold text-palette-black mt-4 mb-2">\1</h2>\n', description, flags=re.MULTILINE)
         
         # Process line breaks - preserve exact number of line breaks
         # First, handle HTML tags (titles/subtitles) by splitting around them
@@ -333,7 +333,7 @@ class CorruptionCase(models.Model):
                     if current_list_items:
                         list_html = '<ul class="list-disc list-inside space-y-0">'
                         for item in current_list_items:
-                            list_html += f'<li class="leading-tight">{item}</li>'
+                            list_html += f'<li class="leading-relaxed">{item}</li>'
                         list_html += '</ul>'
                         processed_lines.append(list_html)
                         current_list_items = []
@@ -347,7 +347,7 @@ class CorruptionCase(models.Model):
                     if current_list_items:
                         list_html = '<ul class="list-disc list-inside space-y-0">'
                         for item in current_list_items:
-                            list_html += f'<li class="leading-tight">{item}</li>'
+                            list_html += f'<li class="leading-relaxed">{item}</li>'
                         list_html += '</ul>'
                         processed_lines.append(list_html)
                         current_list_items = []
@@ -357,14 +357,14 @@ class CorruptionCase(models.Model):
             if current_list_items:
                 list_html = '<ul class="list-disc list-inside space-y-0">'
                 for item in current_list_items:
-                    list_html += f'<li class="leading-tight">{item}</li>'
+                    list_html += f'<li class="leading-relaxed">{item}</li>'
                 list_html += '</ul>'
                 processed_lines.append(list_html)
             
             # Join lines with <br> tags to preserve single line breaks within paragraph
             if processed_lines:
                 paragraph_content = '<br>'.join(processed_lines)
-                paragraph_html = f'<p class="mb-1 leading-tight">{paragraph_content}</p>'
+                paragraph_html = f'<p class="mb-2 leading-relaxed">{paragraph_content}</p>'
                 processed_paragraphs.append(paragraph_html)
         
         return ''.join(processed_paragraphs)
