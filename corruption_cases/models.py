@@ -290,69 +290,75 @@ class CorruptionCase(models.Model):
         # Handle # titles
         description = re.sub(r'^#\s*(.+?)$', r'\n<h2 class="text-2xl font-bold text-palette-black mt-8 mb-4">\1</h2>\n', description, flags=re.MULTILINE)
         
-        # Convert line breaks to paragraphs
-        # Split by double line breaks OR by HTML tags
-        paragraphs = re.split(r'\n\n+|(?=<h[23])|(?<=</h[23]>)', description)
-        processed_paragraphs = []
+        # Process line breaks - preserve exact number of line breaks
+        # First, handle HTML tags (titles/subtitles) by splitting around them
+        parts = re.split(r'(<h[23][^>]*>.*?</h[23]>)', description, flags=re.DOTALL)
+        processed_parts = []
         
-        for paragraph in paragraphs:
-            paragraph = paragraph.strip()
-            if paragraph:
-                # If it's already HTML (contains tags), keep as is
-                if re.search(r'<[^>]+>', paragraph):
-                    processed_paragraphs.append(paragraph)
-                else:
-                    # Process each line individually to detect bullet points
-                    lines = paragraph.split('\n')
-                    processed_lines = []
-                    current_list_items = []
-                    
-                    for line in lines:
-                        line = line.strip()
-                        if not line:
-                            # Empty line - close any pending list
-                            if current_list_items:
-                                list_html = '<ul class="list-disc list-inside mb-2 space-y-1">'
-                                for item in current_list_items:
-                                    list_html += f'<li class="leading-relaxed">{item}</li>'
-                                list_html += '</ul>'
-                                processed_lines.append(list_html)
-                                current_list_items = []
-                            continue
-                        
-                        if line.startswith('-'):
-                            # It's a bullet point
-                            item_text = line[1:].strip()
-                            current_list_items.append(item_text)
-                        else:
-                            # Regular text - close any pending list first
-                            if current_list_items:
-                                list_html = '<ul class="list-disc list-inside mb-2 space-y-1">'
-                                for item in current_list_items:
-                                    list_html += f'<li class="leading-relaxed">{item}</li>'
-                                list_html += '</ul>'
-                                processed_lines.append(list_html)
-                                current_list_items = []
-                            processed_lines.append(line)
-                    
-                    # Close any remaining list
-                    if current_list_items:
-                        list_html = '<ul class="list-disc list-inside mb-2 space-y-1">'
-                        for item in current_list_items:
-                            list_html += f'<li class="leading-relaxed">{item}</li>'
-                        list_html += '</ul>'
-                        processed_lines.append(list_html)
-                    
-                    # Join processed lines with <br> tags to preserve line breaks
-                    if processed_lines:
-                        paragraph_content = '<br>'.join(processed_lines)
-                        paragraph_html = f'<p class="mb-4 leading-relaxed">{paragraph_content}</p>'
-                        processed_paragraphs.append(paragraph_html)
+        for part in parts:
+            if re.match(r'<h[23]', part):
+                # This is an HTML tag, keep as is
+                processed_parts.append(part)
+            else:
+                # Process text content
+                processed_parts.append(self._process_text_content(part))
         
-        # Join paragraphs with proper HTML spacing
-        final_description = '\n'.join(processed_paragraphs)
+        # Join all parts
+        final_description = ''.join(processed_parts)
         
         return mark_safe(final_description)
+    
+    def _process_text_content(self, text):
+        """Process text content to preserve exact line breaks and handle bullet points"""
+        if not text.strip():
+            return ''
+        
+        # Process each line individually to detect bullet points
+        lines = text.split('\n')
+        processed_lines = []
+        current_list_items = []
+        
+        for line in lines:
+            if line.strip() == '':
+                # Empty line - preserve it as <br>
+                if current_list_items:
+                    list_html = '<ul class="list-disc list-inside space-y-1">'
+                    for item in current_list_items:
+                        list_html += f'<li class="leading-relaxed">{item}</li>'
+                    list_html += '</ul>'
+                    processed_lines.append(list_html)
+                    current_list_items = []
+                processed_lines.append('<br>')
+            elif line.startswith('-'):
+                # It's a bullet point
+                item_text = line[1:].strip()
+                current_list_items.append(item_text)
+            else:
+                # Regular text - close any pending list first
+                if current_list_items:
+                    list_html = '<ul class="list-disc list-inside space-y-1">'
+                    for item in current_list_items:
+                        list_html += f'<li class="leading-relaxed">{item}</li>'
+                    list_html += '</ul>'
+                    processed_lines.append(list_html)
+                    current_list_items = []
+                processed_lines.append(line.strip())
+        
+        # Close any remaining list
+        if current_list_items:
+            list_html = '<ul class="list-disc list-inside space-y-1">'
+            for item in current_list_items:
+                list_html += f'<li class="leading-relaxed">{item}</li>'
+            list_html += '</ul>'
+            processed_lines.append(list_html)
+        
+        # Join all lines with <br> tags to preserve exact line breaks
+        if processed_lines:
+            paragraph_content = '<br>'.join(processed_lines)
+            paragraph_html = f'<p class="mb-4 leading-relaxed">{paragraph_content}</p>'
+            return paragraph_html
+        
+        return ''
     
     def clean(self):
         """Validate file size and required fields based on publication type"""
