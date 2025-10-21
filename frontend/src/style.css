@@ -66,15 +66,15 @@
   
   /* Article content specific styles */
   .article-content h2 {
-    @apply text-2xl font-bold text-palette-black mt-4 mb-2;
+    @apply text-2xl font-bold text-palette-black mt-6 mb-2;
   }
   
   .article-content h3 {
-    @apply text-xl font-bold text-palette-black mt-3 mb-2;
+    @apply text-xl font-bold text-palette-black mt-5 mb-2;
   }
   
   .article-content p {
-    @apply mb-2 leading-relaxed;
+    @apply mb-1 leading-relaxed;
   }
   
   .article-content .embedded-image {
