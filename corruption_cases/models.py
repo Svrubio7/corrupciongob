@@ -312,7 +312,7 @@ class CorruptionCase(models.Model):
                         if not line:
                             # Empty line - close any pending list
                             if current_list_items:
-                                list_html = '<ul class="list-disc list-inside mb-4 space-y-2">'
+                                list_html = '<ul class="list-disc list-inside mb-2 space-y-1">'
                                 for item in current_list_items:
                                     list_html += f'<li class="leading-relaxed">{item}</li>'
                                 list_html += '</ul>'
@@ -327,7 +327,7 @@ class CorruptionCase(models.Model):
                         else:
                             # Regular text - close any pending list first
                             if current_list_items:
-                                list_html = '<ul class="list-disc list-inside mb-4 space-y-2">'
+                                list_html = '<ul class="list-disc list-inside mb-2 space-y-1">'
                                 for item in current_list_items:
                                     list_html += f'<li class="leading-relaxed">{item}</li>'
                                 list_html += '</ul>'
@@ -337,13 +337,13 @@ class CorruptionCase(models.Model):
                     
                     # Close any remaining list
                     if current_list_items:
-                        list_html = '<ul class="list-disc list-inside mb-4 space-y-2">'
+                        list_html = '<ul class="list-disc list-inside mb-2 space-y-1">'
                         for item in current_list_items:
                             list_html += f'<li class="leading-relaxed">{item}</li>'
                         list_html += '</ul>'
                         processed_lines.append(list_html)
                     
-                    # Join processed lines
+                    # Join processed lines with <br> tags to preserve line breaks
                     if processed_lines:
                         paragraph_content = '<br>'.join(processed_lines)
                         paragraph_html = f'<p class="mb-4 leading-relaxed">{paragraph_content}</p>'
