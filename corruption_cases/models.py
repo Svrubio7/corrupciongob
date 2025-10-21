@@ -285,10 +285,10 @@ class CorruptionCase(models.Model):
                 description = description.replace(marker, '')
         
         # Process titles and subtitles
-        # Handle ## subtitles first (to avoid conflicts with # titles)
-        description = re.sub(r'^##\s*(.+?)$', r'<h3 class="text-xl font-bold text-palette-black mt-5 mb-2">\1</h3>', description, flags=re.MULTILINE)
-        # Handle # titles
-        description = re.sub(r'^#\s*(.+?)$', r'<h2 class="text-2xl font-bold text-palette-black mt-6 mb-2">\1</h2>', description, flags=re.MULTILINE)
+        # Handle ## subtitles first (to avoid conflicts with # titles) - no special spacing
+        description = re.sub(r'^##\s*(.+?)$', r'<h3 class="text-xl font-bold text-palette-black">\1</h3>', description, flags=re.MULTILINE)
+        # Handle # titles - no special spacing
+        description = re.sub(r'^#\s*(.+?)$', r'<h2 class="text-2xl font-bold text-palette-black">\1</h2>', description, flags=re.MULTILINE)
         
         # Process line breaks - preserve exact number of line breaks
         # First, handle HTML tags (titles/subtitles) by splitting around them
@@ -352,9 +352,20 @@ class CorruptionCase(models.Model):
             list_html += '</ul>'
             processed_lines.append(list_html)
         
-        # Join all lines with <br> tags to preserve exact line breaks
+        # Join all processed elements - add <br> between text lines, empty lines are already <br>
         if processed_lines:
-            paragraph_content = '<br>'.join(processed_lines)
+            # Add <br> between consecutive text elements (not after <br> or <ul>)
+            final_content = []
+            for i, element in enumerate(processed_lines):
+                final_content.append(element)
+                # Add <br> between text elements if next element is also text
+                if (i < len(processed_lines) - 1 and 
+                    not element.endswith('<br>') and 
+                    not element.startswith('<ul') and
+                    not processed_lines[i + 1].startswith('<ul')):
+                    final_content.append('<br>')
+            
+            paragraph_content = ''.join(final_content)
             paragraph_html = f'<p class="leading-relaxed">{paragraph_content}</p>'
             return paragraph_html
         

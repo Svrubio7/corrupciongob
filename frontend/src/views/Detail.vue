@@ -32,7 +32,7 @@
       </span>
     </div>
     
-    <div class="mb-6 text-sm md:text-lg text-palette-black prose prose-sm md:prose-lg max-w-none">
+    <div class="mb-6 text-sm md:text-lg text-palette-black max-w-none">
       <!-- Always use processed description for proper paragraph rendering -->
       <div v-html="caseData.processed_description || ''" class="article-content"></div>
     </div>
