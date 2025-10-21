@@ -35,35 +35,35 @@
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
               
               <!-- Content -->
-              <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+              <div class="absolute bottom-0 left-0 right-0 p-4 md:p-8 text-white">
                 <div class="max-w-4xl">
                   <!-- Publication Type Badge -->
-                  <span class="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold mb-4">
+                  <span class="inline-block px-3 md:px-4 py-1 md:py-2 bg-white/20 backdrop-blur-sm rounded-full text-xs md:text-sm font-semibold mb-2 md:mb-4">
                     {{ getTypeDisplayName(currentFeatured.publication_type) }}
                   </span>
                   
                   <!-- Title -->
-                  <h3 class="text-3xl md:text-4xl font-bold mb-4 line-clamp-2">
+                  <h3 class="text-xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4 line-clamp-2">
                     {{ currentFeatured.title }}
                   </h3>
                   
                   <!-- Author and Date -->
-                  <div class="flex items-center mb-4 text-white/90">
-                    <span v-if="currentFeatured.author_name" class="mr-6">
+                  <div class="flex flex-col md:flex-row md:items-center mb-3 md:mb-4 text-sm md:text-base text-white/90">
+                    <span v-if="currentFeatured.author_name" class="md:mr-6 mb-1 md:mb-0">
                       Por {{ currentFeatured.author_name }}
                     </span>
                     <span>{{ formatDate(currentFeatured.date) }}</span>
                   </div>
                   
-                  <!-- Description -->
-                  <p class="text-lg text-white/90 mb-6 line-clamp-3">
+                  <!-- Description - Hidden on mobile -->
+                  <p class="hidden md:block text-lg text-white/90 mb-6 line-clamp-3">
                     {{ currentFeatured.short_description }}
                   </p>
                   
                   <!-- CTA Button -->
                   <button 
                     @click="handleFeaturedClick(currentFeatured)"
-                    class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300">
+                    class="bg-primary-600 hover:bg-primary-700 text-white px-6 md:px-8 py-2 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">
                     {{ currentFeatured.publication_type === 'video' ? 'Ver Video' : 'Leer Más' }}
                   </button>
                 </div>
@@ -90,9 +90,9 @@
     <!-- All Publications Section -->
     <section class="py-16">
       <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center mb-8">
-          <h2 class="text-3xl font-bold text-gray-900">Todas las Publicaciones</h2>
-          <div class="flex items-center space-x-4">
+        <div class="mb-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Todas las Publicaciones</h2>
+          <div class="flex flex-col md:flex-row md:justify-end items-stretch md:items-center space-y-3 md:space-y-0 md:space-x-4">
             <!-- Sort by date -->
             <select v-model="sortOrder" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
               <option value="desc">Más recientes</option>
