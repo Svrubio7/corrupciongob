@@ -74,7 +74,7 @@
   }
   
   .article-content p {
-    @apply mb-4 leading-relaxed;
+    @apply mb-4 leading-normal;
   }
   
   .article-content .embedded-image {
@@ -87,6 +87,20 @@
   
   .article-content .embedded-image p {
     @apply text-sm text-gray-600 mt-2 text-center italic mb-0;
+  }
+  
+  /* Reduce spacing for br tags within paragraphs */
+  .article-content p br {
+    line-height: 1.2;
+  }
+  
+  /* Reduce spacing for list items */
+  .article-content ul {
+    @apply space-y-0;
+  }
+  
+  .article-content ul li {
+    @apply leading-normal;
   }
 }
 
