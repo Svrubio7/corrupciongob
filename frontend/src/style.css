@@ -66,15 +66,15 @@
   
   /* Article content specific styles */
   .article-content h2 {
-    @apply text-2xl font-bold text-palette-black mt-8 mb-4;
+    @apply text-xl font-bold text-palette-black mt-0 mb-0;
   }
   
   .article-content h3 {
-    @apply text-xl font-bold text-palette-black mt-6 mb-3;
+    @apply text-lg font-bold text-palette-black mt-0 mb-0;
   }
   
   .article-content p {
-    @apply mb-4 leading-normal;
+    @apply mb-1 leading-tight;
   }
   
   .article-content .embedded-image {
@@ -91,7 +91,7 @@
   
   /* Reduce spacing for br tags within paragraphs */
   .article-content p br {
-    line-height: 1.2;
+    line-height: 1.0;
   }
   
   /* Reduce spacing for list items */
@@ -100,7 +100,7 @@
   }
   
   .article-content ul li {
-    @apply leading-normal;
+    @apply leading-tight;
   }
 }
 
