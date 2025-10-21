@@ -74,7 +74,7 @@
   }
   
   .article-content p {
-    @apply mb-1 leading-relaxed;
+    @apply mb-0 leading-relaxed;
   }
   
   .article-content .embedded-image {

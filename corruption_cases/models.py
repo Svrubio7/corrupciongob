@@ -355,7 +355,7 @@ class CorruptionCase(models.Model):
         # Join all lines with <br> tags to preserve exact line breaks
         if processed_lines:
             paragraph_content = '<br>'.join(processed_lines)
-            paragraph_html = f'<p class="mb-1 leading-relaxed">{paragraph_content}</p>'
+            paragraph_html = f'<p class="leading-relaxed">{paragraph_content}</p>'
             return paragraph_html
         
         return ''
