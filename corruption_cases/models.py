@@ -199,6 +199,12 @@ class CorruptionCase(models.Model):
     # Metadata
     sources = models.TextField(help_text="Enlaces a fuentes, separados por líneas nuevas", verbose_name="Fuentes")
     is_featured = models.BooleanField(default=False, verbose_name="Es destacado")
+    publication_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Fecha de publicación del contenido",
+        verbose_name="Fecha de publicación"
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualización")
     

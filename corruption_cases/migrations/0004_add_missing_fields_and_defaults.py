@@ -6,12 +6,10 @@ from django.db import migrations, models, connection
 def check_column_exists(table_name, column_name):
     """Check if a column exists in the table"""
     with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT column_name 
-            FROM information_schema.columns 
-            WHERE table_name=%s AND column_name=%s
-        """, [table_name, column_name])
-        return cursor.fetchone() is not None
+        # SQLite version
+        cursor.execute("PRAGMA table_info(%s)" % table_name)
+        columns = [row[1] for row in cursor.fetchall()]
+        return column_name in columns
 
 
 def add_missing_fields(apps, schema_editor):

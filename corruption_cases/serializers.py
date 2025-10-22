@@ -99,7 +99,7 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CorruptionCase
         fields = [
-            'id', 'title', 'slug', 'short_description', 'date', 'amount', 
+            'id', 'title', 'slug', 'short_description', 'date', 'publication_date', 'amount', 
             'amount_display', 'total_amount', 'years_duration', 'main_image', 
             'political_party', 'institution', 'corruption_type', 'region', 'country', 'tags', 
             'publication_type', 'publication_type_display', 'author_name', 
@@ -163,7 +163,7 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
         model = CorruptionCase
         fields = [
             'id', 'title', 'slug', 'short_description', 'full_description', 'processed_description',
-            'date', 'amount', 'amount_display', 'total_amount', 'years_duration', 
+            'date', 'publication_date', 'amount', 'amount_display', 'total_amount', 'years_duration', 
             'main_image', 'political_party', 'institution', 'corruption_type', 
             'region', 'country', 'tags', 'case_images', 'publication_type', 'publication_type_display', 
             'author_name', 'external_url', 'is_annual_amount', 'start_date', 'sources', 'is_featured', 

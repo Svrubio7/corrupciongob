@@ -375,7 +375,7 @@ export default {
     async fetchCases() {
       try {
         // Fetch all cases (paginated)
-        const res = await fetch(`${API_BASE_URL}cases/?ordering=-date&page=${this.page}&page_size=${this.pageSize}`)
+        const res = await fetch(`${API_BASE_URL}cases/?ordering=-publication_date,-date&page=${this.page}&page_size=${this.pageSize}`)
         if (!res.ok) throw new Error('Failed to fetch cases')
         
         const data = await res.json()
@@ -395,15 +395,23 @@ export default {
           this.hasMore = false
         }
         
-        // Popular: 3 with highest amount (or popularity field if available)
-        this.popularCases = [...this.allCases]
-          .sort((a, b) => (b.amount || 0) - (a.amount || 0))
-          .slice(0, 3)
+        // Fetch popular cases from recent endpoint (ordered by publication date)
+        await this.fetchPopularCases()
       } catch (error) {
         console.error('Error fetching cases:', error)
         if (this.page === 1) {
           this.allCases = []
         }
+      }
+    },
+    async fetchPopularCases() {
+      try {
+        const res = await fetch(`${API_BASE_URL}cases/recent/`)
+        if (!res.ok) throw new Error('Failed to fetch popular cases')
+        this.popularCases = await res.json()
+      } catch (error) {
+        console.error('Error fetching popular cases:', error)
+        this.popularCases = []
       }
     },
     async fetchInstitutions() {

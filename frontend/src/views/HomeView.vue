@@ -88,6 +88,33 @@
       </div>
     </section>
 
+    <!-- Ayúdanos Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center">Ayúdanos</h2>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <!-- Stripe Buy Button (Left) -->
+            <div class="flex justify-center lg:justify-start">
+              <stripe-buy-button
+                buy-button-id="buy_btn_1SKzLSA7RDIVnFVmQK6S7mif"
+                publishable-key="pk_live_51SKypKA7RDIVnFVmdpqYxdTiB7eAb62dop2IWEG8CPhSACt6qt353N05qn4n0Zl2aemhlzMAilhJ54LPNgAMYQvq00ds16gebe"
+              >
+              </stripe-buy-button>
+            </div>
+            
+            <!-- Text Section (Right) -->
+            <div class="text-center lg:text-left">
+              <p class="text-lg text-gray-700 leading-relaxed">
+                Nos gustaría pedirte tu aportación para que podamos continuar con este proyecto. Podemos mantener todo gracias a estas aportaciones y sin ellas, cubrir costes es mucho más difícil. ¡Muchas gracias!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 </template>
 
@@ -112,6 +139,7 @@ export default {
   async mounted() {
     await this.loadStatistics()
     await this.loadFeaturedCases()
+    this.loadStripeScript()
   },
   methods: {
     async loadStatistics() {
@@ -130,7 +158,7 @@ export default {
     },
     async loadFeaturedCases() {
       try {
-        const response = await fetch(`${API_BASE_URL}cases/featured/`)
+        const response = await fetch(`${API_BASE_URL}cases/recent/`)
         this.featuredCases = await response.json()
       } catch (error) {
         console.error('Error loading featured cases:', error)
@@ -145,6 +173,18 @@ export default {
         month: 'long',
         day: 'numeric'
       })
+    },
+    loadStripeScript() {
+      // Check if script is already loaded
+      if (document.querySelector('script[src="https://js.stripe.com/v3/buy-button.js"]')) {
+        return
+      }
+      
+      // Create and load the Stripe script
+      const script = document.createElement('script')
+      script.src = 'https://js.stripe.com/v3/buy-button.js'
+      script.async = true
+      document.head.appendChild(script)
     }
   }
 }

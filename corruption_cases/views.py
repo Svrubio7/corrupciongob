@@ -88,6 +88,7 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
         'date': ['exact', 'gte', 'lte', 'range'],
+        'publication_date': ['exact', 'gte', 'lte', 'range'],
         'amount': ['exact', 'gte', 'lte', 'range'],
         'political_party': ['exact'],
         'institution': ['exact'],
@@ -98,8 +99,8 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         'tags': ['exact'],
     }
     search_fields = ['title', 'short_description', 'full_description']
-    ordering_fields = ['date', 'amount', 'title', 'created_at']
-    ordering = ['-date', '-created_at']
+    ordering_fields = ['date', 'publication_date', 'amount', 'title', 'created_at']
+    ordering = ['-publication_date', '-date', '-created_at']
 
     def get_queryset(self):
         """
@@ -123,16 +124,20 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['get'], pagination_class=None)
     def featured(self, request):
-        """Get featured corruption cases (only cases, not other publications)"""
-        featured_cases = super().get_queryset().filter(is_featured=True, publication_type='case')
+        """Get featured corruption cases ordered by publication date (only cases, not other publications)"""
+        featured_cases = super().get_queryset().filter(
+            is_featured=True, 
+            publication_type='case'
+        ).order_by('-publication_date', '-date', '-created_at')[:3]
         serializer = self.get_serializer(featured_cases, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], pagination_class=None)
     def recent(self, request):
-        """Get recent corruption cases (last 30 days)"""
-        thirty_days_ago = timezone.now().date() - timedelta(days=30)
-        recent_cases = super().get_queryset().filter(date__gte=thirty_days_ago, publication_type='case')
+        """Get recent corruption cases ordered by publication date (only cases, not other publications)"""
+        recent_cases = super().get_queryset().filter(
+            publication_type='case'
+        ).order_by('-publication_date', '-date', '-created_at')[:3]
         serializer = self.get_serializer(recent_cases, many=True)
         return Response(serializer.data)
 
