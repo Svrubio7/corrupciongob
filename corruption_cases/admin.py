@@ -53,11 +53,11 @@ class CaseImageInline(admin.TabularInline):
 @admin.register(CorruptionCase)
 class CorruptionCaseAdmin(admin.ModelAdmin):
     list_display = [
-        'title', 'date', 'amount_display', 'political_party', 
+        'title', 'date', 'publication_date', 'amount_display', 'political_party', 
         'institution', 'publication_type', 'author_name', 'is_featured', 'created_at'
     ]
     list_filter = [
-        'date', 'political_party', 'institution', 'corruption_type', 
+        'date', 'publication_date', 'political_party', 'institution', 'corruption_type', 
         'region', 'country', 'publication_type', 'is_annual_amount', 'is_featured', 'created_at'
     ]
     search_fields = ['title', 'short_description', 'full_description', 'author_name', 'country__name']
@@ -69,7 +69,7 @@ class CorruptionCaseAdmin(admin.ModelAdmin):
             'fields': ('title', 'slug', 'short_description', 'full_description')
         }),
         ('Detalles de Publicación', {
-            'fields': ('publication_type', 'author_name', 'external_url')
+            'fields': ('publication_type', 'author_name', 'external_url', 'publication_date')
         }),
         ('Detalles Clave', {
             'fields': ('date', 'amount', 'main_image')
