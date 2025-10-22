@@ -38,8 +38,8 @@
           <!-- Map Area -->
           <div class="flex-1">
             <div class="relative">
-                  <!-- Map Legend -->
-                  <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-4 z-10">
+                  <!-- Desktop Map Legend (overlay) -->
+                  <div class="hidden md:block absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-4 z-10">
                     <h3 class="text-sm font-semibold text-gray-900 mb-3">Intensidad de Fondos</h3>
                     <div class="space-y-2">
                       <div class="flex items-center gap-2">
@@ -68,6 +68,40 @@
                         <span class="font-semibold">Máximo:</span><br/>
                         €{{ formatAmount(maxAmount) }}
                       </p>
+                    </div>
+                  </div>
+
+                  <!-- Mobile Map Legend (bottom strip) -->
+                  <div class="md:hidden absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 z-10">
+                    <div class="px-4 py-3">
+                      <h3 class="text-xs font-semibold text-gray-900 mb-2">Intensidad de Fondos</h3>
+                      <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1">
+                          <div class="w-4 h-3 rounded" style="background-color: #d1d5db"></div>
+                          <span class="text-xs text-gray-600">Sin datos</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                          <div class="w-4 h-3 rounded" style="background-color: #FFEB9C"></div>
+                          <span class="text-xs text-gray-600">Bajo</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                          <div class="w-4 h-3 rounded" style="background-color: #FFC966"></div>
+                          <span class="text-xs text-gray-600">Medio</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                          <div class="w-4 h-3 rounded" style="background-color: #FF9933"></div>
+                          <span class="text-xs text-gray-600">Alto</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                          <div class="w-4 h-3 rounded" style="background-color: #D62F25"></div>
+                          <span class="text-xs text-gray-600">Muy Alto</span>
+                        </div>
+                      </div>
+                      <div v-if="maxAmount > 0" class="mt-2 pt-2 border-t border-gray-200">
+                        <p class="text-xs text-gray-600 text-center">
+                          <span class="font-semibold">Máximo: €{{ formatAmount(maxAmount) }}</span>
+                        </p>
+                      </div>
                     </div>
                   </div>
 
@@ -105,7 +139,7 @@
                   <!-- World Map Container -->
                   <div
                     ref="mapContainer"
-                    class="w-full h-[500px] md:h-[600px] border border-gray-200 rounded-lg overflow-hidden bg-gray-50"
+                    class="w-full h-[500px] md:h-[600px] border border-gray-200 rounded-lg overflow-hidden bg-gray-50 pb-20 md:pb-0"
                   >
                     <svg ref="worldMap" id="worldMap" class="w-full h-full"></svg>
                   </div>
@@ -671,6 +705,19 @@ svg {
   width: 100%;
   height: 100%;
   min-height: 400px;
+}
+
+/* Mobile legend styling */
+@media (max-width: 767px) {
+  /* Ensure mobile legend doesn't interfere with map interactions */
+  .mobile-legend {
+    pointer-events: auto;
+  }
+  
+  /* Adjust map container for mobile legend */
+  .map-container-mobile {
+    padding-bottom: 80px;
+  }
 }
 </style>
 
