@@ -5,7 +5,7 @@
     <!-- Hero Card -->
     <section class="flex justify-center pt-8">
       <div class="relative w-full md:w-11/12 lg:w-5/6 max-w-5xl rounded-2xl shadow-lg overflow-hidden">
-        <img :src="heroImg" alt="Hero" class="w-full h-[350px] md:h-[450px] object-cover" />
+        <img :src="heroImg" alt="Hero" class="w-full h-[325px] md:h-[425px] object-cover" />
         <div class="absolute inset-0 bg-black/40"></div>
         <div class="absolute inset-0 flex flex-col justify-end p-8 z-10">
           <router-link to="/category" class="mb-4 inline-block bg-primary-600 text-white px-4 py-2 rounded font-semibold shadow hover:bg-primary-700 transition"></router-link>
