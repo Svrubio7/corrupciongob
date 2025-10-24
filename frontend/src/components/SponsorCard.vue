@@ -18,11 +18,11 @@
       </div>
       
       <!-- Content -->
-      <div class="flex-1 flex flex-col justify-between">
+      <div class="flex-1 flex flex-col justify-start">
         <!-- Text content - Centered -->
-        <div class="mb-2 text-center">
+        <div class="text-center">
           <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-2">4x4 Laazucarera</h3>
-          <p class="text-sm text-gray-700">Mejor lugar para comprar tu coche de segunda mano desde cualquier lugar de España. Llámanos y haz tu consulta al teléfono 615338545.</p>
+          <p class="text-sm text-gray-700 mb-3">Mejor lugar para comprar tu coche de segunda mano desde cualquier lugar de España. Llámanos y haz tu consulta al teléfono 615338545.</p>
         </div>
         
         <!-- Buttons -->
