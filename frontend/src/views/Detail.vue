@@ -32,13 +32,13 @@
       </span>
     </div>
     
+    <!-- Sponsor Card -->
+    <SponsorCard />
+    
     <div class="mb-6 text-sm md:text-lg text-palette-black max-w-none">
       <!-- Always use processed description for proper paragraph rendering -->
       <div v-html="caseData.processed_description || ''" class="article-content"></div>
     </div>
-
-    <!-- Sponsor Card -->
-    <SponsorCard />
 
     <!-- Show additional images section if there are images available -->
     <div v-if="caseData.case_images && caseData.case_images.length" class="mb-6">

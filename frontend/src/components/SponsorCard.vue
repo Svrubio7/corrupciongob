@@ -9,7 +9,7 @@
     <!-- Main content -->
     <div class="flex flex-col md:flex-row p-4 gap-4">
       <!-- Image -->
-      <div class="flex-shrink-0 w-full md:w-32 h-32">
+      <div class="flex-shrink-0 w-full md:w-48 h-32 md:h-40">
         <img
           src="@/assets/laazucarera.jpg"
           alt="4x4 Laazucarera"
@@ -26,8 +26,8 @@
           <p class="text-sm font-semibold text-gray-800">Llama al 615338545 y haz tu consulta</p>
         </div>
         
-        <!-- Button -->
-        <div>
+        <!-- Buttons -->
+        <div class="flex flex-wrap gap-3">
           <a
             href="https://www.coches.net/concesionario/4x4laazucarera/"
             target="_blank"
@@ -35,6 +35,12 @@
             class="inline-block bg-primary-600 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-primary-700 transition"
           >
             Saber más
+          </a>
+          <a
+            href="tel:+34615338545"
+            class="inline-block bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-green-700 transition"
+          >
+            Llamar
           </a>
         </div>
       </div>
