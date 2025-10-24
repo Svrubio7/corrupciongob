@@ -13,10 +13,14 @@
       <div class="p-4 flex-1 flex flex-col">
         <h3 class="text-lg font-bold text-gray-900 mb-2">{{ caseData.title }}</h3>
         <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ caseData.short_description }}</p>
-        <div class="mt-auto flex items-center justify-between">
-          <span v-if="caseData.amount" class="text-primary-600 font-semibold">€{{ formatAmount(caseData.amount) }}</span>
-          <span v-else-if="caseData.publication_type === 'case'" class="text-gray-500 font-semibold">Sin importe</span>
-          <span v-if="caseData.date" class="text-xs text-gray-500">{{ formatDate(caseData.date) }}</span>
+        <div class="mt-auto">
+          <div class="flex items-center justify-between mb-2">
+            <span v-if="caseData.amount" class="text-primary-600 font-semibold">€{{ formatAmount(caseData.amount) }}</span>
+            <span v-else-if="caseData.publication_type === 'case'" class="text-gray-500 font-semibold">Sin importe</span>
+          </div>
+          <div class="flex justify-end">
+            <span v-if="caseData.date" class="text-xs text-gray-500">{{ formatDate(caseData.date) }}</span>
+          </div>
         </div>
       </div>
     </router-link>

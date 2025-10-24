@@ -79,7 +79,7 @@ export default {
                 class="h-16 w-auto mr-3"
               />
               <span class="text-2xl font-bold">
-                <span class="text-palette-primary">D.E.</span><span class="text-palette-secondary">G</span><span class="text-palette-primary">U</span>
+                <span class="text-palette-primary">D.</span><span class="text-palette-secondary">E.G</span><span class="text-palette-primary">U</span>
               </span>
             </router-link>
           </div>
@@ -173,7 +173,7 @@ export default {
           <!-- Social Networks Section -->
           <div class="text-left mb-8 pb-8 border-b border-white/20">
             <p class="text-white/90 mb-4">
-              Visita nuestras otras redes sociales y ayúdanos a seguir con este proyecto en Patreon
+              Únase a nuestras redes sociales y ayúdenos a seguir con esteproyecto en Patreon a partir del siguiente enlace
             </p>
             <a 
               href="https://linktr.ee/DEGubernamental" 

@@ -3,9 +3,8 @@
     
 
     <!-- Hero Card -->
-    <!-- Hero Card -->
     <section class="flex justify-center pt-8">
-      <div class="relative w-full max-w-5xl rounded-2xl shadow-lg overflow-hidden">
+      <div class="relative w-full md:w-11/12 lg:w-5/6 max-w-5xl rounded-2xl shadow-lg overflow-hidden">
         <img :src="heroImg" alt="Hero" class="w-full h-[350px] md:h-[450px] object-cover" />
         <div class="absolute inset-0 bg-black/40"></div>
         <div class="absolute inset-0 flex flex-col justify-end p-8 z-10">
@@ -14,11 +13,8 @@
           <p class="text-lg md:text-2xl text-white/90 max-w-2xl mb-6 drop-shadow">
             Análisis, investigación y publicación de todo lo relacionado con la gestión y gasto público del Gobierno de España.
           </p>
-        <div>
-            <router-link to="/app" class="bg-white text-primary-700 font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-primary-50 transition">Explorar Casos</router-link>
-          </div>
-                        </div>
-                        </div>
+        </div>
+      </div>
     </section>
 
 

@@ -36,6 +36,10 @@
       <!-- Always use processed description for proper paragraph rendering -->
       <div v-html="caseData.processed_description || ''" class="article-content"></div>
     </div>
+
+    <!-- Sponsor Card -->
+    <SponsorCard />
+
     <!-- Show additional images section if there are images available -->
     <div v-if="caseData.case_images && caseData.case_images.length" class="mb-6">
       <h2 class="text-lg md:text-xl font-semibold mb-2">Imágenes adicionales</h2>
@@ -65,9 +69,13 @@
 
 <script>
 import axios from 'axios'
+import SponsorCard from '@/components/SponsorCard.vue'
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default {
   name: "Detail",
+  components: {
+    SponsorCard
+  },
   data() {
     return {
       caseData: null,
