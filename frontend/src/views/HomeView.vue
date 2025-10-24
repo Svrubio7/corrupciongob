@@ -49,7 +49,12 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div v-for="featuredCase in featuredCases.slice(0, 3)" :key="featuredCase.id" class="case-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+          <router-link 
+            v-for="featuredCase in featuredCases.slice(0, 3)" 
+            :key="featuredCase.id"
+            :to="{ name: 'case-detail', params: { slug: featuredCase.slug } }"
+            class="case-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden block"
+          >
             <div class="aspect-w-16 aspect-h-9 bg-gray-200">
               <img 
                 v-if="featuredCase.main_image" 
@@ -76,14 +81,9 @@
                     {{ featuredCase.political_party.short_name }}
                   </span>
                 </div>
-                <router-link 
-                  :to="{ name: 'case-detail', params: { slug: featuredCase.slug } }"
-                  class="text-primary-600 hover:text-primary-700 text-sm font-medium">
-                  Ver detalles →
-                </router-link>
               </div>
             </div>
-          </div>
+          </router-link>
         </div>
       </div>
     </section>

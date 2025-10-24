@@ -1,5 +1,5 @@
 <template>
-  <div class="my-6 bg-white rounded-xl shadow-md hover:shadow-lg transition overflow-hidden border border-gray-100">
+  <div class="my-10 bg-white rounded-xl shadow-md hover:shadow-lg transition overflow-hidden border border-gray-100">
     <!-- Sponsor badges -->
     <div class="flex gap-2 px-4 pt-2 pb-2 justify-start">
       <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full">¡Sponsor Oficial!</span>

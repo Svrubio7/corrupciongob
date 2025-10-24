@@ -3,14 +3,14 @@
     
 
     <!-- Hero Card -->
-    <section class="flex justify-center pt-8">
+    <section class="flex justify-center pt-6 pb-6 px-4">
       <div class="relative w-full md:w-11/12 lg:w-5/6 max-w-5xl rounded-2xl shadow-lg overflow-hidden">
-        <img :src="heroImg" alt="Hero" class="w-full h-[325px] md:h-[425px] object-cover" />
+        <img :src="heroImg" alt="Hero" class="w-full h-[250px] md:h-[425px] object-cover" />
         <div class="absolute inset-0 bg-black/40"></div>
-        <div class="absolute inset-0 flex flex-col justify-end p-8 z-10">
+        <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-8 z-10">
           <router-link to="/category" class="mb-4 inline-block bg-primary-600 text-white px-4 py-2 rounded font-semibold shadow hover:bg-primary-700 transition"></router-link>
-          <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 drop-shadow">Auditoría del Dinero Público</h1>
-          <p class="text-lg md:text-2xl text-white/90 max-w-2xl mb-6 drop-shadow">
+          <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3 drop-shadow">Auditoría del Dinero Público</h1>
+          <p class="text-base md:text-lg text-white/90 max-w-2xl mb-4 drop-shadow">
             Análisis, investigación y publicación de todo lo relacionado con la gestión y gasto público del Gobierno de España.
           </p>
         </div>
