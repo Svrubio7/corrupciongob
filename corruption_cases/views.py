@@ -251,12 +251,21 @@ def is_crawler(request):
     """
     user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
     
+    # Log for debugging Twitter specifically
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"User-Agent: {user_agent}")
+    
+    # Very specific Twitter detection (they can be tricky)
+    twitter_indicators = ['twitterbot', 'twitter', 'x.com']
+    if any(indicator in user_agent for indicator in twitter_indicators):
+        logger.info("Detected as Twitter bot")
+        return True
+    
     # Common crawler/bot keywords
     crawler_keywords = [
         'facebookexternalhit',   # Facebook
         'facebot',               # Facebook
-        'twitterbot',            # Twitter/X
-        'twitter',               # Twitter variations
         'linkedinbot',           # LinkedIn
         'linkedin',              # LinkedIn variations
         'whatsapp',              # WhatsApp
@@ -281,10 +290,17 @@ def is_crawler(request):
         'spider',                # Generic spider
         'scraper',               # Generic scraper
         'preview',               # Preview generators
+        'fetcher',               # Generic fetcher
+        'embedly',               # Embedly
+        'quora',                 # Quora
+        'outbrain',              # Outbrain
+        'flipboard',             # Flipboard
+        'tumblr',                # Tumblr
     ]
     
     # Check for crawler keywords
     if any(keyword in user_agent for keyword in crawler_keywords):
+        logger.info(f"Detected as crawler via keyword")
         return True
     
     # Check for common non-browser user agents (often used by social media crawlers)
@@ -294,12 +310,14 @@ def is_crawler(request):
     
     # If it has no browser indicators but has http/https, it's likely a crawler
     if not has_browser_indicator and ('http' in user_agent or len(user_agent) < 20):
+        logger.info("Detected as crawler - no browser indicators")
         return True
     
     # Check for headless browsers often used for crawling
     if 'headless' in user_agent or 'phantom' in user_agent or 'selenium' in user_agent:
         return True
     
+    logger.info("Not detected as crawler")
     return False
 
 
