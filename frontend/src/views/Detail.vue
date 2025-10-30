@@ -11,6 +11,14 @@
       <p class="font-bold text-base md:text-lg text-palette-black">{{ caseData.author_name }}</p>
     </div>
     <h1 class="text-2xl md:text-3xl font-bold mb-2 text-palette-black">{{ caseData.title }}</h1>
+    
+    <!-- Social Media Share Buttons -->
+    <SocialShare 
+      :title="caseData.title" 
+      :url="shareUrl"
+      account-name="@CongresoEscucha"
+    />
+    
     <div class="text-sm md:text-base text-gray-500 mb-2">
       <span class="font-semibold">Fecha:</span> {{ caseData.date }}
       <span v-if="caseData.amount_display && caseData.amount_display !== 'Sin importe'">
@@ -70,16 +78,24 @@
 <script>
 import axios from 'axios'
 import SponsorCard from '@/components/SponsorCard.vue'
+import SocialShare from '@/components/SocialShare.vue'
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default {
   name: "Detail",
   components: {
-    SponsorCard
+    SponsorCard,
+    SocialShare
   },
   data() {
     return {
       caseData: null,
       sourcesList: [],
+    }
+  },
+  computed: {
+    shareUrl() {
+      // Return the current page URL
+      return window.location.href
     }
   },
   async created() {
