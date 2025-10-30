@@ -27,13 +27,22 @@
     <!-- Additional Meta Tags -->
     <meta name="robots" content="index, follow">
     <meta name="language" content="Spanish">
-    <meta name="author" content="Auditando Impuestos">
+    <meta name="author" content="D.E.GU">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/logodegu.png">
+    <link rel="icon" type="image/png" href="/static/paglogo.png">
     
     <!-- Preload the main image for better performance -->
     <link rel="preload" as="image" href="{{ image }}">
+    
+    {% if not is_crawler %}
+    <!-- For regular browsers: redirect to Vue SPA -->
+    <script>
+        // This ensures regular browsers load the Vue app instead of this static page
+        // Social media crawlers don't execute JavaScript, so they see the meta tags above
+        window.location.href = '{{ url }}';
+    </script>
+    {% endif %}
     
     <style>
         body {
@@ -183,21 +192,25 @@
                 </div>
                 
                 <div style="text-align: center;">
-                    <a href="/app/case/{{ case.slug }}" class="cta-button">
+                    <a href="{{ url }}" class="cta-button">
+                        {% if publication_type == 'case' %}
                         Ver Caso Completo
+                        {% else %}
+                        Ver Publicación Completa
+                        {% endif %}
                     </a>
                 </div>
             {% else %}
                 <div style="text-align: center;">
-                    <h2 class="case-title">Caso no encontrado</h2>
-                    <p class="case-description">El caso solicitado no fue encontrado o ha sido eliminado.</p>
+                    <h2 class="case-title">Publicación no encontrada</h2>
+                    <p class="case-description">La publicación solicitada no fue encontrada o ha sido eliminada.</p>
                     <a href="/" class="cta-button">Volver al Inicio</a>
                 </div>
             {% endif %}
         </div>
         
         <div class="footer">
-            <p>© {% now "Y" %} Auditando Impuestos. Hecho con transparencia.</p>
+            <p>© {% now "Y" %} D.E.GU. Hecho con transparencia.</p>
         </div>
     </div>
 </body>

@@ -139,13 +139,13 @@ export default {
     shareOnFacebook() {
       // Facebook sharer - automatically fetches og:tags and shows preview
       const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(this.shareUrl)}`
-      window.open(url, '_blank', 'width=600,height=400')
+      window.open(url, '_blank')
     },
     shareOnTwitter() {
       // Twitter with full text including URL and attribution
       const text = encodeURIComponent(this.shareText)
       const url = `https://twitter.com/intent/tweet?text=${text}`
-      window.open(url, '_blank', 'width=600,height=400')
+      window.open(url, '_blank')
     },
     shareOnWhatsApp() {
       // WhatsApp with full formatted text
@@ -158,7 +158,7 @@ export default {
       // LinkedIn automatically fetches preview from URL
       const title = encodeURIComponent(`${this.title} - ${this.accountName}`)
       const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(this.shareUrl)}`
-      window.open(url, '_blank', 'width=600,height=400')
+      window.open(url, '_blank')
     },
     shareOnTelegram() {
       // Telegram with title as text and URL separately for rich preview

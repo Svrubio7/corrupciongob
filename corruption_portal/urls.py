@@ -19,10 +19,15 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from corruption_cases.views import publication_detail_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('corruption_cases.urls')),
+    # Social media crawler routes - must be before catch-all
+    path('app/case/<slug:slug>/', publication_detail_view, name='case-detail-meta'),
+    path('app/publicacion/<slug:slug>/', publication_detail_view, name='publicacion-detail-meta'),
+    # Vue SPA catch-all route - must be last
     re_path(r'^(?!static/|media/|admin/|api/).*$', TemplateView.as_view(template_name="index.html")),
 ]
 

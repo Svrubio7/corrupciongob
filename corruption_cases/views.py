@@ -244,30 +244,68 @@ class CaseImageViewSet(viewsets.ReadOnlyModelViewSet):
     ordering = ['order', 'created_at']
 
 
-def case_detail_view(request, slug):
+def is_crawler(request):
     """
-    Render case detail page with proper meta tags for social media sharing.
-    This view is specifically for social media crawlers and SEO.
+    Detect if the request is from a social media crawler or bot.
+    """
+    user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+    crawler_keywords = [
+        'facebookexternalhit',  # Facebook
+        'twitterbot',           # Twitter/X
+        'linkedinbot',          # LinkedIn
+        'whatsapp',             # WhatsApp
+        'telegrambot',          # Telegram
+        'slackbot',             # Slack
+        'discordbot',           # Discord
+        'pinterestbot',         # Pinterest
+        'redditbot',            # Reddit
+        'googlebot',            # Google (for SEO)
+        'bingbot',              # Bing
+        'yandexbot',            # Yandex
+        'baiduspider',          # Baidu
+        'bot',                  # Generic bot detection
+        'crawler',              # Generic crawler
+        'spider',               # Generic spider
+    ]
+    return any(keyword in user_agent for keyword in crawler_keywords)
+
+
+def publication_detail_view(request, slug, publication_type='case'):
+    """
+    Render publication detail page with proper meta tags for social media sharing.
+    This view handles both cases and publications.
+    - For social media crawlers: serves HTML with dynamic meta tags
+    - For regular browsers: lets Vue SPA handle the routing
     """
     try:
-        case = get_object_or_404(CorruptionCase, slug=slug)
+        publication = get_object_or_404(CorruptionCase, slug=slug)
+        
+        # Determine the correct URL based on publication type
+        if publication.publication_type == 'case':
+            url = f"https://degu.es/app/case/{publication.slug}"
+            type_label = "Caso"
+        else:
+            url = f"https://degu.es/app/publicacion/{publication.slug}"
+            type_label = "Publicación"
         
         # Prepare meta tag data with proper image URL
-        if case.main_image:
+        if publication.main_image:
             # Build absolute URL for the image
-            image_url = request.build_absolute_uri(case.main_image.url)
+            image_url = request.build_absolute_uri(publication.main_image.url)
         else:
             # Fallback to logo
             image_url = request.build_absolute_uri('/static/logodegu.png')
         
         meta_data = {
-            'title': f"{case.title} - D.E.GU",
-            'description': case.short_description or 'Caso de corrupción y auditoría del dinero público',
+            'title': f"{publication.title} - D.E.GU",
+            'description': publication.short_description or 'Análisis y auditoría del dinero público',
             'image': image_url,
-            'url': f"https://degu.es/app/case/{case.slug}",
+            'url': url,
             'type': 'article',
             'site_name': 'D.E.GU',
-            'case': case
+            'case': publication,  # Keep 'case' for template compatibility
+            'publication_type': publication.publication_type,
+            'is_crawler': is_crawler(request)
         }
         
         # Render the HTML with meta tags
@@ -277,24 +315,33 @@ def case_detail_view(request, slug):
     except CorruptionCase.DoesNotExist:
         # Return 404 with basic meta tags
         meta_data = {
-            'title': 'Caso no encontrado - Auditando Impuestos',
-            'description': 'El caso solicitado no fue encontrado',
+            'title': 'Publicación no encontrada - D.E.GU',
+            'description': 'La publicación solicitada no fue encontrada',
             'image': request.build_absolute_uri('/static/logodegu.png'),
             'url': request.build_absolute_uri(),
             'type': 'website',
-            'site_name': 'Auditando Impuestos'
+            'site_name': 'D.E.GU',
+            'is_crawler': is_crawler(request)
         }
         html_content = render_to_string('case_detail.html', meta_data)
         return HttpResponse(html_content, content_type='text/html', status=404)
     except Exception as e:
         # Return error with basic meta tags
         meta_data = {
-            'title': 'Error - Auditando Impuestos',
-            'description': 'Ha ocurrido un error al cargar el caso',
+            'title': 'Error - D.E.GU',
+            'description': 'Ha ocurrido un error al cargar la publicación',
             'image': request.build_absolute_uri('/static/logodegu.png'),
             'url': request.build_absolute_uri(),
             'type': 'website',
-            'site_name': 'Auditando Impuestos'
+            'site_name': 'D.E.GU',
+            'is_crawler': is_crawler(request)
         }
         html_content = render_to_string('case_detail.html', meta_data)
         return HttpResponse(html_content, content_type='text/html', status=500)
+
+
+def case_detail_view(request, slug):
+    """
+    Wrapper for case detail view (publication_type='case')
+    """
+    return publication_detail_view(request, slug, publication_type='case')
