@@ -25,10 +25,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('corruption_cases.urls')),
     # Social media crawler routes - must be before catch-all
+    # Handle both with and without trailing slash
     path('app/case/<slug:slug>/', publication_detail_view, name='case-detail-meta'),
+    path('app/case/<slug:slug>', publication_detail_view, name='case-detail-meta-no-slash'),
     path('app/publicacion/<slug:slug>/', publication_detail_view, name='publicacion-detail-meta'),
+    path('app/publicacion/<slug:slug>', publication_detail_view, name='publicacion-detail-meta-no-slash'),
     # Vue SPA catch-all route - must be last
-    re_path(r'^(?!static/|media/|admin/|api/).*$', TemplateView.as_view(template_name="index.html")),
+    re_path(r'^(?!static/|media/|admin/|api/|app/case/|app/publicacion/).*$', TemplateView.as_view(template_name="index.html")),
 ]
 
 # This must be after the above
