@@ -275,8 +275,15 @@ def publication_detail_view(request, slug, publication_type='case'):
     Render publication detail page with proper meta tags for social media sharing.
     This view handles both cases and publications.
     - For social media crawlers: serves HTML with dynamic meta tags
-    - For regular browsers: lets Vue SPA handle the routing
+    - For regular browsers: serves Vue SPA
     """
+    # Check if this is a crawler
+    if not is_crawler(request):
+        # For regular browsers, serve the Vue SPA
+        html_content = render_to_string('index.html')
+        return HttpResponse(html_content, content_type='text/html')
+    
+    # For crawlers, serve the meta tags page
     try:
         publication = get_object_or_404(CorruptionCase, slug=slug)
         
@@ -305,7 +312,7 @@ def publication_detail_view(request, slug, publication_type='case'):
             'site_name': 'D.E.GU',
             'case': publication,  # Keep 'case' for template compatibility
             'publication_type': publication.publication_type,
-            'is_crawler': is_crawler(request)
+            'is_crawler': True
         }
         
         # Render the HTML with meta tags
