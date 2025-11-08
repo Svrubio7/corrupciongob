@@ -278,13 +278,8 @@ class CorruptionCase(models.Model):
             if 0 <= image_index < len(images):
                 image = images[image_index]
                 # Create HTML for the embedded image
-                image_html = f'''
-                <div class="embedded-image my-6">
-                    <img src="{image.image.url}" alt="{image.caption or 'Imagen'}" 
-                         class="w-full h-auto rounded-lg shadow-md">
-                    {f'<p class="text-sm text-gray-600 mt-2 text-center italic">{image.caption}</p>' if image.caption else ''}
-                </div>
-                '''
+                caption_html = f'<p class="image-caption">{image.caption}</p>' if image.caption else ''
+                image_html = f'<div class="embedded-image"><img src="{image.image.url}" alt="{image.caption or "Imagen"}">{caption_html}</div>'
                 description = description.replace(marker, image_html)
             else:
                 # Remove marker if image doesn't exist

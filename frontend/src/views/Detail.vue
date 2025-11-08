@@ -129,13 +129,37 @@ export default {
   height: auto;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
   display: block;
+  max-width: 100%;
+}
+
+.article-content :deep(.embedded-image) {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.article-content :deep(.embedded-image img) {
+  margin: 0;
+}
+
+.article-content :deep(.image-caption) {
+  font-size: 0.875rem;
+  color: #6B7280;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-style: italic;
 }
 
 .article-content :deep(p) {
   margin-bottom: 1rem;
+}
+
+.article-content :deep(p:has(+ .embedded-image)) {
+  margin-bottom: 0.5rem;
+}
+
+.article-content :deep(.embedded-image + p) {
+  margin-top: 0.5rem;
 }
 
 .article-content :deep(h1),
