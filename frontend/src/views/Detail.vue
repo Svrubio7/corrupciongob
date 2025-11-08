@@ -121,3 +121,29 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+/* Estilos para el contenido del artículo */
+.article-content :deep(img) {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.article-content :deep(p) {
+  margin-bottom: 1rem;
+}
+
+.article-content :deep(h1),
+.article-content :deep(h2),
+.article-content :deep(h3),
+.article-content :deep(h4) {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+</style>
