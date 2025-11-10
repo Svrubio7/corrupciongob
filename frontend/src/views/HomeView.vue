@@ -35,70 +35,102 @@
       </div>
     </section>
 
-    <!-- Featured Cases Section -->
+    <!-- Dual Carousel Section -->
     <section class="py-16 bg-gray-100">
       <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center mb-12">
+        <!-- Desktop: Two columns side by side -->
+        <div class="hidden lg:grid lg:grid-cols-2 gap-8">
+          <!-- Casos Carousel -->
           <div>
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Casos Destacados</h2>
-            <p class="text-gray-600 text-lg">Explora nuestros casos más relevantes de corrupción e ineficiencia</p>
+            <h2 class="text-2xl font-bold text-gray-900 text-center mb-8">Casos</h2>
+            <CarouselSection
+              :items="featuredCases"
+              :current-index="currentCasosIndex"
+              @update-index="currentCasosIndex = $event"
+              @click-item="handleCasoClick"
+              type="caso"
+              :auto-play="true"
+            />
+            <div class="flex justify-center mt-6">
+              <router-link to="/app" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-blue-600 hover:border-blue-700">
+                Ver todos
+              </router-link>
+            </div>
           </div>
-          <router-link to="/app" class="text-primary-600 hover:text-primary-700 font-semibold text-lg hover:underline transition-all duration-300">
-            Ver todos →
-          </router-link>
+
+          <!-- Publicaciones Carousel -->
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900 text-center mb-8">Publicaciones</h2>
+            <CarouselSection
+              :items="featuredPublications"
+              :current-index="currentPublicacionesIndex"
+              @update-index="currentPublicacionesIndex = $event"
+              @click-item="handlePublicacionClick"
+              type="publicacion"
+              :auto-play="true"
+            />
+            <div class="flex justify-center mt-6">
+              <router-link to="/publicaciones" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-blue-600 hover:border-blue-700">
+                Ver todas
+              </router-link>
+            </div>
+          </div>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <router-link 
-            v-for="featuredCase in featuredCases.slice(0, 3)" 
-            :key="featuredCase.id"
-            :to="{ name: 'case-detail', params: { slug: featuredCase.slug } }"
-            class="case-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden block"
-          >
-            <div class="aspect-w-16 aspect-h-9 bg-gray-200">
-              <img 
-                v-if="featuredCase.main_image" 
-                :src="featuredCase.main_image" 
-                :alt="featuredCase.title"
-                class="w-full h-48 object-cover"
-              />
-              <div v-else class="w-full h-48 bg-gray-300 flex items-center justify-center">
-                <span class="text-gray-500">Sin imagen</span>
-              </div>
+
+        <!-- Mobile: Stacked -->
+        <div class="lg:hidden space-y-12">
+          <!-- Casos Carousel Mobile -->
+          <div>
+            <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Casos</h2>
+            <CarouselSection
+              :items="featuredCases"
+              :current-index="currentCasosIndex"
+              @update-index="currentCasosIndex = $event"
+              @click-item="handleCasoClick"
+              type="caso"
+              :auto-play="true"
+            />
+            <div class="flex justify-center mt-6">
+              <router-link to="/app" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-blue-600 hover:border-blue-700">
+                Ver todos
+              </router-link>
             </div>
-            <div class="p-6">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-sm text-gray-500">{{ formatDate(featuredCase.date) }}</span>
-                <span class="text-sm font-semibold text-primary-600">{{ featuredCase.amount_display }}</span>
-              </div>
-              <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ featuredCase.title }}</h3>
-              <p class="text-gray-600 text-sm mb-4">{{ featuredCase.short_description }}</p>
-              <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                  <span v-if="featuredCase.political_party"
-                        class="px-2 py-1 text-xs rounded-full"
-                        :style="{ backgroundColor: (featuredCase.political_party?.color || '#ccc') + '20', color: featuredCase.political_party?.color || '#333' }">
-                    {{ featuredCase.political_party.short_name }}
-                  </span>
-                </div>
-              </div>
+          </div>
+
+          <!-- Publicaciones Carousel Mobile -->
+          <div>
+            <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Publicaciones</h2>
+            <CarouselSection
+              :items="featuredPublications"
+              :current-index="currentPublicacionesIndex"
+              @update-index="currentPublicacionesIndex = $event"
+              @click-item="handlePublicacionClick"
+              type="publicacion"
+              :auto-play="true"
+            />
+            <div class="flex justify-center mt-6">
+              <router-link to="/publicaciones" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-blue-600 hover:border-blue-700">
+                Ver todas
+              </router-link>
             </div>
-          </router-link>
+          </div>
         </div>
       </div>
     </section>
-
-    
 
   </div>
 </template>
 
 <script>
 import hormigaamigableImg from '/paglogo.png'
+import CarouselSection from '../components/CarouselSection.vue'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default {
   name: 'HomeView',
+  components: {
+    CarouselSection
+  },
   data() {
     return {
       stats: {
@@ -108,12 +140,16 @@ export default {
         partiesCount: 0
       },
       featuredCases: [],
+      featuredPublications: [],
+      currentCasosIndex: 0,
+      currentPublicacionesIndex: 0,
       hormigaamigableImg
     }
   },
   async mounted() {
     await this.loadStatistics()
     await this.loadFeaturedCases()
+    await this.loadFeaturedPublications()
     this.loadStripeScript()
   },
   methods: {
@@ -137,6 +173,28 @@ export default {
         this.featuredCases = await response.json()
       } catch (error) {
         console.error('Error loading featured cases:', error)
+      }
+    },
+    async loadFeaturedPublications() {
+      try {
+        const response = await fetch(`${API_BASE_URL}cases/publications/`)
+        const data = await response.json()
+        // Get the 3 most recent publications
+        this.featuredPublications = data
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .slice(0, 3)
+      } catch (error) {
+        console.error('Error loading featured publications:', error)
+      }
+    },
+    handleCasoClick(caso) {
+      this.$router.push({ name: 'case-detail', params: { slug: caso.slug } })
+    },
+    handlePublicacionClick(publicacion) {
+      if (publicacion.external_url) {
+        window.open(publicacion.external_url, '_blank')
+      } else {
+        this.$router.push({ name: 'publicacion-detail', params: { slug: publicacion.slug } })
       }
     },
     formatAmount(amount) {

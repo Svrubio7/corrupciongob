@@ -233,6 +233,173 @@ class CorruptionCaseViewSet(viewsets.ReadOnlyModelViewSet):
         country_data.sort(key=lambda x: x['total_amount'], reverse=True)
         
         return Response(country_data)
+    
+    @action(detail=False, methods=['get'], pagination_class=None)
+    def analytics(self, request):
+        """Get comprehensive analytics data for cases only"""
+        from django.db.models import Count, Sum
+        from decimal import Decimal
+        from collections import defaultdict
+        
+        cases = super().get_queryset().filter(publication_type='case')
+        
+        # Total statistics
+        total_cases = cases.count()
+        total_amount = Decimal('0')
+        for case in cases:
+            total_amount += case.get_total_amount()
+        
+        # Money per year (aggregated from yearly amounts)
+        years = ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025']
+        money_per_year = {}
+        for year in years:
+            year_total = Decimal('0')
+            for case in cases:
+                yearly_amounts = case.get_yearly_amounts()
+                year_total += Decimal(str(yearly_amounts.get(year, 0)))
+            money_per_year[year] = float(year_total)
+        
+        # Money by country
+        money_by_country = []
+        countries_with_cases = Country.objects.filter(
+            corruptioncase__isnull=False,
+            corruptioncase__publication_type='case'
+        ).distinct()
+        
+        for country in countries_with_cases:
+            country_cases = cases.filter(country=country)
+            country_total = Decimal('0')
+            for case in country_cases:
+                country_total += case.get_total_amount()
+            
+            if country_total > 0:
+                money_by_country.append({
+                    'country': country.name,
+                    'code': country.code,
+                    'total_amount': float(country_total),
+                    'case_count': country_cases.count()
+                })
+        
+        money_by_country.sort(key=lambda x: x['total_amount'], reverse=True)
+        
+        # Money by institution
+        money_by_institution = []
+        institutions = Institution.objects.filter(
+            corruptioncase__isnull=False,
+            corruptioncase__publication_type='case'
+        ).distinct()
+        
+        for institution in institutions:
+            inst_cases = cases.filter(institution=institution)
+            inst_total = Decimal('0')
+            for case in inst_cases:
+                inst_total += case.get_total_amount()
+            
+            if inst_total > 0:
+                money_by_institution.append({
+                    'institution': institution.name,
+                    'institution_type': institution.get_institution_type_display(),
+                    'total_amount': float(inst_total),
+                    'case_count': inst_cases.count()
+                })
+        
+        money_by_institution.sort(key=lambda x: x['total_amount'], reverse=True)
+        
+        # Money by political party
+        money_by_party = []
+        parties = PoliticalParty.objects.filter(
+            corruptioncase__isnull=False,
+            corruptioncase__publication_type='case'
+        ).distinct()
+        
+        for party in parties:
+            party_cases = cases.filter(political_party=party)
+            party_total = Decimal('0')
+            for case in party_cases:
+                party_total += case.get_total_amount()
+            
+            if party_total > 0:
+                money_by_party.append({
+                    'party': party.name,
+                    'short_name': party.short_name,
+                    'color': party.color,
+                    'total_amount': float(party_total),
+                    'case_count': party_cases.count()
+                })
+        
+        money_by_party.sort(key=lambda x: x['total_amount'], reverse=True)
+        
+        # Money by corruption type
+        money_by_type = []
+        corruption_types = CorruptionType.objects.filter(
+            corruptioncase__isnull=False,
+            corruptioncase__publication_type='case'
+        ).distinct()
+        
+        for ctype in corruption_types:
+            type_cases = cases.filter(corruption_type=ctype)
+            type_total = Decimal('0')
+            for case in type_cases:
+                type_total += case.get_total_amount()
+            
+            if type_total > 0:
+                money_by_type.append({
+                    'type': ctype.name,
+                    'total_amount': float(type_total),
+                    'case_count': type_cases.count()
+                })
+        
+        money_by_type.sort(key=lambda x: x['total_amount'], reverse=True)
+        
+        # Money by region
+        money_by_region = []
+        regions = Region.objects.filter(
+            corruptioncase__isnull=False,
+            corruptioncase__publication_type='case'
+        ).distinct()
+        
+        for region in regions:
+            region_cases = cases.filter(region=region)
+            region_total = Decimal('0')
+            for case in region_cases:
+                region_total += case.get_total_amount()
+            
+            if region_total > 0:
+                money_by_region.append({
+                    'region': region.name,
+                    'autonomous_community': region.autonomous_community,
+                    'total_amount': float(region_total),
+                    'case_count': region_cases.count()
+                })
+        
+        money_by_region.sort(key=lambda x: x['total_amount'], reverse=True)
+        
+        # Money per case (for pie chart)
+        money_per_case = []
+        for case in cases:
+            case_total = case.get_total_amount()
+            if case_total > 0:
+                money_per_case.append({
+                    'id': case.id,
+                    'title': case.title,
+                    'slug': case.slug,
+                    'total_amount': float(case_total),
+                    'date': case.date.isoformat() if case.date else None
+                })
+        
+        money_per_case.sort(key=lambda x: x['total_amount'], reverse=True)
+        
+        return Response({
+            'total_cases': total_cases,
+            'total_amount': float(total_amount),
+            'money_per_year': money_per_year,
+            'money_by_country': money_by_country,
+            'money_by_institution': money_by_institution,
+            'money_by_party': money_by_party,
+            'money_by_type': money_by_type,
+            'money_by_region': money_by_region,
+            'money_per_case': money_per_case
+        })
 
 class CaseImageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CaseImage.objects.all()

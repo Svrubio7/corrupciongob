@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Detail from '../views/Detail.vue'
 import AboutView from '../views/AboutView.vue'
 import PublicacionesView from '../views/PublicacionesView.vue'
+import AnalyticsView from '../views/AnalyticsView.vue'
 import WorldMapView from '../views/WorldMapView.vue'
 import PrivacyPolicy from '../views/PrivacyPolicy.vue'
 import CookiePolicy from '../views/CookiePolicy.vue'
@@ -15,6 +16,7 @@ const routes = [
   { path: '/app/case/:slug', name: 'case-detail', component: Detail, props: true },
   { path: '/app/publicacion/:slug', name: 'publicacion-detail', component: Detail, props: true },
   { path: '/publicaciones', name: 'publicaciones', component: PublicacionesView },
+  { path: '/analytics', name: 'analytics', component: AnalyticsView },
   { path: '/mapa', name: 'world-map', component: WorldMapView },
   { path: '/about', name: 'about', component: AboutView },
   { path: '/politica-privacidad', name: 'privacy-policy', component: PrivacyPolicy },

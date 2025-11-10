@@ -78,6 +78,14 @@ class CorruptionCaseAdmin(admin.ModelAdmin):
             'fields': ('is_annual_amount', 'start_date'),
             'description': 'Marca si este es un pago anual y establece la fecha de inicio'
         }),
+        ('Importes por Año (2018-2025)', {
+            'fields': (
+                'amount_2018', 'amount_2019', 'amount_2020', 'amount_2021',
+                'amount_2022', 'amount_2023', 'amount_2024', 'amount_2025'
+            ),
+            'classes': ('collapse',),
+            'description': 'Importes específicos para cada año (opcional). Útil para desglosar el gasto anual.'
+        }),
         ('Categorización', {
             'fields': ('political_party', 'institution', 'corruption_type', 'region', 'country', 'tags')
         }),

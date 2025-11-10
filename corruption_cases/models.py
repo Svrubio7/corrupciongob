@@ -196,6 +196,80 @@ class CorruptionCase(models.Model):
         verbose_name="Fecha de inicio"
     )
     
+    # Yearly amounts for detailed breakdown (2018-2025)
+    amount_2018 = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text="Importe específico para el año 2018",
+        verbose_name="Importe 2018"
+    )
+    amount_2019 = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text="Importe específico para el año 2019",
+        verbose_name="Importe 2019"
+    )
+    amount_2020 = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text="Importe específico para el año 2020",
+        verbose_name="Importe 2020"
+    )
+    amount_2021 = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text="Importe específico para el año 2021",
+        verbose_name="Importe 2021"
+    )
+    amount_2022 = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text="Importe específico para el año 2022",
+        verbose_name="Importe 2022"
+    )
+    amount_2023 = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text="Importe específico para el año 2023",
+        verbose_name="Importe 2023"
+    )
+    amount_2024 = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text="Importe específico para el año 2024",
+        verbose_name="Importe 2024"
+    )
+    amount_2025 = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        help_text="Importe específico para el año 2025",
+        verbose_name="Importe 2025"
+    )
+    
     # Metadata
     sources = models.TextField(help_text="Enlaces a fuentes, separados por líneas nuevas", verbose_name="Fuentes")
     is_featured = models.BooleanField(default=False, verbose_name="Es destacado")
@@ -258,6 +332,19 @@ class CorruptionCase(models.Model):
                 years += 1
             return max(1, years)
         return 1
+    
+    def get_yearly_amounts(self):
+        """Get dictionary of yearly amounts (2018-2025)"""
+        return {
+            '2018': float(self.amount_2018) if self.amount_2018 else 0,
+            '2019': float(self.amount_2019) if self.amount_2019 else 0,
+            '2020': float(self.amount_2020) if self.amount_2020 else 0,
+            '2021': float(self.amount_2021) if self.amount_2021 else 0,
+            '2022': float(self.amount_2022) if self.amount_2022 else 0,
+            '2023': float(self.amount_2023) if self.amount_2023 else 0,
+            '2024': float(self.amount_2024) if self.amount_2024 else 0,
+            '2025': float(self.amount_2025) if self.amount_2025 else 0,
+        }
     
     def get_processed_description(self):
         """Process description to embed images in text and handle titles/subtitles"""

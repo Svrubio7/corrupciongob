@@ -65,8 +65,13 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
     total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
     years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
+    yearly_amounts = serializers.SerializerMethodField(read_only=True)
     publication_type_display = serializers.SerializerMethodField(read_only=True)
     main_image = serializers.SerializerMethodField()
+    
+    def get_yearly_amounts(self, obj):
+        """Return yearly amounts dictionary"""
+        return obj.get_yearly_amounts()
     
     def get_main_image(self, obj):
         """Return HTTPS URL for main image"""
@@ -100,7 +105,7 @@ class CorruptionCaseListSerializer(serializers.ModelSerializer):
         model = CorruptionCase
         fields = [
             'id', 'title', 'slug', 'short_description', 'date', 'publication_date', 'amount', 
-            'amount_display', 'total_amount', 'years_duration', 'main_image', 
+            'amount_display', 'total_amount', 'years_duration', 'yearly_amounts', 'main_image', 
             'political_party', 'institution', 'corruption_type', 'region', 'country', 'tags', 
             'publication_type', 'publication_type_display', 'author_name', 
             'external_url', 'is_annual_amount', 'start_date', 'is_featured', 'created_at'
@@ -118,9 +123,14 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
     amount_display = serializers.CharField(source='get_amount_display', read_only=True)
     total_amount = serializers.DecimalField(source='get_total_amount', max_digits=20, decimal_places=2, read_only=True)
     years_duration = serializers.IntegerField(source='get_years_duration', read_only=True)
+    yearly_amounts = serializers.SerializerMethodField(read_only=True)
     publication_type_display = serializers.SerializerMethodField(read_only=True)
     processed_description = serializers.SerializerMethodField()
     main_image = serializers.SerializerMethodField()
+    
+    def get_yearly_amounts(self, obj):
+        """Return yearly amounts dictionary"""
+        return obj.get_yearly_amounts()
     
     def get_main_image(self, obj):
         """Return HTTPS URL for main image"""
@@ -164,7 +174,7 @@ class CorruptionCaseDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'slug', 'short_description', 'full_description', 'processed_description',
             'date', 'publication_date', 'amount', 'amount_display', 'total_amount', 'years_duration', 
-            'main_image', 'political_party', 'institution', 'corruption_type', 
+            'yearly_amounts', 'main_image', 'political_party', 'institution', 'corruption_type', 
             'region', 'country', 'tags', 'case_images', 'publication_type', 'publication_type_display', 
             'author_name', 'external_url', 'is_annual_amount', 'start_date', 'sources', 'is_featured', 
             'created_at', 'updated_at'
