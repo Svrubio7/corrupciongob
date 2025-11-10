@@ -91,15 +91,7 @@
           <canvas ref="countryChart"></canvas>
         </div>
       </div>
-
-      <!-- Money by Corruption Type -->
-      <div class="bg-white rounded-xl shadow-lg p-6 mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Importe por Tipo de Corrupción</h2>
-        <div class="h-96">
-          <canvas ref="corruptionTypeChart"></canvas>
-        </div>
-      </div>
-
+      
       <!-- Money by Region -->
       <div class="bg-white rounded-xl shadow-lg p-6 mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Importe por Región</h2>
