@@ -441,6 +441,8 @@ export default {
       const ctx = this.$refs.corruptionTypeChart
       if (!ctx || !this.analyticsData.money_by_type.length) return
       
+      const isMobile = window.innerWidth < 768
+      
       this.charts.corruptionType = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -469,9 +471,42 @@ export default {
             }
           },
           scales: {
+            y: {
+              ticks: {
+                font: {
+                  size: isMobile ? 10 : 12
+                },
+                maxRotation: 0,
+                autoSkip: false,
+                callback: function(value, index) {
+                  const label = this.getLabelForValue(value)
+                  if (isMobile && label.length > 25) {
+                    // Split long labels into multiple lines on mobile
+                    const words = label.split(' ')
+                    const lines = []
+                    let currentLine = ''
+                    
+                    words.forEach(word => {
+                      if ((currentLine + word).length > 25) {
+                        lines.push(currentLine.trim())
+                        currentLine = word + ' '
+                      } else {
+                        currentLine += word + ' '
+                      }
+                    })
+                    if (currentLine.trim()) lines.push(currentLine.trim())
+                    return lines
+                  }
+                  return label
+                }
+              }
+            },
             x: {
               beginAtZero: true,
               ticks: {
+                font: {
+                  size: isMobile ? 10 : 12
+                },
                 callback: (value) => this.formatCurrencyShort(value)
               }
             }
@@ -485,6 +520,7 @@ export default {
       if (!ctx || !this.analyticsData.money_by_region.length) return
       
       const topRegions = this.analyticsData.money_by_region.slice(0, 15)
+      const isMobile = window.innerWidth < 768
       
       this.charts.region = new Chart(ctx, {
         type: 'bar',
@@ -514,9 +550,34 @@ export default {
             }
           },
           scales: {
+            y: {
+              ticks: {
+                font: {
+                  size: isMobile ? 10 : 12
+                },
+                maxRotation: 0,
+                autoSkip: false,
+                callback: function(value, index) {
+                  const label = this.getLabelForValue(value)
+                  if (isMobile && label.length > 20) {
+                    // Truncate or split on mobile
+                    const words = label.split(' ')
+                    if (words.length > 1) {
+                      const mid = Math.ceil(words.length / 2)
+                      return [words.slice(0, mid).join(' '), words.slice(mid).join(' ')]
+                    }
+                    return label.length > 20 ? label.substring(0, 18) + '...' : label
+                  }
+                  return label
+                }
+              }
+            },
             x: {
               beginAtZero: true,
               ticks: {
+                font: {
+                  size: isMobile ? 10 : 12
+                },
                 callback: (value) => this.formatCurrencyShort(value)
               }
             }
@@ -534,6 +595,7 @@ export default {
         '#EF4444', '#3B82F6', '#22C55E', '#F59E0B', '#8B5CF6',
         '#EC4899', '#14B8A6', '#F97316', '#6366F1', '#84CC16'
       ]
+      const isMobile = window.innerWidth < 768
       
       this.charts.casesDonut = new Chart(ctx, {
         type: 'doughnut',
@@ -553,16 +615,18 @@ export default {
             legend: {
               position: 'bottom',
               labels: {
-                padding: 15,
+                padding: isMobile ? 8 : 15,
                 font: {
-                  size: 11
+                  size: isMobile ? 9 : 11
                 },
+                boxWidth: isMobile ? 12 : 15,
                 generateLabels: (chart) => {
                   const data = chart.data
                   if (data.labels.length && data.datasets.length) {
                     return data.labels.map((label, i) => {
                       const value = data.datasets[0].data[i]
-                      const shortLabel = label.length > 40 ? label.substring(0, 37) + '...' : label
+                      const maxLength = isMobile ? 25 : 40
+                      const shortLabel = label.length > maxLength ? label.substring(0, maxLength - 3) + '...' : label
                       return {
                         text: `${shortLabel} (${this.formatCurrencyShort(value)})`,
                         fillStyle: data.datasets[0].backgroundColor[i],

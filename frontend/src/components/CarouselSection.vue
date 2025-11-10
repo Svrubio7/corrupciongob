@@ -3,16 +3,20 @@
     <div v-if="items.length > 0" class="relative">
       <!-- Main Carousel Image -->
       <div 
-        class="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer aspect-[16/9]"
+        class="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer carousel-container"
         @click="$emit('click-item', currentItem)"
       >
-        <img 
-          v-if="currentItem.main_image"
-          :src="currentItem.main_image" 
-          :alt="currentItem.title"
-          :class="['w-full h-full object-cover transition-all duration-500', imageTransitionClass]"
-        />
-        <div v-else class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+        <div class="carousel-images-wrapper">
+          <img 
+            v-for="(item, index) in items"
+            :key="index"
+            v-if="item.main_image"
+            :src="item.main_image" 
+            :alt="item.title"
+            :class="['carousel-image', { 'active': index === currentIndex }]"
+          />
+        </div>
+        <div v-if="!currentItem.main_image" class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
           <span class="text-gray-400 text-lg">Sin imagen</span>
         </div>
         
@@ -125,8 +129,7 @@ export default {
   },
   data() {
     return {
-      carouselInterval: null,
-      imageTransitionClass: ''
+      carouselInterval: null
     }
   },
   computed: {
@@ -155,8 +158,8 @@ export default {
     startCarousel() {
       this.stopCarousel() // Clear any existing interval
       this.carouselInterval = setInterval(() => {
-        this.nextItemWithAnimation()
-      }, 3000)
+        this.nextItem()
+      }, 5000)
     },
     
     stopCarousel() {
@@ -166,18 +169,10 @@ export default {
       }
     },
     
-    nextItemWithAnimation() {
-      this.imageTransitionClass = 'opacity-0'
-      setTimeout(() => {
-        const newIndex = (this.currentIndex + 1) % this.items.length
-        this.$emit('update-index', newIndex)
-        this.imageTransitionClass = 'opacity-100'
-      }, 250)
-    },
-    
     nextItem() {
       this.stopCarousel() // Stop auto-play when user manually navigates
-      this.nextItemWithAnimation()
+      const newIndex = (this.currentIndex + 1) % this.items.length
+      this.$emit('update-index', newIndex)
       if (this.autoPlay) {
         this.startCarousel() // Restart auto-play
       }
@@ -185,12 +180,8 @@ export default {
     
     previousItem() {
       this.stopCarousel() // Stop auto-play when user manually navigates
-      this.imageTransitionClass = 'opacity-0'
-      setTimeout(() => {
-        const newIndex = this.currentIndex === 0 ? this.items.length - 1 : this.currentIndex - 1
-        this.$emit('update-index', newIndex)
-        this.imageTransitionClass = 'opacity-100'
-      }, 250)
+      const newIndex = this.currentIndex === 0 ? this.items.length - 1 : this.currentIndex - 1
+      this.$emit('update-index', newIndex)
       if (this.autoPlay) {
         this.startCarousel() // Restart auto-play
       }
@@ -198,11 +189,7 @@ export default {
     
     goToIndex(index) {
       this.stopCarousel() // Stop auto-play when user manually navigates
-      this.imageTransitionClass = 'opacity-0'
-      setTimeout(() => {
-        this.$emit('update-index', index)
-        this.imageTransitionClass = 'opacity-100'
-      }, 250)
+      this.$emit('update-index', index)
       if (this.autoPlay) {
         this.startCarousel() // Restart auto-play
       }
@@ -256,15 +243,48 @@ export default {
   overflow: hidden;
 }
 
-.aspect-\[16\/9\] {
-  aspect-ratio: 16 / 9;
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
 }
 
-/* Ensure consistent height on mobile */
+.carousel-images-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+}
+
+.carousel-image.active {
+  opacity: 1;
+  transform: translateX(0);
+  z-index: 2;
+}
+
+/* Desktop: slightly taller */
+@media (min-width: 1024px) {
+  .carousel-container {
+    height: 320px;
+  }
+}
+
+/* Mobile: smaller height */
 @media (max-width: 768px) {
-  .aspect-\[16\/9\] {
-    aspect-ratio: 16 / 9;
-    min-height: 300px;
+  .carousel-container {
+    height: 240px;
   }
 }
 </style>

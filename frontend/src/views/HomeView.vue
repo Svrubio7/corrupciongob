@@ -42,7 +42,7 @@
         <div class="hidden lg:grid lg:grid-cols-2 gap-8">
           <!-- Casos Carousel -->
           <div>
-            <h2 class="text-2xl font-bold text-gray-900 text-center mb-8">Casos</h2>
+            <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Casos</h2>
             <CarouselSection
               :items="featuredCases"
               :current-index="currentCasosIndex"
@@ -60,7 +60,7 @@
 
           <!-- Publicaciones Carousel -->
           <div>
-            <h2 class="text-2xl font-bold text-gray-900 text-center mb-8">Publicaciones</h2>
+            <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Publicaciones</h2>
             <CarouselSection
               :items="featuredPublications"
               :current-index="currentPublicacionesIndex"
