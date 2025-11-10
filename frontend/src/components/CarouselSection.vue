@@ -6,17 +6,14 @@
         class="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer carousel-container"
         @click="$emit('click-item', currentItem)"
       >
-        <div class="carousel-images-wrapper">
-          <img 
-            v-for="(item, index) in items"
-            :key="index"
-            v-if="item.main_image"
-            :src="item.main_image" 
-            :alt="item.title"
-            :class="['carousel-image', { 'active': index === currentIndex }]"
-          />
-        </div>
-        <div v-if="!currentItem.main_image" class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+        <img 
+          v-if="currentItem.main_image"
+          :key="currentIndex"
+          :src="currentItem.main_image" 
+          :alt="currentItem.title"
+          class="carousel-image"
+        />
+        <div v-else class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
           <span class="text-gray-400 text-lg">Sin imagen</span>
         </div>
         
@@ -250,28 +247,22 @@ export default {
   overflow: hidden;
 }
 
-.carousel-images-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
 .carousel-image {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transform: translateX(100%);
-  transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+  animation: slideIn 0.8s ease-in-out;
 }
 
-.carousel-image.active {
-  opacity: 1;
-  transform: translateX(0);
-  z-index: 2;
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 /* Desktop: slightly taller */
