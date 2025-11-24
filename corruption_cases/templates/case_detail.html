@@ -15,7 +15,12 @@
     <meta property="og:title" content="{{ title }}">
     <meta property="og:description" content="{{ description }}">
     <meta property="og:image" content="{{ image }}">
+    <meta property="og:image:secure_url" content="{{ image }}">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="{{ site_name }}">
+    <meta property="og:locale" content="es_ES">
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -37,6 +42,43 @@
     
     <!-- Preload the main image for better performance -->
     <link rel="preload" as="image" href="{{ image }}">
+    
+    <!-- Redirect script for Facebook and other crawlers -->
+    <script>
+        // Detect if this is a real browser (not a crawler)
+        function isRealBrowser() {
+            const ua = navigator.userAgent.toLowerCase();
+            const crawlerPatterns = [
+                'facebookexternalhit',
+                'facebot',
+                'twitterbot',
+                'linkedinbot',
+                'whatsapp',
+                'telegrambot',
+                'slackbot',
+                'googlebot',
+                'bingbot'
+            ];
+            
+            // Check if it's a crawler
+            const isCrawler = crawlerPatterns.some(pattern => ua.includes(pattern));
+            
+            // Check if JavaScript is enabled and we have window properties
+            const hasJS = typeof window !== 'undefined' && typeof document !== 'undefined';
+            
+            // If it's a crawler or doesn't have JS, don't redirect
+            return !isCrawler && hasJS;
+        }
+        
+        // Only redirect real browsers to the Vue app
+        // Crawlers will see this static HTML with meta tags
+        if (isRealBrowser()) {
+            // Small delay to ensure meta tags are read by crawlers first
+            setTimeout(function() {
+                window.location.href = '{{ url }}';
+            }, 100);
+        }
+    </script>
     
     <style>
         body {
@@ -186,13 +228,22 @@
                 </div>
                 
                 <div style="text-align: center;">
-                    <a href="{{ url }}" class="cta-button">
+                    <a href="{{ url }}" class="cta-button" onclick="event.preventDefault(); window.location.href='{{ url }}'; return false;">
                         {% if publication_type == 'case' %}
                         Ver Caso Completo
                         {% else %}
                         Ver Publicación Completa
                         {% endif %}
                     </a>
+                    <noscript>
+                        <a href="{{ url }}" class="cta-button">
+                            {% if publication_type == 'case' %}
+                            Ver Caso Completo
+                            {% else %}
+                            Ver Publicación Completa
+                            {% endif %}
+                        </a>
+                    </noscript>
                 </div>
             {% else %}
                 <div style="text-align: center;">

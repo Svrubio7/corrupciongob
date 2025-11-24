@@ -72,11 +72,11 @@
             <div class="flex justify-center mt-6">
               <router-link to="/publicaciones" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-blue-600 hover:border-blue-700">
                 Ver todas
-              </router-link>
+          </router-link>
             </div>
           </div>
         </div>
-
+        
         <!-- Mobile: Stacked -->
         <div class="lg:hidden space-y-12">
           <!-- Casos Carousel Mobile -->
@@ -95,7 +95,7 @@
                 Ver todos
               </router-link>
             </div>
-          </div>
+              </div>
 
           <!-- Publicaciones Carousel Mobile -->
           <div>

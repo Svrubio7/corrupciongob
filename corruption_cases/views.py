@@ -423,6 +423,18 @@ def is_crawler(request):
     logger = logging.getLogger(__name__)
     logger.info(f"User-Agent: {user_agent}")
     
+    # Very specific Facebook detection (they can be tricky)
+    facebook_indicators = [
+        'facebookexternalhit',
+        'facebot',
+        'facebook',
+        'fban',
+        'fbav'
+    ]
+    if any(indicator in user_agent for indicator in facebook_indicators):
+        logger.info("Detected as Facebook bot")
+        return True
+    
     # Very specific Twitter detection (they can be tricky)
     twitter_indicators = ['twitterbot', 'twitter', 'x.com']
     if any(indicator in user_agent for indicator in twitter_indicators):
@@ -432,7 +444,10 @@ def is_crawler(request):
     # Common crawler/bot keywords
     crawler_keywords = [
         'facebookexternalhit',   # Facebook
+        'facebookexternalhit/1.1',  # Facebook (with version)
+        'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',  # Facebook full
         'facebot',               # Facebook
+        'facebook',              # Facebook (general)
         'linkedinbot',           # LinkedIn
         'linkedin',              # LinkedIn variations
         'whatsapp',              # WhatsApp
@@ -505,11 +520,17 @@ def publication_detail_view(request, slug, publication_type='case'):
         
         # Prepare meta tag data with proper image URL
         if publication.main_image:
-            # Build absolute URL for the image
+            # Build absolute URL for the image - ensure HTTPS
             image_url = request.build_absolute_uri(publication.main_image.url)
+            # Force HTTPS
+            image_url = image_url.replace('http://', 'https://')
         else:
             # Fallback to logo
             image_url = request.build_absolute_uri('/static/logodegu.png')
+            image_url = image_url.replace('http://', 'https://')
+        
+        # Ensure URL is HTTPS
+        url = url.replace('http://', 'https://')
         
         # Detect if this is a crawler/bot
         if is_crawler(request):
