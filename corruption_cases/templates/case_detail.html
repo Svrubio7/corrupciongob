@@ -116,16 +116,28 @@
                 }
             }
             
+            // Check if JavaScript was disabled (like during X's prefetch)
+            function isJavascriptDisabled() {
+                try {
+                    // If we can't access sessionStorage or other JS features, JS might be disabled
+                    return typeof sessionStorage === 'undefined';
+                } catch(e) {
+                    return true;
+                }
+            }
+            
             // Only redirect if:
             // 1. It's a real browser (not a crawler)
             // 2. User didn't click the button manually
             // 3. User didn't come from social media (let them see the preview first)
             // 4. Not in an in-app browser (let them use the button)
-            // 5. Not already redirected (prevent loops)
+            // 5. JavaScript is enabled (X's prefetch disables JS)
+            // 6. Not already redirected (prevent loops)
             const shouldRedirect = isRealBrowser() && 
                                   !sessionStorage.getItem('fromMetaPage') && 
                                   !cameFromSocialMedia() &&
                                   !isInAppBrowser() &&
+                                  !isJavascriptDisabled() &&
                                   !sessionStorage.getItem('redirected');
             
             if (shouldRedirect) {
@@ -217,16 +229,26 @@
         .cta-button {
             display: inline-block;
             background: #2b6cb0;
-            color: white;
+            color: white !important;
             padding: 15px 30px;
-            text-decoration: none;
+            text-decoration: none !important;
             border-radius: 8px;
             font-weight: 600;
             font-size: 1.1rem;
             transition: background-color 0.3s;
+            cursor: pointer;
+            border: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
         }
-        .cta-button:hover {
+        .cta-button:hover,
+        .cta-button:active,
+        .cta-button:focus {
             background: #2c5282;
+            color: white !important;
+            text-decoration: none !important;
+        }
+        .cta-button:visited {
+            color: white !important;
         }
         .footer {
             text-align: center;
@@ -294,7 +316,9 @@
                 </div>
                 
                 <div style="text-align: center;">
-                    <a href="{{ url }}" class="cta-button" id="viewFullButton" target="_self">
+                    <!-- Use direct link without JavaScript dependency for X in-app browser compatibility -->
+                    <!-- X's in-app browser on iOS disables JavaScript during prefetch, so we need a direct link -->
+                    <a href="{{ url }}" class="cta-button" style="display: inline-block; text-decoration: none;">
                         {% if publication_type == 'case' %}
                         Ver Caso Completo
                         {% else %}
@@ -303,62 +327,26 @@
                     </a>
                 </div>
                 <script>
-                    // Handle button click to ensure it works in all browsers including in-app browsers
+                    // Enhancement: Add JavaScript only as enhancement, not requirement
+                    // This ensures the link works even when JS is disabled (like X's prefetch)
                     (function() {
-                        function setupButton() {
-                            var button = document.getElementById('viewFullButton');
+                        try {
+                            var button = document.querySelector('.cta-button');
                             if (button) {
-                                // Remove any existing listeners
-                                var newButton = button.cloneNode(true);
-                                button.parentNode.replaceChild(newButton, button);
-                                
-                                // Add click handler
-                                newButton.addEventListener('click', function(e) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    
-                                    // Clear any redirect flags
+                                // Set flag when link is clicked (if JS is available)
+                                button.addEventListener('click', function() {
                                     try {
                                         if (typeof sessionStorage !== 'undefined') {
                                             sessionStorage.setItem('fromMetaPage', 'true');
                                             sessionStorage.removeItem('redirected');
                                         }
                                     } catch(err) {
-                                        // Ignore sessionStorage errors
+                                        // Ignore - link will still work via href
                                     }
-                                    
-                                    // Navigate to the full page - use multiple methods for compatibility
-                                    var targetUrl = '{{ url }}';
-                                    
-                                    // Try window.location first
-                                    try {
-                                        window.location.href = targetUrl;
-                                    } catch(err) {
-                                        // Fallback to window.location.replace
-                                        try {
-                                            window.location.replace(targetUrl);
-                                        } catch(err2) {
-                                            // Last resort - use the href directly
-                                            this.href = targetUrl;
-                                        }
-                                    }
-                                    
-                                    return false;
-                                }, false);
-                                
-                                // Also handle touch events for mobile
-                                newButton.addEventListener('touchend', function(e) {
-                                    e.preventDefault();
-                                    this.click();
                                 }, false);
                             }
-                        }
-                        
-                        // Setup when DOM is ready
-                        if (document.readyState === 'loading') {
-                            document.addEventListener('DOMContentLoaded', setupButton);
-                        } else {
-                            setupButton();
+                        } catch(err) {
+                            // If JS fails, the href will still work
                         }
                     })();
                 </script>
