@@ -316,9 +316,12 @@
                 </div>
                 
                 <div style="text-align: center;">
-                    <!-- Use direct link without JavaScript dependency for X in-app browser compatibility -->
-                    <!-- X's in-app browser on iOS disables JavaScript during prefetch, so we need a direct link -->
-                    <a href="{{ url }}" class="cta-button" style="display: inline-block; text-decoration: none;">
+                    <!-- Use full_url with timestamp parameter to force navigation in X in-app browser -->
+                    <!-- The timestamp ensures it's treated as a new page load, not a refresh -->
+                    <a href="{{ full_url|default:url }}" 
+                       class="cta-button" 
+                       style="display: inline-block; text-decoration: none; -webkit-user-select: none; user-select: none;"
+                       onclick="this.href='{{ full_url|default:url }}'; return true;">
                         {% if publication_type == 'case' %}
                         Ver Caso Completo
                         {% else %}
@@ -326,30 +329,6 @@
                         {% endif %}
                     </a>
                 </div>
-                <script>
-                    // Enhancement: Add JavaScript only as enhancement, not requirement
-                    // This ensures the link works even when JS is disabled (like X's prefetch)
-                    (function() {
-                        try {
-                            var button = document.querySelector('.cta-button');
-                            if (button) {
-                                // Set flag when link is clicked (if JS is available)
-                                button.addEventListener('click', function() {
-                                    try {
-                                        if (typeof sessionStorage !== 'undefined') {
-                                            sessionStorage.setItem('fromMetaPage', 'true');
-                                            sessionStorage.removeItem('redirected');
-                                        }
-                                    } catch(err) {
-                                        // Ignore - link will still work via href
-                                    }
-                                }, false);
-                            }
-                        } catch(err) {
-                            // If JS fails, the href will still work
-                        }
-                    })();
-                </script>
             {% else %}
                 <div style="text-align: center;">
                     <h2 class="case-title">Publicación no encontrada</h2>

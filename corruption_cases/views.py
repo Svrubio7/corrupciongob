@@ -524,6 +524,12 @@ def publication_detail_view(request, slug, publication_type='case'):
         else:
             url = f"https://degu.es/app/publicacion/{publication.slug}"
         
+        # For the button, use a direct URL that bypasses crawler detection
+        # Add timestamp to force navigation in restrictive in-app browsers like X
+        # This ensures the link is treated as a new navigation, not a refresh
+        import time
+        full_url = f"{url}?t={int(time.time())}"
+        
         # Prepare meta tag data with proper image URL
         if publication.main_image:
             # Build absolute URL for the image - ensure HTTPS
@@ -537,6 +543,14 @@ def publication_detail_view(request, slug, publication_type='case'):
         
         # Ensure URL is HTTPS
         url = url.replace('http://', 'https://')
+        full_url = full_url.replace('http://', 'https://')
+        
+        # Check if this is a request with view parameter (from button click)
+        # If so, always serve Vue app regardless of crawler detection
+        view_param = request.GET.get('view') or request.GET.get('t')
+        if view_param:
+            # User clicked the button - serve Vue app directly
+            return render(request, 'index.html')
         
         # Detect if this is a crawler/bot
         if is_crawler(request):
@@ -546,6 +560,7 @@ def publication_detail_view(request, slug, publication_type='case'):
                 'description': publication.short_description or 'Análisis y auditoría del dinero público',
                 'image': image_url,
                 'url': url,
+                'full_url': full_url,  # URL with parameter for button
                 'type': 'article',
                 'site_name': 'D.E.GU',
                 'case': publication,
