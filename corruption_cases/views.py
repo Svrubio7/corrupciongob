@@ -435,10 +435,16 @@ def is_crawler(request):
         logger.info("Detected as Facebook bot")
         return True
     
-    # Very specific Twitter detection (they can be tricky)
-    twitter_indicators = ['twitterbot', 'twitter', 'x.com']
+    # Very specific Twitter/X detection (they can be tricky)
+    twitter_indicators = [
+        'twitterbot',
+        'twitter',
+        'x.com',
+        't.co',  # Twitter short links
+        'twimg.com'  # Twitter images
+    ]
     if any(indicator in user_agent for indicator in twitter_indicators):
-        logger.info("Detected as Twitter bot")
+        logger.info("Detected as Twitter/X bot")
         return True
     
     # Common crawler/bot keywords

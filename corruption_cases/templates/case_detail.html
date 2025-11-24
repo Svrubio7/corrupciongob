@@ -45,43 +45,88 @@
     
     <!-- Redirect script for Facebook and other crawlers -->
     <script>
-        // Detect if this is a real browser (not a crawler)
-        function isRealBrowser() {
-            const ua = navigator.userAgent.toLowerCase();
-            const crawlerPatterns = [
-                'facebookexternalhit',
-                'facebot',
-                'twitterbot',
-                'linkedinbot',
-                'whatsapp',
-                'telegrambot',
-                'slackbot',
-                'googlebot',
-                'bingbot'
-            ];
+        (function() {
+            // Detect if this is a real browser (not a crawler)
+            function isRealBrowser() {
+                const ua = navigator.userAgent.toLowerCase();
+                const crawlerPatterns = [
+                    'facebookexternalhit',
+                    'facebot',
+                    'twitterbot',
+                    'linkedinbot',
+                    'whatsapp',
+                    'telegrambot',
+                    'slackbot',
+                    'googlebot',
+                    'bingbot'
+                ];
+                
+                // Check if it's a crawler
+                const isCrawler = crawlerPatterns.some(pattern => ua.includes(pattern));
+                
+                // Check if JavaScript is enabled and we have window properties
+                const hasJS = typeof window !== 'undefined' && typeof document !== 'undefined';
+                
+                // If it's a crawler or doesn't have JS, don't redirect
+                return !isCrawler && hasJS;
+            }
             
-            // Check if it's a crawler
-            const isCrawler = crawlerPatterns.some(pattern => ua.includes(pattern));
+            // Check if user came from a social media platform
+            function cameFromSocialMedia() {
+                const referrer = document.referrer.toLowerCase();
+                const socialDomains = [
+                    'twitter.com',
+                    'x.com',
+                    'facebook.com',
+                    'linkedin.com',
+                    'whatsapp.com',
+                    'telegram.org',
+                    'reddit.com'
+                ];
+                
+                // Check referrer
+                if (socialDomains.some(domain => referrer.includes(domain))) {
+                    return true;
+                }
+                
+                // Check URL parameters that indicate social media sharing
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('fbclid') || urlParams.has('twclid') || urlParams.has('utm_source')) {
+                    const utmSource = urlParams.get('utm_source');
+                    if (utmSource && socialDomains.some(domain => utmSource.includes(domain))) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
             
-            // Check if JavaScript is enabled and we have window properties
-            const hasJS = typeof window !== 'undefined' && typeof document !== 'undefined';
+            // Only redirect if:
+            // 1. It's a real browser (not a crawler)
+            // 2. User didn't click the button manually
+            // 3. User didn't come from social media (let them see the preview first)
+            // 4. Not already redirected (prevent loops)
+            const shouldRedirect = isRealBrowser() && 
+                                  !sessionStorage.getItem('fromMetaPage') && 
+                                  !cameFromSocialMedia() &&
+                                  !sessionStorage.getItem('redirected');
             
-            // If it's a crawler or doesn't have JS, don't redirect
-            return !isCrawler && hasJS;
-        }
-        
-        // Only redirect real browsers to the Vue app
-        // Crawlers will see this static HTML with meta tags
-        // But don't auto-redirect if user clicked the button (let them navigate manually)
-        if (isRealBrowser() && !sessionStorage.getItem('fromMetaPage')) {
-            // Small delay to ensure meta tags are read by crawlers first
-            setTimeout(function() {
-                window.location.href = '{{ url }}';
-            }, 100);
-        }
-        
-        // Clear the flag when page loads (in case user navigated here directly)
-        sessionStorage.removeItem('fromMetaPage');
+            if (shouldRedirect) {
+                // Mark as redirected to prevent loops
+                sessionStorage.setItem('redirected', 'true');
+                
+                // Small delay to ensure meta tags are read by crawlers first
+                setTimeout(function() {
+                    window.location.replace('{{ url }}'); // Use replace instead of href to avoid back button issues
+                }, 300);
+            } else {
+                // Clear redirect flag if we're staying on this page
+                sessionStorage.removeItem('redirected');
+            }
+            
+            // Clear the fromMetaPage flag when page loads
+            sessionStorage.removeItem('fromMetaPage');
+        })();
     </script>
     
     <style>
@@ -232,7 +277,7 @@
                 </div>
                 
                 <div style="text-align: center;">
-                    <a href="{{ url }}" class="cta-button" onclick="sessionStorage.setItem('fromMetaPage', 'true'); window.location.href='{{ url }}'; return false;">
+                    <a href="{{ url }}" class="cta-button" onclick="sessionStorage.setItem('fromMetaPage', 'true'); sessionStorage.removeItem('redirected'); window.location.href='{{ url }}'; return false;">
                         {% if publication_type == 'case' %}
                         Ver Caso Completo
                         {% else %}
