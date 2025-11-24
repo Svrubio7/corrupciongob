@@ -138,21 +138,10 @@ export default {
     },
     shareOnFacebook() {
       // Facebook sharer - automatically fetches og:tags and shows preview
-      // Use the Facebook Share Dialog API for better control
+      // Open in new tab instead of popup window
       const shareUrl = encodeURIComponent(this.shareUrl)
-      const url = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&display=popup`
-      
-      // Open in popup window
-      const width = 600
-      const height = 400
-      const left = (window.screen.width / 2) - (width / 2)
-      const top = (window.screen.height / 2) - (height / 2)
-      
-      window.open(
-        url,
-        'facebook-share-dialog',
-        `width=${width},height=${height},top=${top},left=${left},toolbar=0,status=0`
-      )
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`
+      window.open(url, '_blank')
     },
     shareOnTwitter() {
       // Twitter with full text including URL and attribution

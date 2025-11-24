@@ -72,12 +72,16 @@
         
         // Only redirect real browsers to the Vue app
         // Crawlers will see this static HTML with meta tags
-        if (isRealBrowser()) {
+        // But don't auto-redirect if user clicked the button (let them navigate manually)
+        if (isRealBrowser() && !sessionStorage.getItem('fromMetaPage')) {
             // Small delay to ensure meta tags are read by crawlers first
             setTimeout(function() {
                 window.location.href = '{{ url }}';
             }, 100);
         }
+        
+        // Clear the flag when page loads (in case user navigated here directly)
+        sessionStorage.removeItem('fromMetaPage');
     </script>
     
     <style>
@@ -228,7 +232,7 @@
                 </div>
                 
                 <div style="text-align: center;">
-                    <a href="{{ url }}" class="cta-button" onclick="event.preventDefault(); window.location.href='{{ url }}'; return false;">
+                    <a href="{{ url }}" class="cta-button" onclick="sessionStorage.setItem('fromMetaPage', 'true'); window.location.href='{{ url }}'; return false;">
                         {% if publication_type == 'case' %}
                         Ver Caso Completo
                         {% else %}
