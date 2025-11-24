@@ -101,14 +101,31 @@
                 return false;
             }
             
+            // Check if we're in an in-app browser (like Twitter's in-app browser)
+            function isInAppBrowser() {
+                const ua = navigator.userAgent.toLowerCase();
+                // Twitter/X in-app browser indicators
+                if (ua.includes('twitter') || ua.includes('fban') || ua.includes('fbav')) {
+                    return true;
+                }
+                // Check if window is in an iframe (common in in-app browsers)
+                try {
+                    return window.self !== window.top;
+                } catch (e) {
+                    return true; // If we can't check, assume it might be
+                }
+            }
+            
             // Only redirect if:
             // 1. It's a real browser (not a crawler)
             // 2. User didn't click the button manually
             // 3. User didn't come from social media (let them see the preview first)
-            // 4. Not already redirected (prevent loops)
+            // 4. Not in an in-app browser (let them use the button)
+            // 5. Not already redirected (prevent loops)
             const shouldRedirect = isRealBrowser() && 
                                   !sessionStorage.getItem('fromMetaPage') && 
                                   !cameFromSocialMedia() &&
+                                  !isInAppBrowser() &&
                                   !sessionStorage.getItem('redirected');
             
             if (shouldRedirect) {
@@ -118,14 +135,14 @@
                 // Small delay to ensure meta tags are read by crawlers first
                 setTimeout(function() {
                     window.location.replace('{{ url }}'); // Use replace instead of href to avoid back button issues
-                }, 300);
+                }, 500);
             } else {
                 // Clear redirect flag if we're staying on this page
                 sessionStorage.removeItem('redirected');
             }
             
-            // Clear the fromMetaPage flag when page loads
-            sessionStorage.removeItem('fromMetaPage');
+            // Clear the fromMetaPage flag when page loads (but keep it if button was clicked)
+            // We'll set it when button is clicked, so don't clear it here
         })();
     </script>
     
@@ -277,23 +294,74 @@
                 </div>
                 
                 <div style="text-align: center;">
-                    <a href="{{ url }}" class="cta-button" onclick="sessionStorage.setItem('fromMetaPage', 'true'); sessionStorage.removeItem('redirected'); window.location.href='{{ url }}'; return false;">
+                    <a href="{{ url }}" class="cta-button" id="viewFullButton" target="_self">
                         {% if publication_type == 'case' %}
                         Ver Caso Completo
                         {% else %}
                         Ver Publicación Completa
                         {% endif %}
                     </a>
-                    <noscript>
-                        <a href="{{ url }}" class="cta-button">
-                            {% if publication_type == 'case' %}
-                            Ver Caso Completo
-                            {% else %}
-                            Ver Publicación Completa
-                            {% endif %}
-                        </a>
-                    </noscript>
                 </div>
+                <script>
+                    // Handle button click to ensure it works in all browsers including in-app browsers
+                    (function() {
+                        function setupButton() {
+                            var button = document.getElementById('viewFullButton');
+                            if (button) {
+                                // Remove any existing listeners
+                                var newButton = button.cloneNode(true);
+                                button.parentNode.replaceChild(newButton, button);
+                                
+                                // Add click handler
+                                newButton.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    
+                                    // Clear any redirect flags
+                                    try {
+                                        if (typeof sessionStorage !== 'undefined') {
+                                            sessionStorage.setItem('fromMetaPage', 'true');
+                                            sessionStorage.removeItem('redirected');
+                                        }
+                                    } catch(err) {
+                                        // Ignore sessionStorage errors
+                                    }
+                                    
+                                    // Navigate to the full page - use multiple methods for compatibility
+                                    var targetUrl = '{{ url }}';
+                                    
+                                    // Try window.location first
+                                    try {
+                                        window.location.href = targetUrl;
+                                    } catch(err) {
+                                        // Fallback to window.location.replace
+                                        try {
+                                            window.location.replace(targetUrl);
+                                        } catch(err2) {
+                                            // Last resort - use the href directly
+                                            this.href = targetUrl;
+                                        }
+                                    }
+                                    
+                                    return false;
+                                }, false);
+                                
+                                // Also handle touch events for mobile
+                                newButton.addEventListener('touchend', function(e) {
+                                    e.preventDefault();
+                                    this.click();
+                                }, false);
+                            }
+                        }
+                        
+                        // Setup when DOM is ready
+                        if (document.readyState === 'loading') {
+                            document.addEventListener('DOMContentLoaded', setupButton);
+                        } else {
+                            setupButton();
+                        }
+                    })();
+                </script>
             {% else %}
                 <div style="text-align: center;">
                     <h2 class="case-title">Publicación no encontrada</h2>
